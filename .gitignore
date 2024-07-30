@@ -8,6 +8,15 @@ target/
 /front/target
 /front/lalamiam/node_modules
 /front/lalamiam/dist
+/front/lalamiam/tmp
+/front/lalamiam/.vscode
+/front/lalamiam/.vscode/*
+/front/lalamiam/.angular
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

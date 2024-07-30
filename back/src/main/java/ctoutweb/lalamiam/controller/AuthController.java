@@ -1,0 +1,46 @@
+package ctoutweb.lalamiam.controller;
+
+import ctoutweb.lalamiam.model.LoginDto;
+import ctoutweb.lalamiam.model.LoginResponseDto;
+import ctoutweb.lalamiam.model.RegisterDto;
+import ctoutweb.lalamiam.model.RegisterResponse;
+import ctoutweb.lalamiam.service.impl.AuthServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+  private final AuthServiceImpl authService;
+
+  public AuthController(AuthServiceImpl authService) {
+    this.authService = authService;
+  }
+  private static final Logger LOGGER = LogManager.getLogger();
+  @PostMapping("/login")
+  ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto login) {
+    LoginResponseDto loginResponse = authService.login(login);
+    return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+  }
+
+  @PostMapping("/register")
+  ResponseEntity<RegisterResponse> register(@RequestBody RegisterDto registerDto) {
+    RegisterResponse registerResponse = authService.register(registerDto);
+    return new ResponseEntity<RegisterResponse>(registerResponse, HttpStatus.CREATED);
+  }
+
+  @GetMapping("/logout/{userId}")
+  ResponseEntity<String> logout(@PathVariable Long userId) {
+    LOGGER.debug("logout");
+    return new ResponseEntity<>(authService.logout(userId), HttpStatus.OK);
+  }
+
+  @GetMapping("/csrf")
+  ResponseEntity<String> csrfToken() {
+    return new ResponseEntity<>("CSRF TOKEN", HttpStatus.OK);
+  }
+}

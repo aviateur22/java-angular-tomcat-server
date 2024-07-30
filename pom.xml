@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>testFrontBack</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.18</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+
+    <modules>
+        <module>front</module>
+        <module>back</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <angular.configuration>development</angular.configuration>
+                <angular.base.href>/</angular.base.href>
+                <database.schema>sc_project</database.schema>
+                <jwt.validity.hour>72</jwt.validity.hour>
+                <jwt.issuer>ctoutweb</jwt.issuer>
+                <zone.id>Europe/Paris</zone.id>
+                <log.level>DEBUG</log.level>
+                <content.path></content.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>tomcat</id>
+            <properties>
+                <angular.configuration>tomcat</angular.configuration>
+                <angular.base.href>/lalamiam-app/</angular.base.href>
+                <database.schema>sc_project</database.schema>
+                <jwt.validity.hour>72</jwt.validity.hour>
+                <jwt.issuer>ctoutweb</jwt.issuer>
+                <zone.id>Europe/Paris</zone.id>
+                <log.level>DEBUG</log.level>
+                <content.path>/lalamiam-app</content.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>heroku</id>
+            <properties>
+                <angular.configuration>production</angular.configuration>
+                <angular.base.href>/</angular.base.href>
+                <database.schema>sc_project</database.schema>
+                <jwt.validity.hour>12</jwt.validity.hour>
+                <jwt.issuer>ctoutweb</jwt.issuer>
+                <zone.id>Europe/Paris</zone.id>
+                <log.level>INFO</log.level>
+                <content.path>/</content.path>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>3.0.7</version>
+                <configuration>
+                    <appName>back-front-app</appName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

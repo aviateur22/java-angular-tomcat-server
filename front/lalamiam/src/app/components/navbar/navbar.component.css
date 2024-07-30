@@ -1,0 +1,16 @@
+.navbar {
+  color: red;
+}
+
+.navbar-links {
+  display: flex;
+}
+
+.small {
+  width: 25px;
+  height: auto;
+}
+
+li{
+  padding: 10px;
+}

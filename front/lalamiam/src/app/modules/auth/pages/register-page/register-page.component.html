@@ -1,0 +1,20 @@
+<p>Creation compte</p>
+
+<form [formGroup]="registerDataFormGroup" (submit)="register()" >
+  <div>
+    <label for="email">votre email</label>
+    <input id="email" formControlName="email" type="email" placeholder="votre email...">
+  </div>
+
+  <div>
+    <label for="password">votre mot de passe</label>
+    <input id="password" formControlName="password" type="password" placeholder="mot de passe...">
+  </div>
+
+  <div>
+    <label for="name">votre nom</label>
+    <input id="name" formControlName="name" type="password" placeholder="nom">
+  </div>
+
+  <input type="submit" value="creation">
+</form>

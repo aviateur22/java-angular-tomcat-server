@@ -1,0 +1,83 @@
+import { Injectable } from "@angular/core";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import * as AuthAction from "./action";
+import * as UserIdentAction from "src/store/user-ident-store/action";
+import * as FlashMessageAction from 'src/store/flash-message-store/action';
+
+import { catchError, delay, from, map, mergeMap, Observable, of, pipe, switchMap, tap } from "rxjs";
+import { AuthService } from "../../services/auth.service";
+
+@Injectable()
+export class AuthEffect {
+
+  constructor(private _action$: Actions, private _authService: AuthService){}
+
+  login$ = createEffect(()=>
+  this._action$.pipe(
+    ofType(AuthAction.login),
+    switchMap((data)=>
+      this._authService.login(data).pipe(
+        switchMap((loginResponse)=> [
+          // Creation du UserIdent
+          UserIdentAction.createUserIden({
+            userId: loginResponse.id,
+            email: loginResponse.email,
+            jwt: loginResponse.jwt,
+            roles: loginResponse.roles
+
+          }),
+
+          // Generation Message login
+          FlashMessageAction.createMessage({message: loginResponse.message, isError: false})
+        ]),
+        catchError((error)=>from([
+          UserIdentAction.clearUserIden(),
+          // Generation Message login
+          FlashMessageAction.createMessage({message: error.error, isError: true})
+        ])
+        )
+      )
+    )
+  )
+  )
+
+  register$ = createEffect(()=>
+    this._action$.pipe(
+      ofType(AuthAction.register),
+      mergeMap((data)=>
+        this._authService.register(data).pipe(
+          switchMap((registerResponse)=>[
+            // Generation Message Register
+            FlashMessageAction.createMessage({message: registerResponse.message, isError: false})
+          ]),
+          catchError((error)=>from([
+            // Generation Message Register
+            FlashMessageAction.createMessage({message: error.error, isError: true})
+          ]))
+        )
+      )
+    )
+  )
+
+  logout$ = createEffect(()=>
+    this._action$.pipe(
+      ofType(AuthAction.logout),
+      mergeMap(()=>
+        this._authService.logout().pipe(
+          switchMap((resMessage)=> [
+            // Suppression du UserIdent
+            UserIdentAction.clearUserIden(),
+
+            // Generation Message logout
+            FlashMessageAction.createMessage({message: resMessage, isError: false})
+          ]),
+          catchError((error)=>from([
+            UserIdentAction.clearUserIden(),
+            // Generation Message logout
+            FlashMessageAction.createMessage({message: error.error, isError: true})
+          ])
+        )
+      )
+    )
+  ))
+}

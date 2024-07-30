@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <div class="navbar-logo">
+    <img class="small" src="assets/hamburger.jpg" alt="My App Logo" />
+  </div>
+  <ul class="navbar-links">
+      <li><a routerLink="/lalamiam">Home</a></li>
+      <li><a routerLink="/lalamiam/users-page">users</a></li>
+      <li><a routerLink="/lalamiam/connexion">connexion</a></li>
+  </ul>
+
+  <div *ngIf="(userEmail$ | async) as user">
+    <button (click)="logout()">
+      deconnexion
+    </button>
+  </div>
+</nav>

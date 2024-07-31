@@ -18,7 +18,7 @@ public enum JwtIdentificationType {
       return null;
     }
 
-    if(ListUtillity.areElementInText(path, UrlPath.MIDDLE_AUTH_PATH)) {
+    if(ListUtillity.areElementInText(path, UrlPath.PARTIAL_AUTH_PATH)) {
       return JWT_PARTIAL_AUTH;
     } else  {
       return JWT_FULL_AUTH;

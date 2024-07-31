@@ -562,6 +562,7 @@ class RegisterPageComponent {
   }
   ngOnInit() {
     this.initializeRegisterData();
+    this.getCsrf();
   }
   initializeRegisterData() {
     this.registerDataFormGroup = this._fb.group({
@@ -580,6 +581,9 @@ class RegisterPageComponent {
       password: registerData.password,
       name: registerData.name
     }));
+  }
+  getCsrf() {
+    this._store.dispatch(_store_auth_store_action__WEBPACK_IMPORTED_MODULE_1__.csrf());
   }
   static #_ = this.ɵfac = function RegisterPageComponent_Factory(t) {
     return new (t || RegisterPageComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_2__.FormBuilder), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_ngrx_store__WEBPACK_IMPORTED_MODULE_4__.Store));
@@ -694,6 +698,12 @@ class AuthService {
   register(registerDto) {
     return this._http.post(this._apiEndPoint + "/register", registerDto);
   }
+  csrf() {
+    const path = this._apiEndPoint + "/csrf";
+    return this._http.get(path, {
+      responseType: 'text'
+    });
+  }
   logout() {
     //const user = JSON.parse(localStorage.getItem('user'));
     const user = localStorage.getItem('user');
@@ -701,8 +711,6 @@ class AuthService {
     if (user != null) {
       const userString = JSON.parse(user);
       const userId = userString.userId;
-      console.log(userString, userId);
-      console.log(this._apiEndPoint + "/logout/" + userId);
       path = this._apiEndPoint + "/logout/" + userId;
     }
     return this._http.get(path, {
@@ -729,6 +737,7 @@ class AuthService {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   csrf: () => (/* binding */ csrf),
 /* harmony export */   login: () => (/* binding */ login),
 /* harmony export */   logout: () => (/* binding */ logout),
 /* harmony export */   logoutFailed: () => (/* binding */ logoutFailed),
@@ -738,6 +747,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @ngrx/store */ 6270);
 
 const login = (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.createAction)('[Auth] Login client', (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.props)());
+const csrf = (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.createAction)('[Auth] csrf');
 const logout = (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.createAction)('[Auth] Logout');
 const logoutSuccess = (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.createAction)('[Auth] Logout success', (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.props)());
 const logoutFailed = (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.createAction)('[Auth] Logout failed', (0,_ngrx_store__WEBPACK_IMPORTED_MODULE_0__.props)());
@@ -763,7 +773,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 2389);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ 6231);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs */ 2607);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs */ 4980);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/core */ 1699);
 /* harmony import */ var _services_auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/auth.service */ 3721);
 
 
@@ -790,9 +801,9 @@ class AuthEffect {
       message: loginResponse.message,
       isError: false
     })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)([src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
-    // Generation Message login
+    // Generation Message d'erreur
     src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
-      message: error.error,
+      message: error.error.error,
       isError: true
     })]))))));
     this.register$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.register), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(data => this._authService.register(data).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(registerResponse => [
@@ -800,30 +811,53 @@ class AuthEffect {
     src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
       message: registerResponse.message,
       isError: false
-    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)([
+    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => {
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.of)(
+      // Generation Message d'erreur
+      src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
+        message: error.error.error,
+        isError: true
+      }));
+    })))));
+    this.logout$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.logout), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(() => this._authService.logout().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(resMessage => {
+      localStorage.removeItem('user');
+      return [
+      // Suppression du UserIdent
+      src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
+      // Generation Message logout
+      src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
+        message: resMessage,
+        isError: false
+      })];
+    }), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => {
+      localStorage.removeItem('user');
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)([
+      // Suppression du UserIdent
+      src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
+      // Generation Message d'erreur
+      src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
+        message: error.error.error,
+        isError: true
+      })]);
+    })))));
+    this.csrf$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.csrf), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(() => this._authService.csrf().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(csrf => [
     // Generation Message Register
     src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
-      message: error.error,
-      isError: true
-    })]))))));
-    this.logout$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.logout), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(() => this._authService.logout().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(resMessage => [
-    // Suppression du UserIdent
-    src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
-    // Generation Message logout
-    src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
-      message: resMessage,
+      message: csrf,
       isError: false
-    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)([src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
-    // Generation Message logout
-    src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
-      message: error.error,
-      isError: true
-    })]))))));
+    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => {
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.of)(
+      // Generation Message d'erreur
+      src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
+        message: error.error.error,
+        isError: true
+      }));
+    })))));
   }
   static #_ = this.ɵfac = function AuthEffect_Factory(t) {
-    return new (t || AuthEffect)(_angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵinject"](_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.Actions), _angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵinject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_3__.AuthService));
+    return new (t || AuthEffect)(_angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵinject"](_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.Actions), _angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵinject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_3__.AuthService));
   };
-  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_9__["ɵɵdefineInjectable"]({
+  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵdefineInjectable"]({
     token: AuthEffect,
     factory: AuthEffect.ɵfac
   });

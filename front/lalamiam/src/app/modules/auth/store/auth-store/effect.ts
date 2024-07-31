@@ -32,8 +32,8 @@ export class AuthEffect {
         ]),
         catchError((error)=>from([
           UserIdentAction.clearUserIden(),
-          // Generation Message login
-          FlashMessageAction.createMessage({message: error.error, isError: true})
+          // Generation Message d'erreur
+          FlashMessageAction.createMessage({message: error.error.error, isError: true})
         ])
         )
       )
@@ -50,10 +50,13 @@ export class AuthEffect {
             // Generation Message Register
             FlashMessageAction.createMessage({message: registerResponse.message, isError: false})
           ]),
-          catchError((error)=>from([
-            // Generation Message Register
-            FlashMessageAction.createMessage({message: error.error, isError: true})
-          ]))
+          catchError(error=> {
+            return of(
+              // Generation Message d'erreur
+              FlashMessageAction.createMessage({message: error.error.error, isError: true})
+            )
+          }
+        )
         )
       )
     )
@@ -64,20 +67,49 @@ export class AuthEffect {
       ofType(AuthAction.logout),
       mergeMap(()=>
         this._authService.logout().pipe(
-          switchMap((resMessage)=> [
-            // Suppression du UserIdent
-            UserIdentAction.clearUserIden(),
+          switchMap((resMessage)=> {
+            localStorage.removeItem('user');
+            return [
+              // Suppression du UserIdent
+              UserIdentAction.clearUserIden(),
 
-            // Generation Message logout
-            FlashMessageAction.createMessage({message: resMessage, isError: false})
-          ]),
-          catchError((error)=>from([
-            UserIdentAction.clearUserIden(),
-            // Generation Message logout
-            FlashMessageAction.createMessage({message: error.error, isError: true})
-          ])
+              // Generation Message logout
+              FlashMessageAction.createMessage({message: resMessage, isError: false})
+            ]
+          }),
+          catchError((error)=>{
+            localStorage.removeItem('user');
+            return from([
+              // Suppression du UserIdent
+              UserIdentAction.clearUserIden(),
+
+              // Generation Message d'erreur
+              FlashMessageAction.createMessage({message: error.error.error, isError: true})
+            ])
+          }
         )
       )
     )
   ))
+
+  csrf$ = createEffect(()=>
+    this._action$.pipe(
+      ofType(AuthAction.csrf),
+      mergeMap(()=>
+        this._authService.csrf().pipe(
+          switchMap((csrf)=>[
+            // Generation Message Register
+            FlashMessageAction.createMessage({message: csrf, isError: false})
+          ]),
+          catchError(error=> {
+            return of(
+              // Generation Message d'erreur
+              FlashMessageAction.createMessage({message: error.error.error, isError: true})
+            )
+          }
+        )
+        )
+      )
+    )
+  )
 }

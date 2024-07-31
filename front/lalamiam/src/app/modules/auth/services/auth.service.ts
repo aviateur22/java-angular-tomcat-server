@@ -34,6 +34,13 @@ export class AuthService {
     return this._http.post<RegisterResponseDto>(this._apiEndPoint + "/register",  registerDto)
   }
 
+  public csrf(): Observable<string> {
+    const path = this._apiEndPoint + "/csrf";
+      return this._http.get(path,{
+      responseType: 'text' as const
+    });
+  }
+
   public logout(): Observable<string> {
     //const user = JSON.parse(localStorage.getItem('user'));
 
@@ -43,11 +50,7 @@ export class AuthService {
     if(user!=null)  {
       const userString = JSON.parse(user);
       const userId = userString.userId;
-      console.log(userString, userId);
-      console.log(this._apiEndPoint + "/logout/" + userId);
       path = this._apiEndPoint + "/logout/" + userId;
-
-
     }
 
     return this._http.get(path,{

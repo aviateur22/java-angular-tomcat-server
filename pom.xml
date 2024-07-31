@@ -39,7 +39,12 @@
                 <jwt.issuer>ctoutweb</jwt.issuer>
                 <zone.id>Europe/Paris</zone.id>
                 <log.level>DEBUG</log.level>
-                <content.path></content.path>
+                <context.path></context.path>
+                <cookie.domain>customDomain</cookie.domain>
+                <cookie.path>/</cookie.path>
+                <cookie.secure>false</cookie.secure>
+                <cookie.samesite>Lax</cookie.samesite>
+                <cookie.is.httponly>true</cookie.is.httponly>
             </properties>
         </profile>
         <profile>
@@ -52,7 +57,13 @@
                 <jwt.issuer>ctoutweb</jwt.issuer>
                 <zone.id>Europe/Paris</zone.id>
                 <log.level>DEBUG</log.level>
-                <content.path>/lalamiam-app</content.path>
+                <context.path>/lalamiam-app</context.path>
+                <cookie.path>/</cookie.path>
+                <cookie.domain>customDomain</cookie.domain>
+                <cookie.path>/</cookie.path>
+                <cookie.secure>false</cookie.secure>
+                <cookie.samesite>Lax</cookie.samesite>
+                <cookie.is.httponly>true</cookie.is.httponly>
             </properties>
         </profile>
         <profile>
@@ -65,7 +76,12 @@
                 <jwt.issuer>ctoutweb</jwt.issuer>
                 <zone.id>Europe/Paris</zone.id>
                 <log.level>INFO</log.level>
-                <content.path>/</content.path>
+                <context.path></context.path>
+                <cookie.domain>customDomain</cookie.domain>
+                <cookie.path>/</cookie.path>
+                <cookie.secure>true</cookie.secure>
+                <cookie.samesite>Lax</cookie.samesite>
+                <cookie.is.httponly>true</cookie.is.httponly>
             </properties>
         </profile>
     </profiles>

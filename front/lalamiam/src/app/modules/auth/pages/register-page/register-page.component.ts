@@ -17,7 +17,8 @@ export class RegisterPageComponent {
   constructor(private _fb: FormBuilder, private _store: Store<AppState>){}
 
   ngOnInit() {
-    this.initializeRegisterData()
+    this.initializeRegisterData();
+    this.getCsrf();
   }
 
   initializeRegisterData() {
@@ -46,6 +47,10 @@ export class RegisterPageComponent {
       name: registerData.name
     }));
 
+  }
+
+  getCsrf() {
+    this._store.dispatch(AuthAction.csrf())
   }
 
 }

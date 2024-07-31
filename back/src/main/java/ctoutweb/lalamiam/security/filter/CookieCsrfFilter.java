@@ -39,7 +39,19 @@ public class CookieCsrfFilter extends OncePerRequestFilter {
     }
 
     if (requireCsrfProtectionMatcher.matches(request)) {
-      if (headerCsrfFormToken == null || csrfCookieToken == null || !csrfCookieToken.getToken().equals(headerCsrfFormToken.getToken())) {
+      if (headerCsrfFormToken == null || csrfCookieToken == null) {
+        LOGGER.error(String.format("Token CSRF indisponible pour vérification"));
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Token CSRF indisponible pour vérification");
+        ObjectMapper mapper = new ObjectMapper();
+        response.getOutputStream().write(mapper.writeValueAsBytes(errorResponse));
+        return;
+      }
+
+      if(!csrfCookieToken.getToken().equals(headerCsrfFormToken.getToken())) {
         LOGGER.error(String.format("Données Token %s, %s",csrfCookieToken.getToken(), headerCsrfFormToken.getToken()));
         LOGGER.error(String.format("Erreur TOKEN CSRF - Path: %s  - CSRF Formulaire Header: %s - CSRF Cookie: %s",
                 request.getRequestURI(),
@@ -50,7 +62,7 @@ public class CookieCsrfFilter extends OncePerRequestFilter {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "invalide CSRF");
+        errorResponse.put("error", "Invalide CSRF");
         ObjectMapper mapper = new ObjectMapper();
         response.getOutputStream().write(mapper.writeValueAsBytes(errorResponse));
         return;

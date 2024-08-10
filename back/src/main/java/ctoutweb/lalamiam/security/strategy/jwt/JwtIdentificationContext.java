@@ -14,6 +14,4 @@ public class JwtIdentificationContext {
   public boolean executeJwtIdentification(DecodedJWT decodedJWT, String urlPath) {
     return this.jwtIdentificationStrategy.isJwtValid(decodedJWT, urlPath);
   }
-
-
 }

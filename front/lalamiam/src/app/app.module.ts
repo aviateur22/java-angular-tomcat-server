@@ -1,6 +1,7 @@
 import { isDevMode, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -9,6 +10,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { reducers } from 'src/store/app.state';
 import { UserEffect } from 'src/store/user-ident-store/effect';
 import { FlashMessageEffect } from 'src/store/flash-message-store/effect';
+import { HandlerHttpInterceptor } from './http.interceptor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +21,7 @@ import { UserPageComponent } from './pages/user-page/user-page.component';
 import { FlashMessageComponent } from './components/flash-message/flash-message.component';
 import { AuthModule } from './modules/auth/auth.module';
 
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [
@@ -31,6 +34,7 @@ import { AuthModule } from './modules/auth/auth.module';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -42,8 +46,11 @@ import { AuthModule } from './modules/auth/auth.module';
       replacer: (_key, value) => (typeof value === "bigint" ? value.toString() : value)
     }
   }),
+  InputTextModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass:HandlerHttpInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

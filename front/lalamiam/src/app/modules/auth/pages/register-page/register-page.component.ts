@@ -3,7 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegisterDto } from './../../models/register-dto.model';
 import { AppState } from 'src/store/app.state';
 import * as AuthAction from '../../store/auth-store/action'
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { Captcha } from '../../models/captcha.model';
+import { captchaQuestionSelector, captchaSelector } from '../../store/auth-store/selector';
 
 @Component({
   selector: 'app-register-page',
@@ -14,20 +17,24 @@ export class RegisterPageComponent {
 
   registerDataFormGroup: FormGroup = new FormGroup({});
 
-  constructor(private _fb: FormBuilder, private _store: Store<AppState>){}
+  // Données captcha
+  captcha$: Observable<Captcha|null>;
+
+  constructor(private _fb: FormBuilder, private _store: Store<AppState>){
+    this.captcha$ = _store.pipe(select(captchaSelector));
+  }
 
   ngOnInit() {
     this.initializeRegisterData();
-    this.getCsrf();
+    this.initializeForm();
   }
 
   initializeRegisterData() {
     this.registerDataFormGroup = this._fb.group({
       email: ['', Validators.required],
-
       password: ['', Validators.required],
-
-      name : ['', Validators.required]
+      name : ['', Validators.required],
+      captchaResponse: ['', Validators.required]
     })
   }
 
@@ -49,8 +56,8 @@ export class RegisterPageComponent {
 
   }
 
-  getCsrf() {
-    this._store.dispatch(AuthAction.csrf())
+  initializeForm() {
+    this._store.dispatch(AuthAction.csrf());
+    this._store.dispatch(AuthAction.captcha());
   }
-
 }

@@ -1,20 +1,43 @@
 <p>Creation compte</p>
+<div class="card flex align-items-center justify-content-center flex-wrap gap-3">
+  <form [formGroup]="registerDataFormGroup" (submit)="register()" >
+    <div>
+      <label for="email">votre email</label>
+      <input type="email" pInputText id="email" formControlName="email" placeholder="votre email...">
+      <p-messages severity="error" text="email obligatoire"></p-messages>
+    </div>
 
-<form [formGroup]="registerDataFormGroup" (submit)="register()" >
-  <div>
-    <label for="email">votre email</label>
-    <input id="email" formControlName="email" type="email" placeholder="votre email...">
-  </div>
+    <div>
+      <label for="password">votre mot de passe</label>
+      <p-password
+        id="password"
+        [feedback]="false"
+        [toggleMask]="true"
+        formControlName="password"
+        placeholder="mot de passe...">
+      </p-password>
+    </div>
 
-  <div>
-    <label for="password">votre mot de passe</label>
-    <input id="password" formControlName="password" type="password" placeholder="mot de passe...">
-  </div>
+    <div>
+      <label for="name">votre nom</label>
+      <input
+        type="text"
+        pInputText
+        id="name"
+        formControlName="name"
+        placeholder="nom">
+    </div>
 
-  <div>
-    <label for="name">votre nom</label>
-    <input id="name" formControlName="name" type="password" placeholder="nom">
-  </div>
+    <!--captcha-->
 
-  <input type="submit" value="creation">
-</form>
+    <div *ngIf="(captcha$ | async) as captcha">
+      <p>{{captcha.question}}</p>
+      <input id="captchaResponse" type="text" formControlName="captchaResponse">
+      <img [src]="'data:' + captcha.mimeType + ';base64,' + captcha.image">
+    </div>
+
+
+    <p-button type="submit" label="creation"></p-button>
+  </form>
+
+</div>

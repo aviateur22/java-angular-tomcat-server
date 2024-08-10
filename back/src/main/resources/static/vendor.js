@@ -4167,6 +4167,5533 @@ function createInvalidObservableTypeError(input) {
 
 /***/ }),
 
+/***/ 2501:
+/*!******************************************************************!*\
+  !*** ./node_modules/@angular/animations/fesm2022/animations.mjs ***!
+  \******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AUTO_STYLE: () => (/* binding */ AUTO_STYLE),
+/* harmony export */   AnimationBuilder: () => (/* binding */ AnimationBuilder),
+/* harmony export */   AnimationFactory: () => (/* binding */ AnimationFactory),
+/* harmony export */   NoopAnimationPlayer: () => (/* binding */ NoopAnimationPlayer),
+/* harmony export */   animate: () => (/* binding */ animate),
+/* harmony export */   animateChild: () => (/* binding */ animateChild),
+/* harmony export */   animation: () => (/* binding */ animation),
+/* harmony export */   group: () => (/* binding */ group),
+/* harmony export */   keyframes: () => (/* binding */ keyframes),
+/* harmony export */   query: () => (/* binding */ query),
+/* harmony export */   sequence: () => (/* binding */ sequence),
+/* harmony export */   stagger: () => (/* binding */ stagger),
+/* harmony export */   state: () => (/* binding */ state),
+/* harmony export */   style: () => (/* binding */ style),
+/* harmony export */   transition: () => (/* binding */ transition),
+/* harmony export */   trigger: () => (/* binding */ trigger),
+/* harmony export */   useAnimation: () => (/* binding */ useAnimation),
+/* harmony export */   "ɵAnimationGroupPlayer": () => (/* binding */ AnimationGroupPlayer),
+/* harmony export */   "ɵPRE_STYLE": () => (/* binding */ ɵPRE_STYLE)
+/* harmony export */ });
+/**
+ * @license Angular v16.2.12
+ * (c) 2010-2022 Google LLC. https://angular.io/
+ * License: MIT
+ */
+
+/**
+ * An injectable service that produces an animation sequence programmatically within an
+ * Angular component or directive.
+ * Provided by the `BrowserAnimationsModule` or `NoopAnimationsModule`.
+ *
+ * @usageNotes
+ *
+ * To use this service, add it to your component or directive as a dependency.
+ * The service is instantiated along with your component.
+ *
+ * Apps do not typically need to create their own animation players, but if you
+ * do need to, follow these steps:
+ *
+ * 1. Use the <code>[AnimationBuilder.build](api/animations/AnimationBuilder#build)()</code> method
+ * to create a programmatic animation. The method returns an `AnimationFactory` instance.
+ *
+ * 2. Use the factory object to create an `AnimationPlayer` and attach it to a DOM element.
+ *
+ * 3. Use the player object to control the animation programmatically.
+ *
+ * For example:
+ *
+ * ```ts
+ * // import the service from BrowserAnimationsModule
+ * import {AnimationBuilder} from '@angular/animations';
+ * // require the service as a dependency
+ * class MyCmp {
+ *   constructor(private _builder: AnimationBuilder) {}
+ *
+ *   makeAnimation(element: any) {
+ *     // first define a reusable animation
+ *     const myAnimation = this._builder.build([
+ *       style({ width: 0 }),
+ *       animate(1000, style({ width: '100px' }))
+ *     ]);
+ *
+ *     // use the returned factory object to create a player
+ *     const player = myAnimation.create(element);
+ *
+ *     player.play();
+ *   }
+ * }
+ * ```
+ *
+ * @publicApi
+ */
+class AnimationBuilder {}
+/**
+ * A factory object returned from the
+ * <code>[AnimationBuilder.build](api/animations/AnimationBuilder#build)()</code>
+ * method.
+ *
+ * @publicApi
+ */
+class AnimationFactory {}
+
+/**
+ * Specifies automatic styling.
+ *
+ * @publicApi
+ */
+const AUTO_STYLE = '*';
+/**
+ * Creates a named animation trigger, containing a  list of [`state()`](api/animations/state)
+ * and `transition()` entries to be evaluated when the expression
+ * bound to the trigger changes.
+ *
+ * @param name An identifying string.
+ * @param definitions  An animation definition object, containing an array of
+ * [`state()`](api/animations/state) and `transition()` declarations.
+ *
+ * @return An object that encapsulates the trigger data.
+ *
+ * @usageNotes
+ * Define an animation trigger in the `animations` section of `@Component` metadata.
+ * In the template, reference the trigger by name and bind it to a trigger expression that
+ * evaluates to a defined animation state, using the following format:
+ *
+ * `[@triggerName]="expression"`
+ *
+ * Animation trigger bindings convert all values to strings, and then match the
+ * previous and current values against any linked transitions.
+ * Booleans can be specified as `1` or `true` and `0` or `false`.
+ *
+ * ### Usage Example
+ *
+ * The following example creates an animation trigger reference based on the provided
+ * name value.
+ * The provided animation value is expected to be an array consisting of state and
+ * transition declarations.
+ *
+ * ```typescript
+ * @Component({
+ *   selector: "my-component",
+ *   templateUrl: "my-component-tpl.html",
+ *   animations: [
+ *     trigger("myAnimationTrigger", [
+ *       state(...),
+ *       state(...),
+ *       transition(...),
+ *       transition(...)
+ *     ])
+ *   ]
+ * })
+ * class MyComponent {
+ *   myStatusExp = "something";
+ * }
+ * ```
+ *
+ * The template associated with this component makes use of the defined trigger
+ * by binding to an element within its template code.
+ *
+ * ```html
+ * <!-- somewhere inside of my-component-tpl.html -->
+ * <div [@myAnimationTrigger]="myStatusExp">...</div>
+ * ```
+ *
+ * ### Using an inline function
+ * The `transition` animation method also supports reading an inline function which can decide
+ * if its associated animation should be run.
+ *
+ * ```typescript
+ * // this method is run each time the `myAnimationTrigger` trigger value changes.
+ * function myInlineMatcherFn(fromState: string, toState: string, element: any, params: {[key:
+ string]: any}): boolean {
+ *   // notice that `element` and `params` are also available here
+ *   return toState == 'yes-please-animate';
+ * }
+ *
+ * @Component({
+ *   selector: 'my-component',
+ *   templateUrl: 'my-component-tpl.html',
+ *   animations: [
+ *     trigger('myAnimationTrigger', [
+ *       transition(myInlineMatcherFn, [
+ *         // the animation sequence code
+ *       ]),
+ *     ])
+ *   ]
+ * })
+ * class MyComponent {
+ *   myStatusExp = "yes-please-animate";
+ * }
+ * ```
+ *
+ * ### Disabling Animations
+ * When true, the special animation control binding `@.disabled` binding prevents
+ * all animations from rendering.
+ * Place the  `@.disabled` binding on an element to disable
+ * animations on the element itself, as well as any inner animation triggers
+ * within the element.
+ *
+ * The following example shows how to use this feature:
+ *
+ * ```typescript
+ * @Component({
+ *   selector: 'my-component',
+ *   template: `
+ *     <div [@.disabled]="isDisabled">
+ *       <div [@childAnimation]="exp"></div>
+ *     </div>
+ *   `,
+ *   animations: [
+ *     trigger("childAnimation", [
+ *       // ...
+ *     ])
+ *   ]
+ * })
+ * class MyComponent {
+ *   isDisabled = true;
+ *   exp = '...';
+ * }
+ * ```
+ *
+ * When `@.disabled` is true, it prevents the `@childAnimation` trigger from animating,
+ * along with any inner animations.
+ *
+ * ### Disable animations application-wide
+ * When an area of the template is set to have animations disabled,
+ * **all** inner components have their animations disabled as well.
+ * This means that you can disable all animations for an app
+ * by placing a host binding set on `@.disabled` on the topmost Angular component.
+ *
+ * ```typescript
+ * import {Component, HostBinding} from '@angular/core';
+ *
+ * @Component({
+ *   selector: 'app-component',
+ *   templateUrl: 'app.component.html',
+ * })
+ * class AppComponent {
+ *   @HostBinding('@.disabled')
+ *   public animationsDisabled = true;
+ * }
+ * ```
+ *
+ * ### Overriding disablement of inner animations
+ * Despite inner animations being disabled, a parent animation can `query()`
+ * for inner elements located in disabled areas of the template and still animate
+ * them if needed. This is also the case for when a sub animation is
+ * queried by a parent and then later animated using `animateChild()`.
+ *
+ * ### Detecting when an animation is disabled
+ * If a region of the DOM (or the entire application) has its animations disabled, the animation
+ * trigger callbacks still fire, but for zero seconds. When the callback fires, it provides
+ * an instance of an `AnimationEvent`. If animations are disabled,
+ * the `.disabled` flag on the event is true.
+ *
+ * @publicApi
+ */
+function trigger(name, definitions) {
+  return {
+    type: 7 /* AnimationMetadataType.Trigger */,
+    name,
+    definitions,
+    options: {}
+  };
+}
+/**
+ * Defines an animation step that combines styling information with timing information.
+ *
+ * @param timings Sets `AnimateTimings` for the parent animation.
+ * A string in the format "duration [delay] [easing]".
+ *  - Duration and delay are expressed as a number and optional time unit,
+ * such as "1s" or "10ms" for one second and 10 milliseconds, respectively.
+ * The default unit is milliseconds.
+ *  - The easing value controls how the animation accelerates and decelerates
+ * during its runtime. Value is one of  `ease`, `ease-in`, `ease-out`,
+ * `ease-in-out`, or a `cubic-bezier()` function call.
+ * If not supplied, no easing is applied.
+ *
+ * For example, the string "1s 100ms ease-out" specifies a duration of
+ * 1000 milliseconds, and delay of 100 ms, and the "ease-out" easing style,
+ * which decelerates near the end of the duration.
+ * @param styles Sets AnimationStyles for the parent animation.
+ * A function call to either `style()` or `keyframes()`
+ * that returns a collection of CSS style entries to be applied to the parent animation.
+ * When null, uses the styles from the destination state.
+ * This is useful when describing an animation step that will complete an animation;
+ * see "Animating to the final state" in `transitions()`.
+ * @returns An object that encapsulates the animation step.
+ *
+ * @usageNotes
+ * Call within an animation `sequence()`, `{@link animations/group group()}`, or
+ * `transition()` call to specify an animation step
+ * that applies given style data to the parent animation for a given amount of time.
+ *
+ * ### Syntax Examples
+ * **Timing examples**
+ *
+ * The following examples show various `timings` specifications.
+ * - `animate(500)` : Duration is 500 milliseconds.
+ * - `animate("1s")` : Duration is 1000 milliseconds.
+ * - `animate("100ms 0.5s")` : Duration is 100 milliseconds, delay is 500 milliseconds.
+ * - `animate("5s ease-in")` : Duration is 5000 milliseconds, easing in.
+ * - `animate("5s 10ms cubic-bezier(.17,.67,.88,.1)")` : Duration is 5000 milliseconds, delay is 10
+ * milliseconds, easing according to a bezier curve.
+ *
+ * **Style examples**
+ *
+ * The following example calls `style()` to set a single CSS style.
+ * ```typescript
+ * animate(500, style({ background: "red" }))
+ * ```
+ * The following example calls `keyframes()` to set a CSS style
+ * to different values for successive keyframes.
+ * ```typescript
+ * animate(500, keyframes(
+ *  [
+ *   style({ background: "blue" }),
+ *   style({ background: "red" })
+ *  ])
+ * ```
+ *
+ * @publicApi
+ */
+function animate(timings, styles = null) {
+  return {
+    type: 4 /* AnimationMetadataType.Animate */,
+    styles,
+    timings
+  };
+}
+/**
+ * @description Defines a list of animation steps to be run in parallel.
+ *
+ * @param steps An array of animation step objects.
+ * - When steps are defined by `style()` or `animate()`
+ * function calls, each call within the group is executed instantly.
+ * - To specify offset styles to be applied at a later time, define steps with
+ * `keyframes()`, or use `animate()` calls with a delay value.
+ * For example:
+ *
+ * ```typescript
+ * group([
+ *   animate("1s", style({ background: "black" })),
+ *   animate("2s", style({ color: "white" }))
+ * ])
+ * ```
+ *
+ * @param options An options object containing a delay and
+ * developer-defined parameters that provide styling defaults and
+ * can be overridden on invocation.
+ *
+ * @return An object that encapsulates the group data.
+ *
+ * @usageNotes
+ * Grouped animations are useful when a series of styles must be
+ * animated at different starting times and closed off at different ending times.
+ *
+ * When called within a `sequence()` or a
+ * `transition()` call, does not continue to the next
+ * instruction until all of the inner animation steps have completed.
+ *
+ * @publicApi
+ */
+function group(steps, options = null) {
+  return {
+    type: 3 /* AnimationMetadataType.Group */,
+    steps,
+    options
+  };
+}
+/**
+ * Defines a list of animation steps to be run sequentially, one by one.
+ *
+ * @param steps An array of animation step objects.
+ * - Steps defined by `style()` calls apply the styling data immediately.
+ * - Steps defined by `animate()` calls apply the styling data over time
+ *   as specified by the timing data.
+ *
+ * ```typescript
+ * sequence([
+ *   style({ opacity: 0 }),
+ *   animate("1s", style({ opacity: 1 }))
+ * ])
+ * ```
+ *
+ * @param options An options object containing a delay and
+ * developer-defined parameters that provide styling defaults and
+ * can be overridden on invocation.
+ *
+ * @return An object that encapsulates the sequence data.
+ *
+ * @usageNotes
+ * When you pass an array of steps to a
+ * `transition()` call, the steps run sequentially by default.
+ * Compare this to the `{@link animations/group group()}` call, which runs animation steps in
+ *parallel.
+ *
+ * When a sequence is used within a `{@link animations/group group()}` or a `transition()` call,
+ * execution continues to the next instruction only after each of the inner animation
+ * steps have completed.
+ *
+ * @publicApi
+ **/
+function sequence(steps, options = null) {
+  return {
+    type: 2 /* AnimationMetadataType.Sequence */,
+    steps,
+    options
+  };
+}
+/**
+ * Declares a key/value object containing CSS properties/styles that
+ * can then be used for an animation [`state`](api/animations/state), within an animation
+ *`sequence`, or as styling data for calls to `animate()` and `keyframes()`.
+ *
+ * @param tokens A set of CSS styles or HTML styles associated with an animation state.
+ * The value can be any of the following:
+ * - A key-value style pair associating a CSS property with a value.
+ * - An array of key-value style pairs.
+ * - An asterisk (*), to use auto-styling, where styles are derived from the element
+ * being animated and applied to the animation when it starts.
+ *
+ * Auto-styling can be used to define a state that depends on layout or other
+ * environmental factors.
+ *
+ * @return An object that encapsulates the style data.
+ *
+ * @usageNotes
+ * The following examples create animation styles that collect a set of
+ * CSS property values:
+ *
+ * ```typescript
+ * // string values for CSS properties
+ * style({ background: "red", color: "blue" })
+ *
+ * // numerical pixel values
+ * style({ width: 100, height: 0 })
+ * ```
+ *
+ * The following example uses auto-styling to allow an element to animate from
+ * a height of 0 up to its full height:
+ *
+ * ```
+ * style({ height: 0 }),
+ * animate("1s", style({ height: "*" }))
+ * ```
+ *
+ * @publicApi
+ **/
+function style(tokens) {
+  return {
+    type: 6 /* AnimationMetadataType.Style */,
+    styles: tokens,
+    offset: null
+  };
+}
+/**
+ * Declares an animation state within a trigger attached to an element.
+ *
+ * @param name One or more names for the defined state in a comma-separated string.
+ * The following reserved state names can be supplied to define a style for specific use
+ * cases:
+ *
+ * - `void` You can associate styles with this name to be used when
+ * the element is detached from the application. For example, when an `ngIf` evaluates
+ * to false, the state of the associated element is void.
+ *  - `*` (asterisk) Indicates the default state. You can associate styles with this name
+ * to be used as the fallback when the state that is being animated is not declared
+ * within the trigger.
+ *
+ * @param styles A set of CSS styles associated with this state, created using the
+ * `style()` function.
+ * This set of styles persists on the element once the state has been reached.
+ * @param options Parameters that can be passed to the state when it is invoked.
+ * 0 or more key-value pairs.
+ * @return An object that encapsulates the new state data.
+ *
+ * @usageNotes
+ * Use the `trigger()` function to register states to an animation trigger.
+ * Use the `transition()` function to animate between states.
+ * When a state is active within a component, its associated styles persist on the element,
+ * even when the animation ends.
+ *
+ * @publicApi
+ **/
+function state(name, styles, options) {
+  return {
+    type: 0 /* AnimationMetadataType.State */,
+    name,
+    styles,
+    options
+  };
+}
+/**
+ * Defines a set of animation styles, associating each style with an optional `offset` value.
+ *
+ * @param steps A set of animation styles with optional offset data.
+ * The optional `offset` value for a style specifies a percentage of the total animation
+ * time at which that style is applied.
+ * @returns An object that encapsulates the keyframes data.
+ *
+ * @usageNotes
+ * Use with the `animate()` call. Instead of applying animations
+ * from the current state
+ * to the destination state, keyframes describe how each style entry is applied and at what point
+ * within the animation arc.
+ * Compare [CSS Keyframe Animations](https://www.w3schools.com/css/css3_animations.asp).
+ *
+ * ### Usage
+ *
+ * In the following example, the offset values describe
+ * when each `backgroundColor` value is applied. The color is red at the start, and changes to
+ * blue when 20% of the total time has elapsed.
+ *
+ * ```typescript
+ * // the provided offset values
+ * animate("5s", keyframes([
+ *   style({ backgroundColor: "red", offset: 0 }),
+ *   style({ backgroundColor: "blue", offset: 0.2 }),
+ *   style({ backgroundColor: "orange", offset: 0.3 }),
+ *   style({ backgroundColor: "black", offset: 1 })
+ * ]))
+ * ```
+ *
+ * If there are no `offset` values specified in the style entries, the offsets
+ * are calculated automatically.
+ *
+ * ```typescript
+ * animate("5s", keyframes([
+ *   style({ backgroundColor: "red" }) // offset = 0
+ *   style({ backgroundColor: "blue" }) // offset = 0.33
+ *   style({ backgroundColor: "orange" }) // offset = 0.66
+ *   style({ backgroundColor: "black" }) // offset = 1
+ * ]))
+ *```
+
+ * @publicApi
+ */
+function keyframes(steps) {
+  return {
+    type: 5 /* AnimationMetadataType.Keyframes */,
+    steps
+  };
+}
+/**
+ * Declares an animation transition which is played when a certain specified condition is met.
+ *
+ * @param stateChangeExpr A string with a specific format or a function that specifies when the
+ * animation transition should occur (see [State Change Expression](#state-change-expression)).
+ *
+ * @param steps One or more animation objects that represent the animation's instructions.
+ *
+ * @param options An options object that can be used to specify a delay for the animation or provide
+ * custom parameters for it.
+ *
+ * @returns An object that encapsulates the transition data.
+ *
+ * @usageNotes
+ *
+ * ### State Change Expression
+ *
+ * The State Change Expression instructs Angular when to run the transition's animations, it can
+ *either be
+ *  - a string with a specific syntax
+ *  - or a function that compares the previous and current state (value of the expression bound to
+ *    the element's trigger) and returns `true` if the transition should occur or `false` otherwise
+ *
+ * The string format can be:
+ *  - `fromState => toState`, which indicates that the transition's animations should occur then the
+ *    expression bound to the trigger's element goes from `fromState` to `toState`
+ *
+ *    _Example:_
+ *      ```typescript
+ *        transition('open => closed', animate('.5s ease-out', style({ height: 0 }) ))
+ *      ```
+ *
+ *  - `fromState <=> toState`, which indicates that the transition's animations should occur then
+ *    the expression bound to the trigger's element goes from `fromState` to `toState` or vice versa
+ *
+ *    _Example:_
+ *      ```typescript
+ *        transition('enabled <=> disabled', animate('1s cubic-bezier(0.8,0.3,0,1)'))
+ *      ```
+ *
+ *  - `:enter`/`:leave`, which indicates that the transition's animations should occur when the
+ *    element enters or exists the DOM
+ *
+ *    _Example:_
+ *      ```typescript
+ *        transition(':enter', [
+ *          style({ opacity: 0 }),
+ *          animate('500ms', style({ opacity: 1 }))
+ *        ])
+ *      ```
+ *
+ *  - `:increment`/`:decrement`, which indicates that the transition's animations should occur when
+ *    the numerical expression bound to the trigger's element has increased in value or decreased
+ *
+ *    _Example:_
+ *      ```typescript
+ *        transition(':increment', query('@counter', animateChild()))
+ *      ```
+ *
+ *  - a sequence of any of the above divided by commas, which indicates that transition's animations
+ *    should occur whenever one of the state change expressions matches
+ *
+ *    _Example:_
+ *      ```typescript
+ *        transition(':increment, * => enabled, :enter', animate('1s ease', keyframes([
+ *          style({ transform: 'scale(1)', offset: 0}),
+ *          style({ transform: 'scale(1.1)', offset: 0.7}),
+ *          style({ transform: 'scale(1)', offset: 1})
+ *        ]))),
+ *      ```
+ *
+ * Also note that in such context:
+ *  - `void` can be used to indicate the absence of the element
+ *  - asterisks can be used as wildcards that match any state
+ *  - (as a consequence of the above, `void => *` is equivalent to `:enter` and `* => void` is
+ *    equivalent to `:leave`)
+ *  - `true` and `false` also match expression values of `1` and `0` respectively (but do not match
+ *    _truthy_ and _falsy_ values)
+ *
+ * <div class="alert is-helpful">
+ *
+ *  Be careful about entering end leaving elements as their transitions present a common
+ *  pitfall for developers.
+ *
+ *  Note that when an element with a trigger enters the DOM its `:enter` transition always
+ *  gets executed, but its `:leave` transition will not be executed if the element is removed
+ *  alongside its parent (as it will be removed "without warning" before its transition has
+ *  a chance to be executed, the only way that such transition can occur is if the element
+ *  is exiting the DOM on its own).
+ *
+ *
+ * </div>
+ *
+ * ### Animating to a Final State
+ *
+ * If the final step in a transition is a call to `animate()` that uses a timing value
+ * with no `style` data, that step is automatically considered the final animation arc,
+ * for the element to reach the final state, in such case Angular automatically adds or removes
+ * CSS styles to ensure that the element is in the correct final state.
+ *
+ *
+ * ### Usage Examples
+ *
+ *  - Transition animations applied based on
+ *    the trigger's expression value
+ *
+ *   ```HTML
+ *   <div [@myAnimationTrigger]="myStatusExp">
+ *    ...
+ *   </div>
+ *   ```
+ *
+ *   ```typescript
+ *   trigger("myAnimationTrigger", [
+ *     ..., // states
+ *     transition("on => off, open => closed", animate(500)),
+ *     transition("* <=> error", query('.indicator', animateChild()))
+ *   ])
+ *   ```
+ *
+ *  - Transition animations applied based on custom logic dependent
+ *    on the trigger's expression value and provided parameters
+ *
+ *    ```HTML
+ *    <div [@myAnimationTrigger]="{
+ *     value: stepName,
+ *     params: { target: currentTarget }
+ *    }">
+ *     ...
+ *    </div>
+ *    ```
+ *
+ *    ```typescript
+ *    trigger("myAnimationTrigger", [
+ *      ..., // states
+ *      transition(
+ *        (fromState, toState, _element, params) =>
+ *          ['firststep', 'laststep'].includes(fromState.toLowerCase())
+ *          && toState === params?.['target'],
+ *        animate('1s')
+ *      )
+ *    ])
+ *    ```
+ *
+ * @publicApi
+ **/
+function transition(stateChangeExpr, steps, options = null) {
+  return {
+    type: 1 /* AnimationMetadataType.Transition */,
+    expr: stateChangeExpr,
+    animation: steps,
+    options
+  };
+}
+/**
+ * Produces a reusable animation that can be invoked in another animation or sequence,
+ * by calling the `useAnimation()` function.
+ *
+ * @param steps One or more animation objects, as returned by the `animate()`
+ * or `sequence()` function, that form a transformation from one state to another.
+ * A sequence is used by default when you pass an array.
+ * @param options An options object that can contain a delay value for the start of the
+ * animation, and additional developer-defined parameters.
+ * Provided values for additional parameters are used as defaults,
+ * and override values can be passed to the caller on invocation.
+ * @returns An object that encapsulates the animation data.
+ *
+ * @usageNotes
+ * The following example defines a reusable animation, providing some default parameter
+ * values.
+ *
+ * ```typescript
+ * var fadeAnimation = animation([
+ *   style({ opacity: '{{ start }}' }),
+ *   animate('{{ time }}',
+ *   style({ opacity: '{{ end }}'}))
+ *   ],
+ *   { params: { time: '1000ms', start: 0, end: 1 }});
+ * ```
+ *
+ * The following invokes the defined animation with a call to `useAnimation()`,
+ * passing in override parameter values.
+ *
+ * ```js
+ * useAnimation(fadeAnimation, {
+ *   params: {
+ *     time: '2s',
+ *     start: 1,
+ *     end: 0
+ *   }
+ * })
+ * ```
+ *
+ * If any of the passed-in parameter values are missing from this call,
+ * the default values are used. If one or more parameter values are missing before a step is
+ * animated, `useAnimation()` throws an error.
+ *
+ * @publicApi
+ */
+function animation(steps, options = null) {
+  return {
+    type: 8 /* AnimationMetadataType.Reference */,
+    animation: steps,
+    options
+  };
+}
+/**
+ * Executes a queried inner animation element within an animation sequence.
+ *
+ * @param options An options object that can contain a delay value for the start of the
+ * animation, and additional override values for developer-defined parameters.
+ * @return An object that encapsulates the child animation data.
+ *
+ * @usageNotes
+ * Each time an animation is triggered in Angular, the parent animation
+ * has priority and any child animations are blocked. In order
+ * for a child animation to run, the parent animation must query each of the elements
+ * containing child animations, and run them using this function.
+ *
+ * Note that this feature is designed to be used with `query()` and it will only work
+ * with animations that are assigned using the Angular animation library. CSS keyframes
+ * and transitions are not handled by this API.
+ *
+ * @publicApi
+ */
+function animateChild(options = null) {
+  return {
+    type: 9 /* AnimationMetadataType.AnimateChild */,
+    options
+  };
+}
+/**
+ * Starts a reusable animation that is created using the `animation()` function.
+ *
+ * @param animation The reusable animation to start.
+ * @param options An options object that can contain a delay value for the start of
+ * the animation, and additional override values for developer-defined parameters.
+ * @return An object that contains the animation parameters.
+ *
+ * @publicApi
+ */
+function useAnimation(animation, options = null) {
+  return {
+    type: 10 /* AnimationMetadataType.AnimateRef */,
+    animation,
+    options
+  };
+}
+/**
+ * Finds one or more inner elements within the current element that is
+ * being animated within a sequence. Use with `animate()`.
+ *
+ * @param selector The element to query, or a set of elements that contain Angular-specific
+ * characteristics, specified with one or more of the following tokens.
+ *  - `query(":enter")` or `query(":leave")` : Query for newly inserted/removed elements (not
+ *     all elements can be queried via these tokens, see
+ *     [Entering and Leaving Elements](#entering-and-leaving-elements))
+ *  - `query(":animating")` : Query all currently animating elements.
+ *  - `query("@triggerName")` : Query elements that contain an animation trigger.
+ *  - `query("@*")` : Query all elements that contain an animation triggers.
+ *  - `query(":self")` : Include the current element into the animation sequence.
+ *
+ * @param animation One or more animation steps to apply to the queried element or elements.
+ * An array is treated as an animation sequence.
+ * @param options An options object. Use the 'limit' field to limit the total number of
+ * items to collect.
+ * @return An object that encapsulates the query data.
+ *
+ * @usageNotes
+ *
+ * ### Multiple Tokens
+ *
+ * Tokens can be merged into a combined query selector string. For example:
+ *
+ * ```typescript
+ *  query(':self, .record:enter, .record:leave, @subTrigger', [...])
+ * ```
+ *
+ * The `query()` function collects multiple elements and works internally by using
+ * `element.querySelectorAll`. Use the `limit` field of an options object to limit
+ * the total number of items to be collected. For example:
+ *
+ * ```js
+ * query('div', [
+ *   animate(...),
+ *   animate(...)
+ * ], { limit: 1 })
+ * ```
+ *
+ * By default, throws an error when zero items are found. Set the
+ * `optional` flag to ignore this error. For example:
+ *
+ * ```js
+ * query('.some-element-that-may-not-be-there', [
+ *   animate(...),
+ *   animate(...)
+ * ], { optional: true })
+ * ```
+ *
+ * ### Entering and Leaving Elements
+ *
+ * Not all elements can be queried via the `:enter` and `:leave` tokens, the only ones
+ * that can are those that Angular assumes can enter/leave based on their own logic
+ * (if their insertion/removal is simply a consequence of that of their parent they
+ * should be queried via a different token in their parent's `:enter`/`:leave` transitions).
+ *
+ * The only elements Angular assumes can enter/leave based on their own logic (thus the only
+ * ones that can be queried via the `:enter` and `:leave` tokens) are:
+ *  - Those inserted dynamically (via `ViewContainerRef`)
+ *  - Those that have a structural directive (which, under the hood, are a subset of the above ones)
+ *
+ * <div class="alert is-helpful">
+ *
+ *  Note that elements will be successfully queried via `:enter`/`:leave` even if their
+ *  insertion/removal is not done manually via `ViewContainerRef`or caused by their structural
+ *  directive (e.g. they enter/exit alongside their parent).
+ *
+ * </div>
+ *
+ * <div class="alert is-important">
+ *
+ *  There is an exception to what previously mentioned, besides elements entering/leaving based on
+ *  their own logic, elements with an animation trigger can always be queried via `:leave` when
+ * their parent is also leaving.
+ *
+ * </div>
+ *
+ * ### Usage Example
+ *
+ * The following example queries for inner elements and animates them
+ * individually using `animate()`.
+ *
+ * ```typescript
+ * @Component({
+ *   selector: 'inner',
+ *   template: `
+ *     <div [@queryAnimation]="exp">
+ *       <h1>Title</h1>
+ *       <div class="content">
+ *         Blah blah blah
+ *       </div>
+ *     </div>
+ *   `,
+ *   animations: [
+ *    trigger('queryAnimation', [
+ *      transition('* => goAnimate', [
+ *        // hide the inner elements
+ *        query('h1', style({ opacity: 0 })),
+ *        query('.content', style({ opacity: 0 })),
+ *
+ *        // animate the inner elements in, one by one
+ *        query('h1', animate(1000, style({ opacity: 1 }))),
+ *        query('.content', animate(1000, style({ opacity: 1 }))),
+ *      ])
+ *    ])
+ *  ]
+ * })
+ * class Cmp {
+ *   exp = '';
+ *
+ *   goAnimate() {
+ *     this.exp = 'goAnimate';
+ *   }
+ * }
+ * ```
+ *
+ * @publicApi
+ */
+function query(selector, animation, options = null) {
+  return {
+    type: 11 /* AnimationMetadataType.Query */,
+    selector,
+    animation,
+    options
+  };
+}
+/**
+ * Use within an animation `query()` call to issue a timing gap after
+ * each queried item is animated.
+ *
+ * @param timings A delay value.
+ * @param animation One ore more animation steps.
+ * @returns An object that encapsulates the stagger data.
+ *
+ * @usageNotes
+ * In the following example, a container element wraps a list of items stamped out
+ * by an `ngFor`. The container element contains an animation trigger that will later be set
+ * to query for each of the inner items.
+ *
+ * Each time items are added, the opacity fade-in animation runs,
+ * and each removed item is faded out.
+ * When either of these animations occur, the stagger effect is
+ * applied after each item's animation is started.
+ *
+ * ```html
+ * <!-- list.component.html -->
+ * <button (click)="toggle()">Show / Hide Items</button>
+ * <hr />
+ * <div [@listAnimation]="items.length">
+ *   <div *ngFor="let item of items">
+ *     {{ item }}
+ *   </div>
+ * </div>
+ * ```
+ *
+ * Here is the component code:
+ *
+ * ```typescript
+ * import {trigger, transition, style, animate, query, stagger} from '@angular/animations';
+ * @Component({
+ *   templateUrl: 'list.component.html',
+ *   animations: [
+ *     trigger('listAnimation', [
+ *     ...
+ *     ])
+ *   ]
+ * })
+ * class ListComponent {
+ *   items = [];
+ *
+ *   showItems() {
+ *     this.items = [0,1,2,3,4];
+ *   }
+ *
+ *   hideItems() {
+ *     this.items = [];
+ *   }
+ *
+ *   toggle() {
+ *     this.items.length ? this.hideItems() : this.showItems();
+ *    }
+ *  }
+ * ```
+ *
+ * Here is the animation trigger code:
+ *
+ * ```typescript
+ * trigger('listAnimation', [
+ *   transition('* => *', [ // each time the binding value changes
+ *     query(':leave', [
+ *       stagger(100, [
+ *         animate('0.5s', style({ opacity: 0 }))
+ *       ])
+ *     ]),
+ *     query(':enter', [
+ *       style({ opacity: 0 }),
+ *       stagger(100, [
+ *         animate('0.5s', style({ opacity: 1 }))
+ *       ])
+ *     ])
+ *   ])
+ * ])
+ * ```
+ *
+ * @publicApi
+ */
+function stagger(timings, animation) {
+  return {
+    type: 12 /* AnimationMetadataType.Stagger */,
+    timings,
+    animation
+  };
+}
+
+/**
+ * An empty programmatic controller for reusable animations.
+ * Used internally when animations are disabled, to avoid
+ * checking for the null case when an animation player is expected.
+ *
+ * @see {@link animate}
+ * @see {@link AnimationPlayer}
+ * @see {@link ɵAnimationGroupPlayer AnimationGroupPlayer}
+ *
+ * @publicApi
+ */
+class NoopAnimationPlayer {
+  constructor(duration = 0, delay = 0) {
+    this._onDoneFns = [];
+    this._onStartFns = [];
+    this._onDestroyFns = [];
+    this._originalOnDoneFns = [];
+    this._originalOnStartFns = [];
+    this._started = false;
+    this._destroyed = false;
+    this._finished = false;
+    this._position = 0;
+    this.parentPlayer = null;
+    this.totalTime = duration + delay;
+  }
+  _onFinish() {
+    if (!this._finished) {
+      this._finished = true;
+      this._onDoneFns.forEach(fn => fn());
+      this._onDoneFns = [];
+    }
+  }
+  onStart(fn) {
+    this._originalOnStartFns.push(fn);
+    this._onStartFns.push(fn);
+  }
+  onDone(fn) {
+    this._originalOnDoneFns.push(fn);
+    this._onDoneFns.push(fn);
+  }
+  onDestroy(fn) {
+    this._onDestroyFns.push(fn);
+  }
+  hasStarted() {
+    return this._started;
+  }
+  init() {}
+  play() {
+    if (!this.hasStarted()) {
+      this._onStart();
+      this.triggerMicrotask();
+    }
+    this._started = true;
+  }
+  /** @internal */
+  triggerMicrotask() {
+    queueMicrotask(() => this._onFinish());
+  }
+  _onStart() {
+    this._onStartFns.forEach(fn => fn());
+    this._onStartFns = [];
+  }
+  pause() {}
+  restart() {}
+  finish() {
+    this._onFinish();
+  }
+  destroy() {
+    if (!this._destroyed) {
+      this._destroyed = true;
+      if (!this.hasStarted()) {
+        this._onStart();
+      }
+      this.finish();
+      this._onDestroyFns.forEach(fn => fn());
+      this._onDestroyFns = [];
+    }
+  }
+  reset() {
+    this._started = false;
+    this._finished = false;
+    this._onStartFns = this._originalOnStartFns;
+    this._onDoneFns = this._originalOnDoneFns;
+  }
+  setPosition(position) {
+    this._position = this.totalTime ? position * this.totalTime : 1;
+  }
+  getPosition() {
+    return this.totalTime ? this._position / this.totalTime : 1;
+  }
+  /** @internal */
+  triggerCallback(phaseName) {
+    const methods = phaseName == 'start' ? this._onStartFns : this._onDoneFns;
+    methods.forEach(fn => fn());
+    methods.length = 0;
+  }
+}
+
+/**
+ * A programmatic controller for a group of reusable animations.
+ * Used internally to control animations.
+ *
+ * @see {@link AnimationPlayer}
+ * @see {@link animations/group group}
+ *
+ */
+class AnimationGroupPlayer {
+  constructor(_players) {
+    this._onDoneFns = [];
+    this._onStartFns = [];
+    this._finished = false;
+    this._started = false;
+    this._destroyed = false;
+    this._onDestroyFns = [];
+    this.parentPlayer = null;
+    this.totalTime = 0;
+    this.players = _players;
+    let doneCount = 0;
+    let destroyCount = 0;
+    let startCount = 0;
+    const total = this.players.length;
+    if (total == 0) {
+      queueMicrotask(() => this._onFinish());
+    } else {
+      this.players.forEach(player => {
+        player.onDone(() => {
+          if (++doneCount == total) {
+            this._onFinish();
+          }
+        });
+        player.onDestroy(() => {
+          if (++destroyCount == total) {
+            this._onDestroy();
+          }
+        });
+        player.onStart(() => {
+          if (++startCount == total) {
+            this._onStart();
+          }
+        });
+      });
+    }
+    this.totalTime = this.players.reduce((time, player) => Math.max(time, player.totalTime), 0);
+  }
+  _onFinish() {
+    if (!this._finished) {
+      this._finished = true;
+      this._onDoneFns.forEach(fn => fn());
+      this._onDoneFns = [];
+    }
+  }
+  init() {
+    this.players.forEach(player => player.init());
+  }
+  onStart(fn) {
+    this._onStartFns.push(fn);
+  }
+  _onStart() {
+    if (!this.hasStarted()) {
+      this._started = true;
+      this._onStartFns.forEach(fn => fn());
+      this._onStartFns = [];
+    }
+  }
+  onDone(fn) {
+    this._onDoneFns.push(fn);
+  }
+  onDestroy(fn) {
+    this._onDestroyFns.push(fn);
+  }
+  hasStarted() {
+    return this._started;
+  }
+  play() {
+    if (!this.parentPlayer) {
+      this.init();
+    }
+    this._onStart();
+    this.players.forEach(player => player.play());
+  }
+  pause() {
+    this.players.forEach(player => player.pause());
+  }
+  restart() {
+    this.players.forEach(player => player.restart());
+  }
+  finish() {
+    this._onFinish();
+    this.players.forEach(player => player.finish());
+  }
+  destroy() {
+    this._onDestroy();
+  }
+  _onDestroy() {
+    if (!this._destroyed) {
+      this._destroyed = true;
+      this._onFinish();
+      this.players.forEach(player => player.destroy());
+      this._onDestroyFns.forEach(fn => fn());
+      this._onDestroyFns = [];
+    }
+  }
+  reset() {
+    this.players.forEach(player => player.reset());
+    this._destroyed = false;
+    this._finished = false;
+    this._started = false;
+  }
+  setPosition(p) {
+    const timeAtPosition = p * this.totalTime;
+    this.players.forEach(player => {
+      const position = player.totalTime ? Math.min(1, timeAtPosition / player.totalTime) : 1;
+      player.setPosition(position);
+    });
+  }
+  getPosition() {
+    const longestPlayer = this.players.reduce((longestSoFar, player) => {
+      const newPlayerIsLongest = longestSoFar === null || player.totalTime > longestSoFar.totalTime;
+      return newPlayerIsLongest ? player : longestSoFar;
+    }, null);
+    return longestPlayer != null ? longestPlayer.getPosition() : 0;
+  }
+  beforeDestroy() {
+    this.players.forEach(player => {
+      if (player.beforeDestroy) {
+        player.beforeDestroy();
+      }
+    });
+  }
+  /** @internal */
+  triggerCallback(phaseName) {
+    const methods = phaseName == 'start' ? this._onStartFns : this._onDoneFns;
+    methods.forEach(fn => fn());
+    methods.length = 0;
+  }
+}
+const ɵPRE_STYLE = '!';
+
+/**
+ * @module
+ * @description
+ * Entry point for all animation APIs of the animation package.
+ */
+
+/**
+ * @module
+ * @description
+ * Entry point for all public APIs of this package.
+ */
+
+// This file is not used to build this module. It is only used during editing
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 570:
+/*!***************************************************************!*\
+  !*** ./node_modules/@angular/animations/fesm2022/browser.mjs ***!
+  \***************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AnimationDriver: () => (/* binding */ AnimationDriver),
+/* harmony export */   "ɵAnimation": () => (/* binding */ Animation),
+/* harmony export */   "ɵAnimationEngine": () => (/* binding */ AnimationEngine),
+/* harmony export */   "ɵAnimationStyleNormalizer": () => (/* binding */ AnimationStyleNormalizer),
+/* harmony export */   "ɵNoopAnimationDriver": () => (/* binding */ NoopAnimationDriver),
+/* harmony export */   "ɵNoopAnimationStyleNormalizer": () => (/* binding */ NoopAnimationStyleNormalizer),
+/* harmony export */   "ɵWebAnimationsDriver": () => (/* binding */ WebAnimationsDriver),
+/* harmony export */   "ɵWebAnimationsPlayer": () => (/* binding */ WebAnimationsPlayer),
+/* harmony export */   "ɵWebAnimationsStyleNormalizer": () => (/* binding */ WebAnimationsStyleNormalizer),
+/* harmony export */   "ɵallowPreviousPlayerStylesMerge": () => (/* binding */ allowPreviousPlayerStylesMerge),
+/* harmony export */   "ɵcontainsElement": () => (/* binding */ containsElement),
+/* harmony export */   "ɵgetParentElement": () => (/* binding */ getParentElement),
+/* harmony export */   "ɵinvokeQuery": () => (/* binding */ invokeQuery),
+/* harmony export */   "ɵnormalizeKeyframes": () => (/* binding */ normalizeKeyframes),
+/* harmony export */   "ɵvalidateStyleProperty": () => (/* binding */ validateStyleProperty)
+/* harmony export */ });
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/animations */ 2501);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/**
+ * @license Angular v16.2.12
+ * (c) 2010-2022 Google LLC. https://angular.io/
+ * License: MIT
+ */
+
+
+
+
+const LINE_START = '\n - ';
+function invalidTimingValue(exp) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3000 /* RuntimeErrorCode.INVALID_TIMING_VALUE */, ngDevMode && `The provided timing value "${exp}" is invalid.`);
+}
+function negativeStepValue() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3100 /* RuntimeErrorCode.NEGATIVE_STEP_VALUE */, ngDevMode && 'Duration values below 0 are not allowed for this animation step.');
+}
+function negativeDelayValue() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3101 /* RuntimeErrorCode.NEGATIVE_DELAY_VALUE */, ngDevMode && 'Delay values below 0 are not allowed for this animation step.');
+}
+function invalidStyleParams(varName) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3001 /* RuntimeErrorCode.INVALID_STYLE_PARAMS */, ngDevMode && `Unable to resolve the local animation param ${varName} in the given list of values`);
+}
+function invalidParamValue(varName) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3003 /* RuntimeErrorCode.INVALID_PARAM_VALUE */, ngDevMode && `Please provide a value for the animation param ${varName}`);
+}
+function invalidNodeType(nodeType) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3004 /* RuntimeErrorCode.INVALID_NODE_TYPE */, ngDevMode && `Unable to resolve animation metadata node #${nodeType}`);
+}
+function invalidCssUnitValue(userProvidedProperty, value) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3005 /* RuntimeErrorCode.INVALID_CSS_UNIT_VALUE */, ngDevMode && `Please provide a CSS unit value for ${userProvidedProperty}:${value}`);
+}
+function invalidTrigger() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3006 /* RuntimeErrorCode.INVALID_TRIGGER */, ngDevMode && 'animation triggers cannot be prefixed with an `@` sign (e.g. trigger(\'@foo\', [...]))');
+}
+function invalidDefinition() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3007 /* RuntimeErrorCode.INVALID_DEFINITION */, ngDevMode && 'only state() and transition() definitions can sit inside of a trigger()');
+}
+function invalidState(metadataName, missingSubs) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3008 /* RuntimeErrorCode.INVALID_STATE */, ngDevMode && `state("${metadataName}", ...) must define default values for all the following style substitutions: ${missingSubs.join(', ')}`);
+}
+function invalidStyleValue(value) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3002 /* RuntimeErrorCode.INVALID_STYLE_VALUE */, ngDevMode && `The provided style string value ${value} is not allowed.`);
+}
+function invalidProperty(prop) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3009 /* RuntimeErrorCode.INVALID_PROPERTY */, ngDevMode && `The provided animation property "${prop}" is not a supported CSS property for animations`);
+}
+function invalidParallelAnimation(prop, firstStart, firstEnd, secondStart, secondEnd) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3010 /* RuntimeErrorCode.INVALID_PARALLEL_ANIMATION */, ngDevMode && `The CSS property "${prop}" that exists between the times of "${firstStart}ms" and "${firstEnd}ms" is also being animated in a parallel animation between the times of "${secondStart}ms" and "${secondEnd}ms"`);
+}
+function invalidKeyframes() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3011 /* RuntimeErrorCode.INVALID_KEYFRAMES */, ngDevMode && `keyframes() must be placed inside of a call to animate()`);
+}
+function invalidOffset() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3012 /* RuntimeErrorCode.INVALID_OFFSET */, ngDevMode && `Please ensure that all keyframe offsets are between 0 and 1`);
+}
+function keyframeOffsetsOutOfOrder() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3200 /* RuntimeErrorCode.KEYFRAME_OFFSETS_OUT_OF_ORDER */, ngDevMode && `Please ensure that all keyframe offsets are in order`);
+}
+function keyframesMissingOffsets() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3202 /* RuntimeErrorCode.KEYFRAMES_MISSING_OFFSETS */, ngDevMode && `Not all style() steps within the declared keyframes() contain offsets`);
+}
+function invalidStagger() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3013 /* RuntimeErrorCode.INVALID_STAGGER */, ngDevMode && `stagger() can only be used inside of query()`);
+}
+function invalidQuery(selector) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3014 /* RuntimeErrorCode.INVALID_QUERY */, ngDevMode && `\`query("${selector}")\` returned zero elements. (Use \`query("${selector}", { optional: true })\` if you wish to allow this.)`);
+}
+function invalidExpression(expr) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3015 /* RuntimeErrorCode.INVALID_EXPRESSION */, ngDevMode && `The provided transition expression "${expr}" is not supported`);
+}
+function invalidTransitionAlias(alias) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3016 /* RuntimeErrorCode.INVALID_TRANSITION_ALIAS */, ngDevMode && `The transition alias value "${alias}" is not supported`);
+}
+function validationFailed(errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3500 /* RuntimeErrorCode.VALIDATION_FAILED */, ngDevMode && `animation validation failed:\n${errors.map(err => err.message).join('\n')}`);
+}
+function buildingFailed(errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3501 /* RuntimeErrorCode.BUILDING_FAILED */, ngDevMode && `animation building failed:\n${errors.map(err => err.message).join('\n')}`);
+}
+function triggerBuildFailed(name, errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3404 /* RuntimeErrorCode.TRIGGER_BUILD_FAILED */, ngDevMode && `The animation trigger "${name}" has failed to build due to the following errors:\n - ${errors.map(err => err.message).join('\n - ')}`);
+}
+function animationFailed(errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3502 /* RuntimeErrorCode.ANIMATION_FAILED */, ngDevMode && `Unable to animate due to the following errors:${LINE_START}${errors.map(err => err.message).join(LINE_START)}`);
+}
+function registerFailed(errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3503 /* RuntimeErrorCode.REGISTRATION_FAILED */, ngDevMode && `Unable to build the animation due to the following errors: ${errors.map(err => err.message).join('\n')}`);
+}
+function missingOrDestroyedAnimation() {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3300 /* RuntimeErrorCode.MISSING_OR_DESTROYED_ANIMATION */, ngDevMode && 'The requested animation doesn\'t exist or has already been destroyed');
+}
+function createAnimationFailed(errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3504 /* RuntimeErrorCode.CREATE_ANIMATION_FAILED */, ngDevMode && `Unable to create the animation due to the following errors:${errors.map(err => err.message).join('\n')}`);
+}
+function missingPlayer(id) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3301 /* RuntimeErrorCode.MISSING_PLAYER */, ngDevMode && `Unable to find the timeline player referenced by ${id}`);
+}
+function missingTrigger(phase, name) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3302 /* RuntimeErrorCode.MISSING_TRIGGER */, ngDevMode && `Unable to listen on the animation trigger event "${phase}" because the animation trigger "${name}" doesn\'t exist!`);
+}
+function missingEvent(name) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3303 /* RuntimeErrorCode.MISSING_EVENT */, ngDevMode && `Unable to listen on the animation trigger "${name}" because the provided event is undefined!`);
+}
+function unsupportedTriggerEvent(phase, name) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3400 /* RuntimeErrorCode.UNSUPPORTED_TRIGGER_EVENT */, ngDevMode && `The provided animation trigger event "${phase}" for the animation trigger "${name}" is not supported!`);
+}
+function unregisteredTrigger(name) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3401 /* RuntimeErrorCode.UNREGISTERED_TRIGGER */, ngDevMode && `The provided animation trigger "${name}" has not been registered!`);
+}
+function triggerTransitionsFailed(errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3402 /* RuntimeErrorCode.TRIGGER_TRANSITIONS_FAILED */, ngDevMode && `Unable to process animations due to the following failed trigger transitions\n ${errors.map(err => err.message).join('\n')}`);
+}
+function triggerParsingFailed(name, errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3403 /* RuntimeErrorCode.TRIGGER_PARSING_FAILED */, ngDevMode && `Animation parsing for the ${name} trigger have failed:${LINE_START}${errors.map(err => err.message).join(LINE_START)}`);
+}
+function transitionFailed(name, errors) {
+  return new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](3505 /* RuntimeErrorCode.TRANSITION_FAILED */, ngDevMode && `@${name} has failed due to:\n ${errors.map(err => err.message).join('\n- ')}`);
+}
+
+/**
+ * Set of all animatable CSS properties
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animated_properties
+ */
+const ANIMATABLE_PROP_SET = new Set(['-moz-outline-radius', '-moz-outline-radius-bottomleft', '-moz-outline-radius-bottomright', '-moz-outline-radius-topleft', '-moz-outline-radius-topright', '-ms-grid-columns', '-ms-grid-rows', '-webkit-line-clamp', '-webkit-text-fill-color', '-webkit-text-stroke', '-webkit-text-stroke-color', 'accent-color', 'all', 'backdrop-filter', 'background', 'background-color', 'background-position', 'background-size', 'block-size', 'border', 'border-block-end', 'border-block-end-color', 'border-block-end-width', 'border-block-start', 'border-block-start-color', 'border-block-start-width', 'border-bottom', 'border-bottom-color', 'border-bottom-left-radius', 'border-bottom-right-radius', 'border-bottom-width', 'border-color', 'border-end-end-radius', 'border-end-start-radius', 'border-image-outset', 'border-image-slice', 'border-image-width', 'border-inline-end', 'border-inline-end-color', 'border-inline-end-width', 'border-inline-start', 'border-inline-start-color', 'border-inline-start-width', 'border-left', 'border-left-color', 'border-left-width', 'border-radius', 'border-right', 'border-right-color', 'border-right-width', 'border-start-end-radius', 'border-start-start-radius', 'border-top', 'border-top-color', 'border-top-left-radius', 'border-top-right-radius', 'border-top-width', 'border-width', 'bottom', 'box-shadow', 'caret-color', 'clip', 'clip-path', 'color', 'column-count', 'column-gap', 'column-rule', 'column-rule-color', 'column-rule-width', 'column-width', 'columns', 'filter', 'flex', 'flex-basis', 'flex-grow', 'flex-shrink', 'font', 'font-size', 'font-size-adjust', 'font-stretch', 'font-variation-settings', 'font-weight', 'gap', 'grid-column-gap', 'grid-gap', 'grid-row-gap', 'grid-template-columns', 'grid-template-rows', 'height', 'inline-size', 'input-security', 'inset', 'inset-block', 'inset-block-end', 'inset-block-start', 'inset-inline', 'inset-inline-end', 'inset-inline-start', 'left', 'letter-spacing', 'line-clamp', 'line-height', 'margin', 'margin-block-end', 'margin-block-start', 'margin-bottom', 'margin-inline-end', 'margin-inline-start', 'margin-left', 'margin-right', 'margin-top', 'mask', 'mask-border', 'mask-position', 'mask-size', 'max-block-size', 'max-height', 'max-inline-size', 'max-lines', 'max-width', 'min-block-size', 'min-height', 'min-inline-size', 'min-width', 'object-position', 'offset', 'offset-anchor', 'offset-distance', 'offset-path', 'offset-position', 'offset-rotate', 'opacity', 'order', 'outline', 'outline-color', 'outline-offset', 'outline-width', 'padding', 'padding-block-end', 'padding-block-start', 'padding-bottom', 'padding-inline-end', 'padding-inline-start', 'padding-left', 'padding-right', 'padding-top', 'perspective', 'perspective-origin', 'right', 'rotate', 'row-gap', 'scale', 'scroll-margin', 'scroll-margin-block', 'scroll-margin-block-end', 'scroll-margin-block-start', 'scroll-margin-bottom', 'scroll-margin-inline', 'scroll-margin-inline-end', 'scroll-margin-inline-start', 'scroll-margin-left', 'scroll-margin-right', 'scroll-margin-top', 'scroll-padding', 'scroll-padding-block', 'scroll-padding-block-end', 'scroll-padding-block-start', 'scroll-padding-bottom', 'scroll-padding-inline', 'scroll-padding-inline-end', 'scroll-padding-inline-start', 'scroll-padding-left', 'scroll-padding-right', 'scroll-padding-top', 'scroll-snap-coordinate', 'scroll-snap-destination', 'scrollbar-color', 'shape-image-threshold', 'shape-margin', 'shape-outside', 'tab-size', 'text-decoration', 'text-decoration-color', 'text-decoration-thickness', 'text-emphasis', 'text-emphasis-color', 'text-indent', 'text-shadow', 'text-underline-offset', 'top', 'transform', 'transform-origin', 'translate', 'vertical-align', 'visibility', 'width', 'word-spacing', 'z-index', 'zoom']);
+function optimizeGroupPlayer(players) {
+  switch (players.length) {
+    case 0:
+      return new _angular_animations__WEBPACK_IMPORTED_MODULE_1__.NoopAnimationPlayer();
+    case 1:
+      return players[0];
+    default:
+      return new _angular_animations__WEBPACK_IMPORTED_MODULE_1__["ɵAnimationGroupPlayer"](players);
+  }
+}
+function normalizeKeyframes$1(normalizer, keyframes, preStyles = new Map(), postStyles = new Map()) {
+  const errors = [];
+  const normalizedKeyframes = [];
+  let previousOffset = -1;
+  let previousKeyframe = null;
+  keyframes.forEach(kf => {
+    const offset = kf.get('offset');
+    const isSameOffset = offset == previousOffset;
+    const normalizedKeyframe = isSameOffset && previousKeyframe || new Map();
+    kf.forEach((val, prop) => {
+      let normalizedProp = prop;
+      let normalizedValue = val;
+      if (prop !== 'offset') {
+        normalizedProp = normalizer.normalizePropertyName(normalizedProp, errors);
+        switch (normalizedValue) {
+          case _angular_animations__WEBPACK_IMPORTED_MODULE_1__["ɵPRE_STYLE"]:
+            normalizedValue = preStyles.get(prop);
+            break;
+          case _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE:
+            normalizedValue = postStyles.get(prop);
+            break;
+          default:
+            normalizedValue = normalizer.normalizeStyleValue(prop, normalizedProp, normalizedValue, errors);
+            break;
+        }
+      }
+      normalizedKeyframe.set(normalizedProp, normalizedValue);
+    });
+    if (!isSameOffset) {
+      normalizedKeyframes.push(normalizedKeyframe);
+    }
+    previousKeyframe = normalizedKeyframe;
+    previousOffset = offset;
+  });
+  if (errors.length) {
+    throw animationFailed(errors);
+  }
+  return normalizedKeyframes;
+}
+function listenOnPlayer(player, eventName, event, callback) {
+  switch (eventName) {
+    case 'start':
+      player.onStart(() => callback(event && copyAnimationEvent(event, 'start', player)));
+      break;
+    case 'done':
+      player.onDone(() => callback(event && copyAnimationEvent(event, 'done', player)));
+      break;
+    case 'destroy':
+      player.onDestroy(() => callback(event && copyAnimationEvent(event, 'destroy', player)));
+      break;
+  }
+}
+function copyAnimationEvent(e, phaseName, player) {
+  const totalTime = player.totalTime;
+  const disabled = player.disabled ? true : false;
+  const event = makeAnimationEvent(e.element, e.triggerName, e.fromState, e.toState, phaseName || e.phaseName, totalTime == undefined ? e.totalTime : totalTime, disabled);
+  const data = e['_data'];
+  if (data != null) {
+    event['_data'] = data;
+  }
+  return event;
+}
+function makeAnimationEvent(element, triggerName, fromState, toState, phaseName = '', totalTime = 0, disabled) {
+  return {
+    element,
+    triggerName,
+    fromState,
+    toState,
+    phaseName,
+    totalTime,
+    disabled: !!disabled
+  };
+}
+function getOrSetDefaultValue(map, key, defaultValue) {
+  let value = map.get(key);
+  if (!value) {
+    map.set(key, value = defaultValue);
+  }
+  return value;
+}
+function parseTimelineCommand(command) {
+  const separatorPos = command.indexOf(':');
+  const id = command.substring(1, separatorPos);
+  const action = command.slice(separatorPos + 1);
+  return [id, action];
+}
+const documentElement = /* @__PURE__ */(() => typeof document === 'undefined' ? null : document.documentElement)();
+function getParentElement(element) {
+  const parent = element.parentNode || element.host || null; // consider host to support shadow DOM
+  if (parent === documentElement) {
+    return null;
+  }
+  return parent;
+}
+function containsVendorPrefix(prop) {
+  // Webkit is the only real popular vendor prefix nowadays
+  // cc: http://shouldiprefix.com/
+  return prop.substring(1, 6) == 'ebkit'; // webkit or Webkit
+}
+
+let _CACHED_BODY = null;
+let _IS_WEBKIT = false;
+function validateStyleProperty(prop) {
+  if (!_CACHED_BODY) {
+    _CACHED_BODY = getBodyNode() || {};
+    _IS_WEBKIT = _CACHED_BODY.style ? 'WebkitAppearance' in _CACHED_BODY.style : false;
+  }
+  let result = true;
+  if (_CACHED_BODY.style && !containsVendorPrefix(prop)) {
+    result = prop in _CACHED_BODY.style;
+    if (!result && _IS_WEBKIT) {
+      const camelProp = 'Webkit' + prop.charAt(0).toUpperCase() + prop.slice(1);
+      result = camelProp in _CACHED_BODY.style;
+    }
+  }
+  return result;
+}
+function validateWebAnimatableStyleProperty(prop) {
+  return ANIMATABLE_PROP_SET.has(prop);
+}
+function getBodyNode() {
+  if (typeof document != 'undefined') {
+    return document.body;
+  }
+  return null;
+}
+function containsElement(elm1, elm2) {
+  while (elm2) {
+    if (elm2 === elm1) {
+      return true;
+    }
+    elm2 = getParentElement(elm2);
+  }
+  return false;
+}
+function invokeQuery(element, selector, multi) {
+  if (multi) {
+    return Array.from(element.querySelectorAll(selector));
+  }
+  const elem = element.querySelector(selector);
+  return elem ? [elem] : [];
+}
+function hypenatePropsKeys(original) {
+  const newMap = new Map();
+  original.forEach((val, prop) => {
+    const newProp = prop.replace(/([a-z])([A-Z])/g, '$1-$2');
+    newMap.set(newProp, val);
+  });
+  return newMap;
+}
+
+/**
+ * @publicApi
+ */
+class NoopAnimationDriver {
+  validateStyleProperty(prop) {
+    return validateStyleProperty(prop);
+  }
+  matchesElement(_element, _selector) {
+    // This method is deprecated and no longer in use so we return false.
+    return false;
+  }
+  containsElement(elm1, elm2) {
+    return containsElement(elm1, elm2);
+  }
+  getParentElement(element) {
+    return getParentElement(element);
+  }
+  query(element, selector, multi) {
+    return invokeQuery(element, selector, multi);
+  }
+  computeStyle(element, prop, defaultValue) {
+    return defaultValue || '';
+  }
+  animate(element, keyframes, duration, delay, easing, previousPlayers = [], scrubberAccessRequested) {
+    return new _angular_animations__WEBPACK_IMPORTED_MODULE_1__.NoopAnimationPlayer(duration, delay);
+  }
+  static #_ = this.ɵfac = function NoopAnimationDriver_Factory(t) {
+    return new (t || NoopAnimationDriver)();
+  };
+  static #_2 = this.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+    token: NoopAnimationDriver,
+    factory: NoopAnimationDriver.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](NoopAnimationDriver, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable
+  }], null, null);
+})();
+/**
+ * @publicApi
+ */
+class AnimationDriver {
+  static #_ = this.NOOP = /* @__PURE__ */new NoopAnimationDriver();
+}
+const ONE_SECOND = 1000;
+const SUBSTITUTION_EXPR_START = '{{';
+const SUBSTITUTION_EXPR_END = '}}';
+const ENTER_CLASSNAME = 'ng-enter';
+const LEAVE_CLASSNAME = 'ng-leave';
+const NG_TRIGGER_CLASSNAME = 'ng-trigger';
+const NG_TRIGGER_SELECTOR = '.ng-trigger';
+const NG_ANIMATING_CLASSNAME = 'ng-animating';
+const NG_ANIMATING_SELECTOR = '.ng-animating';
+function resolveTimingValue(value) {
+  if (typeof value == 'number') return value;
+  const matches = value.match(/^(-?[\.\d]+)(m?s)/);
+  if (!matches || matches.length < 2) return 0;
+  return _convertTimeValueToMS(parseFloat(matches[1]), matches[2]);
+}
+function _convertTimeValueToMS(value, unit) {
+  switch (unit) {
+    case 's':
+      return value * ONE_SECOND;
+    default:
+      // ms or something else
+      return value;
+  }
+}
+function resolveTiming(timings, errors, allowNegativeValues) {
+  return timings.hasOwnProperty('duration') ? timings : parseTimeExpression(timings, errors, allowNegativeValues);
+}
+function parseTimeExpression(exp, errors, allowNegativeValues) {
+  const regex = /^(-?[\.\d]+)(m?s)(?:\s+(-?[\.\d]+)(m?s))?(?:\s+([-a-z]+(?:\(.+?\))?))?$/i;
+  let duration;
+  let delay = 0;
+  let easing = '';
+  if (typeof exp === 'string') {
+    const matches = exp.match(regex);
+    if (matches === null) {
+      errors.push(invalidTimingValue(exp));
+      return {
+        duration: 0,
+        delay: 0,
+        easing: ''
+      };
+    }
+    duration = _convertTimeValueToMS(parseFloat(matches[1]), matches[2]);
+    const delayMatch = matches[3];
+    if (delayMatch != null) {
+      delay = _convertTimeValueToMS(parseFloat(delayMatch), matches[4]);
+    }
+    const easingVal = matches[5];
+    if (easingVal) {
+      easing = easingVal;
+    }
+  } else {
+    duration = exp;
+  }
+  if (!allowNegativeValues) {
+    let containsErrors = false;
+    let startIndex = errors.length;
+    if (duration < 0) {
+      errors.push(negativeStepValue());
+      containsErrors = true;
+    }
+    if (delay < 0) {
+      errors.push(negativeDelayValue());
+      containsErrors = true;
+    }
+    if (containsErrors) {
+      errors.splice(startIndex, 0, invalidTimingValue(exp));
+    }
+  }
+  return {
+    duration,
+    delay,
+    easing
+  };
+}
+function copyObj(obj, destination = {}) {
+  Object.keys(obj).forEach(prop => {
+    destination[prop] = obj[prop];
+  });
+  return destination;
+}
+function convertToMap(obj) {
+  const styleMap = new Map();
+  Object.keys(obj).forEach(prop => {
+    const val = obj[prop];
+    styleMap.set(prop, val);
+  });
+  return styleMap;
+}
+function normalizeKeyframes(keyframes) {
+  if (!keyframes.length) {
+    return [];
+  }
+  if (keyframes[0] instanceof Map) {
+    return keyframes;
+  }
+  return keyframes.map(kf => convertToMap(kf));
+}
+function normalizeStyles(styles) {
+  const normalizedStyles = new Map();
+  if (Array.isArray(styles)) {
+    styles.forEach(data => copyStyles(data, normalizedStyles));
+  } else {
+    copyStyles(styles, normalizedStyles);
+  }
+  return normalizedStyles;
+}
+function copyStyles(styles, destination = new Map(), backfill) {
+  if (backfill) {
+    for (let [prop, val] of backfill) {
+      destination.set(prop, val);
+    }
+  }
+  for (let [prop, val] of styles) {
+    destination.set(prop, val);
+  }
+  return destination;
+}
+function setStyles(element, styles, formerStyles) {
+  styles.forEach((val, prop) => {
+    const camelProp = dashCaseToCamelCase(prop);
+    if (formerStyles && !formerStyles.has(prop)) {
+      formerStyles.set(prop, element.style[camelProp]);
+    }
+    element.style[camelProp] = val;
+  });
+}
+function eraseStyles(element, styles) {
+  styles.forEach((_, prop) => {
+    const camelProp = dashCaseToCamelCase(prop);
+    element.style[camelProp] = '';
+  });
+}
+function normalizeAnimationEntry(steps) {
+  if (Array.isArray(steps)) {
+    if (steps.length == 1) return steps[0];
+    return (0,_angular_animations__WEBPACK_IMPORTED_MODULE_1__.sequence)(steps);
+  }
+  return steps;
+}
+function validateStyleParams(value, options, errors) {
+  const params = options.params || {};
+  const matches = extractStyleParams(value);
+  if (matches.length) {
+    matches.forEach(varName => {
+      if (!params.hasOwnProperty(varName)) {
+        errors.push(invalidStyleParams(varName));
+      }
+    });
+  }
+}
+const PARAM_REGEX = new RegExp(`${SUBSTITUTION_EXPR_START}\\s*(.+?)\\s*${SUBSTITUTION_EXPR_END}`, 'g');
+function extractStyleParams(value) {
+  let params = [];
+  if (typeof value === 'string') {
+    let match;
+    while (match = PARAM_REGEX.exec(value)) {
+      params.push(match[1]);
+    }
+    PARAM_REGEX.lastIndex = 0;
+  }
+  return params;
+}
+function interpolateParams(value, params, errors) {
+  const original = value.toString();
+  const str = original.replace(PARAM_REGEX, (_, varName) => {
+    let localVal = params[varName];
+    // this means that the value was never overridden by the data passed in by the user
+    if (localVal == null) {
+      errors.push(invalidParamValue(varName));
+      localVal = '';
+    }
+    return localVal.toString();
+  });
+  // we do this to assert that numeric values stay as they are
+  return str == original ? value : str;
+}
+function iteratorToArray(iterator) {
+  const arr = [];
+  let item = iterator.next();
+  while (!item.done) {
+    arr.push(item.value);
+    item = iterator.next();
+  }
+  return arr;
+}
+const DASH_CASE_REGEXP = /-+([a-z0-9])/g;
+function dashCaseToCamelCase(input) {
+  return input.replace(DASH_CASE_REGEXP, (...m) => m[1].toUpperCase());
+}
+function camelCaseToDashCase(input) {
+  return input.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+function allowPreviousPlayerStylesMerge(duration, delay) {
+  return duration === 0 || delay === 0;
+}
+function balancePreviousStylesIntoKeyframes(element, keyframes, previousStyles) {
+  if (previousStyles.size && keyframes.length) {
+    let startingKeyframe = keyframes[0];
+    let missingStyleProps = [];
+    previousStyles.forEach((val, prop) => {
+      if (!startingKeyframe.has(prop)) {
+        missingStyleProps.push(prop);
+      }
+      startingKeyframe.set(prop, val);
+    });
+    if (missingStyleProps.length) {
+      for (let i = 1; i < keyframes.length; i++) {
+        let kf = keyframes[i];
+        missingStyleProps.forEach(prop => kf.set(prop, computeStyle(element, prop)));
+      }
+    }
+  }
+  return keyframes;
+}
+function visitDslNode(visitor, node, context) {
+  switch (node.type) {
+    case 7 /* AnimationMetadataType.Trigger */:
+      return visitor.visitTrigger(node, context);
+    case 0 /* AnimationMetadataType.State */:
+      return visitor.visitState(node, context);
+    case 1 /* AnimationMetadataType.Transition */:
+      return visitor.visitTransition(node, context);
+    case 2 /* AnimationMetadataType.Sequence */:
+      return visitor.visitSequence(node, context);
+    case 3 /* AnimationMetadataType.Group */:
+      return visitor.visitGroup(node, context);
+    case 4 /* AnimationMetadataType.Animate */:
+      return visitor.visitAnimate(node, context);
+    case 5 /* AnimationMetadataType.Keyframes */:
+      return visitor.visitKeyframes(node, context);
+    case 6 /* AnimationMetadataType.Style */:
+      return visitor.visitStyle(node, context);
+    case 8 /* AnimationMetadataType.Reference */:
+      return visitor.visitReference(node, context);
+    case 9 /* AnimationMetadataType.AnimateChild */:
+      return visitor.visitAnimateChild(node, context);
+    case 10 /* AnimationMetadataType.AnimateRef */:
+      return visitor.visitAnimateRef(node, context);
+    case 11 /* AnimationMetadataType.Query */:
+      return visitor.visitQuery(node, context);
+    case 12 /* AnimationMetadataType.Stagger */:
+      return visitor.visitStagger(node, context);
+    default:
+      throw invalidNodeType(node.type);
+  }
+}
+function computeStyle(element, prop) {
+  return window.getComputedStyle(element)[prop];
+}
+function createListOfWarnings(warnings) {
+  const LINE_START = '\n - ';
+  return `${LINE_START}${warnings.filter(Boolean).map(warning => warning).join(LINE_START)}`;
+}
+function warnValidation(warnings) {
+  (typeof ngDevMode === 'undefined' || ngDevMode) && console.warn(`animation validation warnings:${createListOfWarnings(warnings)}`);
+}
+function warnTriggerBuild(name, warnings) {
+  (typeof ngDevMode === 'undefined' || ngDevMode) && console.warn(`The animation trigger "${name}" has built with the following warnings:${createListOfWarnings(warnings)}`);
+}
+function warnRegister(warnings) {
+  (typeof ngDevMode === 'undefined' || ngDevMode) && console.warn(`Animation built with the following warnings:${createListOfWarnings(warnings)}`);
+}
+function triggerParsingWarnings(name, warnings) {
+  (typeof ngDevMode === 'undefined' || ngDevMode) && console.warn(`Animation parsing for the ${name} trigger presents the following warnings:${createListOfWarnings(warnings)}`);
+}
+function pushUnrecognizedPropertiesWarning(warnings, props) {
+  if (props.length) {
+    warnings.push(`The following provided properties are not recognized: ${props.join(', ')}`);
+  }
+}
+const ANY_STATE = '*';
+function parseTransitionExpr(transitionValue, errors) {
+  const expressions = [];
+  if (typeof transitionValue == 'string') {
+    transitionValue.split(/\s*,\s*/).forEach(str => parseInnerTransitionStr(str, expressions, errors));
+  } else {
+    expressions.push(transitionValue);
+  }
+  return expressions;
+}
+function parseInnerTransitionStr(eventStr, expressions, errors) {
+  if (eventStr[0] == ':') {
+    const result = parseAnimationAlias(eventStr, errors);
+    if (typeof result == 'function') {
+      expressions.push(result);
+      return;
+    }
+    eventStr = result;
+  }
+  const match = eventStr.match(/^(\*|[-\w]+)\s*(<?[=-]>)\s*(\*|[-\w]+)$/);
+  if (match == null || match.length < 4) {
+    errors.push(invalidExpression(eventStr));
+    return expressions;
+  }
+  const fromState = match[1];
+  const separator = match[2];
+  const toState = match[3];
+  expressions.push(makeLambdaFromStates(fromState, toState));
+  const isFullAnyStateExpr = fromState == ANY_STATE && toState == ANY_STATE;
+  if (separator[0] == '<' && !isFullAnyStateExpr) {
+    expressions.push(makeLambdaFromStates(toState, fromState));
+  }
+}
+function parseAnimationAlias(alias, errors) {
+  switch (alias) {
+    case ':enter':
+      return 'void => *';
+    case ':leave':
+      return '* => void';
+    case ':increment':
+      return (fromState, toState) => parseFloat(toState) > parseFloat(fromState);
+    case ':decrement':
+      return (fromState, toState) => parseFloat(toState) < parseFloat(fromState);
+    default:
+      errors.push(invalidTransitionAlias(alias));
+      return '* => *';
+  }
+}
+// DO NOT REFACTOR ... keep the follow set instantiations
+// with the values intact (closure compiler for some reason
+// removes follow-up lines that add the values outside of
+// the constructor...
+const TRUE_BOOLEAN_VALUES = new Set(['true', '1']);
+const FALSE_BOOLEAN_VALUES = new Set(['false', '0']);
+function makeLambdaFromStates(lhs, rhs) {
+  const LHS_MATCH_BOOLEAN = TRUE_BOOLEAN_VALUES.has(lhs) || FALSE_BOOLEAN_VALUES.has(lhs);
+  const RHS_MATCH_BOOLEAN = TRUE_BOOLEAN_VALUES.has(rhs) || FALSE_BOOLEAN_VALUES.has(rhs);
+  return (fromState, toState) => {
+    let lhsMatch = lhs == ANY_STATE || lhs == fromState;
+    let rhsMatch = rhs == ANY_STATE || rhs == toState;
+    if (!lhsMatch && LHS_MATCH_BOOLEAN && typeof fromState === 'boolean') {
+      lhsMatch = fromState ? TRUE_BOOLEAN_VALUES.has(lhs) : FALSE_BOOLEAN_VALUES.has(lhs);
+    }
+    if (!rhsMatch && RHS_MATCH_BOOLEAN && typeof toState === 'boolean') {
+      rhsMatch = toState ? TRUE_BOOLEAN_VALUES.has(rhs) : FALSE_BOOLEAN_VALUES.has(rhs);
+    }
+    return lhsMatch && rhsMatch;
+  };
+}
+const SELF_TOKEN = ':self';
+const SELF_TOKEN_REGEX = new RegExp(`s*${SELF_TOKEN}s*,?`, 'g');
+/*
+ * [Validation]
+ * The visitor code below will traverse the animation AST generated by the animation verb functions
+ * (the output is a tree of objects) and attempt to perform a series of validations on the data. The
+ * following corner-cases will be validated:
+ *
+ * 1. Overlap of animations
+ * Given that a CSS property cannot be animated in more than one place at the same time, it's
+ * important that this behavior is detected and validated. The way in which this occurs is that
+ * each time a style property is examined, a string-map containing the property will be updated with
+ * the start and end times for when the property is used within an animation step.
+ *
+ * If there are two or more parallel animations that are currently running (these are invoked by the
+ * group()) on the same element then the validator will throw an error. Since the start/end timing
+ * values are collected for each property then if the current animation step is animating the same
+ * property and its timing values fall anywhere into the window of time that the property is
+ * currently being animated within then this is what causes an error.
+ *
+ * 2. Timing values
+ * The validator will validate to see if a timing value of `duration delay easing` or
+ * `durationNumber` is valid or not.
+ *
+ * (note that upon validation the code below will replace the timing data with an object containing
+ * {duration,delay,easing}.
+ *
+ * 3. Offset Validation
+ * Each of the style() calls are allowed to have an offset value when placed inside of keyframes().
+ * Offsets within keyframes() are considered valid when:
+ *
+ *   - No offsets are used at all
+ *   - Each style() entry contains an offset value
+ *   - Each offset is between 0 and 1
+ *   - Each offset is greater to or equal than the previous one
+ *
+ * Otherwise an error will be thrown.
+ */
+function buildAnimationAst(driver, metadata, errors, warnings) {
+  return new AnimationAstBuilderVisitor(driver).build(metadata, errors, warnings);
+}
+const ROOT_SELECTOR = '';
+class AnimationAstBuilderVisitor {
+  constructor(_driver) {
+    this._driver = _driver;
+  }
+  build(metadata, errors, warnings) {
+    const context = new AnimationAstBuilderContext(errors);
+    this._resetContextStyleTimingState(context);
+    const ast = visitDslNode(this, normalizeAnimationEntry(metadata), context);
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (context.unsupportedCSSPropertiesFound.size) {
+        pushUnrecognizedPropertiesWarning(warnings, [...context.unsupportedCSSPropertiesFound.keys()]);
+      }
+    }
+    return ast;
+  }
+  _resetContextStyleTimingState(context) {
+    context.currentQuerySelector = ROOT_SELECTOR;
+    context.collectedStyles = new Map();
+    context.collectedStyles.set(ROOT_SELECTOR, new Map());
+    context.currentTime = 0;
+  }
+  visitTrigger(metadata, context) {
+    let queryCount = context.queryCount = 0;
+    let depCount = context.depCount = 0;
+    const states = [];
+    const transitions = [];
+    if (metadata.name.charAt(0) == '@') {
+      context.errors.push(invalidTrigger());
+    }
+    metadata.definitions.forEach(def => {
+      this._resetContextStyleTimingState(context);
+      if (def.type == 0 /* AnimationMetadataType.State */) {
+        const stateDef = def;
+        const name = stateDef.name;
+        name.toString().split(/\s*,\s*/).forEach(n => {
+          stateDef.name = n;
+          states.push(this.visitState(stateDef, context));
+        });
+        stateDef.name = name;
+      } else if (def.type == 1 /* AnimationMetadataType.Transition */) {
+        const transition = this.visitTransition(def, context);
+        queryCount += transition.queryCount;
+        depCount += transition.depCount;
+        transitions.push(transition);
+      } else {
+        context.errors.push(invalidDefinition());
+      }
+    });
+    return {
+      type: 7 /* AnimationMetadataType.Trigger */,
+      name: metadata.name,
+      states,
+      transitions,
+      queryCount,
+      depCount,
+      options: null
+    };
+  }
+  visitState(metadata, context) {
+    const styleAst = this.visitStyle(metadata.styles, context);
+    const astParams = metadata.options && metadata.options.params || null;
+    if (styleAst.containsDynamicStyles) {
+      const missingSubs = new Set();
+      const params = astParams || {};
+      styleAst.styles.forEach(style => {
+        if (style instanceof Map) {
+          style.forEach(value => {
+            extractStyleParams(value).forEach(sub => {
+              if (!params.hasOwnProperty(sub)) {
+                missingSubs.add(sub);
+              }
+            });
+          });
+        }
+      });
+      if (missingSubs.size) {
+        const missingSubsArr = iteratorToArray(missingSubs.values());
+        context.errors.push(invalidState(metadata.name, missingSubsArr));
+      }
+    }
+    return {
+      type: 0 /* AnimationMetadataType.State */,
+      name: metadata.name,
+      style: styleAst,
+      options: astParams ? {
+        params: astParams
+      } : null
+    };
+  }
+  visitTransition(metadata, context) {
+    context.queryCount = 0;
+    context.depCount = 0;
+    const animation = visitDslNode(this, normalizeAnimationEntry(metadata.animation), context);
+    const matchers = parseTransitionExpr(metadata.expr, context.errors);
+    return {
+      type: 1 /* AnimationMetadataType.Transition */,
+      matchers,
+      animation,
+      queryCount: context.queryCount,
+      depCount: context.depCount,
+      options: normalizeAnimationOptions(metadata.options)
+    };
+  }
+  visitSequence(metadata, context) {
+    return {
+      type: 2 /* AnimationMetadataType.Sequence */,
+      steps: metadata.steps.map(s => visitDslNode(this, s, context)),
+      options: normalizeAnimationOptions(metadata.options)
+    };
+  }
+  visitGroup(metadata, context) {
+    const currentTime = context.currentTime;
+    let furthestTime = 0;
+    const steps = metadata.steps.map(step => {
+      context.currentTime = currentTime;
+      const innerAst = visitDslNode(this, step, context);
+      furthestTime = Math.max(furthestTime, context.currentTime);
+      return innerAst;
+    });
+    context.currentTime = furthestTime;
+    return {
+      type: 3 /* AnimationMetadataType.Group */,
+      steps,
+      options: normalizeAnimationOptions(metadata.options)
+    };
+  }
+  visitAnimate(metadata, context) {
+    const timingAst = constructTimingAst(metadata.timings, context.errors);
+    context.currentAnimateTimings = timingAst;
+    let styleAst;
+    let styleMetadata = metadata.styles ? metadata.styles : (0,_angular_animations__WEBPACK_IMPORTED_MODULE_1__.style)({});
+    if (styleMetadata.type == 5 /* AnimationMetadataType.Keyframes */) {
+      styleAst = this.visitKeyframes(styleMetadata, context);
+    } else {
+      let styleMetadata = metadata.styles;
+      let isEmpty = false;
+      if (!styleMetadata) {
+        isEmpty = true;
+        const newStyleData = {};
+        if (timingAst.easing) {
+          newStyleData['easing'] = timingAst.easing;
+        }
+        styleMetadata = (0,_angular_animations__WEBPACK_IMPORTED_MODULE_1__.style)(newStyleData);
+      }
+      context.currentTime += timingAst.duration + timingAst.delay;
+      const _styleAst = this.visitStyle(styleMetadata, context);
+      _styleAst.isEmptyStep = isEmpty;
+      styleAst = _styleAst;
+    }
+    context.currentAnimateTimings = null;
+    return {
+      type: 4 /* AnimationMetadataType.Animate */,
+      timings: timingAst,
+      style: styleAst,
+      options: null
+    };
+  }
+  visitStyle(metadata, context) {
+    const ast = this._makeStyleAst(metadata, context);
+    this._validateStyleAst(ast, context);
+    return ast;
+  }
+  _makeStyleAst(metadata, context) {
+    const styles = [];
+    const metadataStyles = Array.isArray(metadata.styles) ? metadata.styles : [metadata.styles];
+    for (let styleTuple of metadataStyles) {
+      if (typeof styleTuple === 'string') {
+        if (styleTuple === _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE) {
+          styles.push(styleTuple);
+        } else {
+          context.errors.push(invalidStyleValue(styleTuple));
+        }
+      } else {
+        styles.push(convertToMap(styleTuple));
+      }
+    }
+    let containsDynamicStyles = false;
+    let collectedEasing = null;
+    styles.forEach(styleData => {
+      if (styleData instanceof Map) {
+        if (styleData.has('easing')) {
+          collectedEasing = styleData.get('easing');
+          styleData.delete('easing');
+        }
+        if (!containsDynamicStyles) {
+          for (let value of styleData.values()) {
+            if (value.toString().indexOf(SUBSTITUTION_EXPR_START) >= 0) {
+              containsDynamicStyles = true;
+              break;
+            }
+          }
+        }
+      }
+    });
+    return {
+      type: 6 /* AnimationMetadataType.Style */,
+      styles,
+      easing: collectedEasing,
+      offset: metadata.offset,
+      containsDynamicStyles,
+      options: null
+    };
+  }
+  _validateStyleAst(ast, context) {
+    const timings = context.currentAnimateTimings;
+    let endTime = context.currentTime;
+    let startTime = context.currentTime;
+    if (timings && startTime > 0) {
+      startTime -= timings.duration + timings.delay;
+    }
+    ast.styles.forEach(tuple => {
+      if (typeof tuple === 'string') return;
+      tuple.forEach((value, prop) => {
+        if (typeof ngDevMode === 'undefined' || ngDevMode) {
+          if (!this._driver.validateStyleProperty(prop)) {
+            tuple.delete(prop);
+            context.unsupportedCSSPropertiesFound.add(prop);
+            return;
+          }
+        }
+        // This is guaranteed to have a defined Map at this querySelector location making it
+        // safe to add the assertion here. It is set as a default empty map in prior methods.
+        const collectedStyles = context.collectedStyles.get(context.currentQuerySelector);
+        const collectedEntry = collectedStyles.get(prop);
+        let updateCollectedStyle = true;
+        if (collectedEntry) {
+          if (startTime != endTime && startTime >= collectedEntry.startTime && endTime <= collectedEntry.endTime) {
+            context.errors.push(invalidParallelAnimation(prop, collectedEntry.startTime, collectedEntry.endTime, startTime, endTime));
+            updateCollectedStyle = false;
+          }
+          // we always choose the smaller start time value since we
+          // want to have a record of the entire animation window where
+          // the style property is being animated in between
+          startTime = collectedEntry.startTime;
+        }
+        if (updateCollectedStyle) {
+          collectedStyles.set(prop, {
+            startTime,
+            endTime
+          });
+        }
+        if (context.options) {
+          validateStyleParams(value, context.options, context.errors);
+        }
+      });
+    });
+  }
+  visitKeyframes(metadata, context) {
+    const ast = {
+      type: 5 /* AnimationMetadataType.Keyframes */,
+      styles: [],
+      options: null
+    };
+    if (!context.currentAnimateTimings) {
+      context.errors.push(invalidKeyframes());
+      return ast;
+    }
+    const MAX_KEYFRAME_OFFSET = 1;
+    let totalKeyframesWithOffsets = 0;
+    const offsets = [];
+    let offsetsOutOfOrder = false;
+    let keyframesOutOfRange = false;
+    let previousOffset = 0;
+    const keyframes = metadata.steps.map(styles => {
+      const style = this._makeStyleAst(styles, context);
+      let offsetVal = style.offset != null ? style.offset : consumeOffset(style.styles);
+      let offset = 0;
+      if (offsetVal != null) {
+        totalKeyframesWithOffsets++;
+        offset = style.offset = offsetVal;
+      }
+      keyframesOutOfRange = keyframesOutOfRange || offset < 0 || offset > 1;
+      offsetsOutOfOrder = offsetsOutOfOrder || offset < previousOffset;
+      previousOffset = offset;
+      offsets.push(offset);
+      return style;
+    });
+    if (keyframesOutOfRange) {
+      context.errors.push(invalidOffset());
+    }
+    if (offsetsOutOfOrder) {
+      context.errors.push(keyframeOffsetsOutOfOrder());
+    }
+    const length = metadata.steps.length;
+    let generatedOffset = 0;
+    if (totalKeyframesWithOffsets > 0 && totalKeyframesWithOffsets < length) {
+      context.errors.push(keyframesMissingOffsets());
+    } else if (totalKeyframesWithOffsets == 0) {
+      generatedOffset = MAX_KEYFRAME_OFFSET / (length - 1);
+    }
+    const limit = length - 1;
+    const currentTime = context.currentTime;
+    const currentAnimateTimings = context.currentAnimateTimings;
+    const animateDuration = currentAnimateTimings.duration;
+    keyframes.forEach((kf, i) => {
+      const offset = generatedOffset > 0 ? i == limit ? 1 : generatedOffset * i : offsets[i];
+      const durationUpToThisFrame = offset * animateDuration;
+      context.currentTime = currentTime + currentAnimateTimings.delay + durationUpToThisFrame;
+      currentAnimateTimings.duration = durationUpToThisFrame;
+      this._validateStyleAst(kf, context);
+      kf.offset = offset;
+      ast.styles.push(kf);
+    });
+    return ast;
+  }
+  visitReference(metadata, context) {
+    return {
+      type: 8 /* AnimationMetadataType.Reference */,
+      animation: visitDslNode(this, normalizeAnimationEntry(metadata.animation), context),
+      options: normalizeAnimationOptions(metadata.options)
+    };
+  }
+  visitAnimateChild(metadata, context) {
+    context.depCount++;
+    return {
+      type: 9 /* AnimationMetadataType.AnimateChild */,
+      options: normalizeAnimationOptions(metadata.options)
+    };
+  }
+  visitAnimateRef(metadata, context) {
+    return {
+      type: 10 /* AnimationMetadataType.AnimateRef */,
+      animation: this.visitReference(metadata.animation, context),
+      options: normalizeAnimationOptions(metadata.options)
+    };
+  }
+  visitQuery(metadata, context) {
+    const parentSelector = context.currentQuerySelector;
+    const options = metadata.options || {};
+    context.queryCount++;
+    context.currentQuery = metadata;
+    const [selector, includeSelf] = normalizeSelector(metadata.selector);
+    context.currentQuerySelector = parentSelector.length ? parentSelector + ' ' + selector : selector;
+    getOrSetDefaultValue(context.collectedStyles, context.currentQuerySelector, new Map());
+    const animation = visitDslNode(this, normalizeAnimationEntry(metadata.animation), context);
+    context.currentQuery = null;
+    context.currentQuerySelector = parentSelector;
+    return {
+      type: 11 /* AnimationMetadataType.Query */,
+      selector,
+      limit: options.limit || 0,
+      optional: !!options.optional,
+      includeSelf,
+      animation,
+      originalSelector: metadata.selector,
+      options: normalizeAnimationOptions(metadata.options)
+    };
+  }
+  visitStagger(metadata, context) {
+    if (!context.currentQuery) {
+      context.errors.push(invalidStagger());
+    }
+    const timings = metadata.timings === 'full' ? {
+      duration: 0,
+      delay: 0,
+      easing: 'full'
+    } : resolveTiming(metadata.timings, context.errors, true);
+    return {
+      type: 12 /* AnimationMetadataType.Stagger */,
+      animation: visitDslNode(this, normalizeAnimationEntry(metadata.animation), context),
+      timings,
+      options: null
+    };
+  }
+}
+function normalizeSelector(selector) {
+  const hasAmpersand = selector.split(/\s*,\s*/).find(token => token == SELF_TOKEN) ? true : false;
+  if (hasAmpersand) {
+    selector = selector.replace(SELF_TOKEN_REGEX, '');
+  }
+  // Note: the :enter and :leave aren't normalized here since those
+  // selectors are filled in at runtime during timeline building
+  selector = selector.replace(/@\*/g, NG_TRIGGER_SELECTOR).replace(/@\w+/g, match => NG_TRIGGER_SELECTOR + '-' + match.slice(1)).replace(/:animating/g, NG_ANIMATING_SELECTOR);
+  return [selector, hasAmpersand];
+}
+function normalizeParams(obj) {
+  return obj ? copyObj(obj) : null;
+}
+class AnimationAstBuilderContext {
+  constructor(errors) {
+    this.errors = errors;
+    this.queryCount = 0;
+    this.depCount = 0;
+    this.currentTransition = null;
+    this.currentQuery = null;
+    this.currentQuerySelector = null;
+    this.currentAnimateTimings = null;
+    this.currentTime = 0;
+    this.collectedStyles = new Map();
+    this.options = null;
+    this.unsupportedCSSPropertiesFound = new Set();
+  }
+}
+function consumeOffset(styles) {
+  if (typeof styles == 'string') return null;
+  let offset = null;
+  if (Array.isArray(styles)) {
+    styles.forEach(styleTuple => {
+      if (styleTuple instanceof Map && styleTuple.has('offset')) {
+        const obj = styleTuple;
+        offset = parseFloat(obj.get('offset'));
+        obj.delete('offset');
+      }
+    });
+  } else if (styles instanceof Map && styles.has('offset')) {
+    const obj = styles;
+    offset = parseFloat(obj.get('offset'));
+    obj.delete('offset');
+  }
+  return offset;
+}
+function constructTimingAst(value, errors) {
+  if (value.hasOwnProperty('duration')) {
+    return value;
+  }
+  if (typeof value == 'number') {
+    const duration = resolveTiming(value, errors).duration;
+    return makeTimingAst(duration, 0, '');
+  }
+  const strValue = value;
+  const isDynamic = strValue.split(/\s+/).some(v => v.charAt(0) == '{' && v.charAt(1) == '{');
+  if (isDynamic) {
+    const ast = makeTimingAst(0, 0, '');
+    ast.dynamic = true;
+    ast.strValue = strValue;
+    return ast;
+  }
+  const timings = resolveTiming(strValue, errors);
+  return makeTimingAst(timings.duration, timings.delay, timings.easing);
+}
+function normalizeAnimationOptions(options) {
+  if (options) {
+    options = copyObj(options);
+    if (options['params']) {
+      options['params'] = normalizeParams(options['params']);
+    }
+  } else {
+    options = {};
+  }
+  return options;
+}
+function makeTimingAst(duration, delay, easing) {
+  return {
+    duration,
+    delay,
+    easing
+  };
+}
+function createTimelineInstruction(element, keyframes, preStyleProps, postStyleProps, duration, delay, easing = null, subTimeline = false) {
+  return {
+    type: 1 /* AnimationTransitionInstructionType.TimelineAnimation */,
+    element,
+    keyframes,
+    preStyleProps,
+    postStyleProps,
+    duration,
+    delay,
+    totalTime: duration + delay,
+    easing,
+    subTimeline
+  };
+}
+class ElementInstructionMap {
+  constructor() {
+    this._map = new Map();
+  }
+  get(element) {
+    return this._map.get(element) || [];
+  }
+  append(element, instructions) {
+    let existingInstructions = this._map.get(element);
+    if (!existingInstructions) {
+      this._map.set(element, existingInstructions = []);
+    }
+    existingInstructions.push(...instructions);
+  }
+  has(element) {
+    return this._map.has(element);
+  }
+  clear() {
+    this._map.clear();
+  }
+}
+const ONE_FRAME_IN_MILLISECONDS = 1;
+const ENTER_TOKEN = ':enter';
+const ENTER_TOKEN_REGEX = new RegExp(ENTER_TOKEN, 'g');
+const LEAVE_TOKEN = ':leave';
+const LEAVE_TOKEN_REGEX = new RegExp(LEAVE_TOKEN, 'g');
+/*
+ * The code within this file aims to generate web-animations-compatible keyframes from Angular's
+ * animation DSL code.
+ *
+ * The code below will be converted from:
+ *
+ * ```
+ * sequence([
+ *   style({ opacity: 0 }),
+ *   animate(1000, style({ opacity: 0 }))
+ * ])
+ * ```
+ *
+ * To:
+ * ```
+ * keyframes = [{ opacity: 0, offset: 0 }, { opacity: 1, offset: 1 }]
+ * duration = 1000
+ * delay = 0
+ * easing = ''
+ * ```
+ *
+ * For this operation to cover the combination of animation verbs (style, animate, group, etc...) a
+ * combination of AST traversal and merge-sort-like algorithms are used.
+ *
+ * [AST Traversal]
+ * Each of the animation verbs, when executed, will return an string-map object representing what
+ * type of action it is (style, animate, group, etc...) and the data associated with it. This means
+ * that when functional composition mix of these functions is evaluated (like in the example above)
+ * then it will end up producing a tree of objects representing the animation itself.
+ *
+ * When this animation object tree is processed by the visitor code below it will visit each of the
+ * verb statements within the visitor. And during each visit it will build the context of the
+ * animation keyframes by interacting with the `TimelineBuilder`.
+ *
+ * [TimelineBuilder]
+ * This class is responsible for tracking the styles and building a series of keyframe objects for a
+ * timeline between a start and end time. The builder starts off with an initial timeline and each
+ * time the AST comes across a `group()`, `keyframes()` or a combination of the two within a
+ * `sequence()` then it will generate a sub timeline for each step as well as a new one after
+ * they are complete.
+ *
+ * As the AST is traversed, the timing state on each of the timelines will be incremented. If a sub
+ * timeline was created (based on one of the cases above) then the parent timeline will attempt to
+ * merge the styles used within the sub timelines into itself (only with group() this will happen).
+ * This happens with a merge operation (much like how the merge works in mergeSort) and it will only
+ * copy the most recently used styles from the sub timelines into the parent timeline. This ensures
+ * that if the styles are used later on in another phase of the animation then they will be the most
+ * up-to-date values.
+ *
+ * [How Missing Styles Are Updated]
+ * Each timeline has a `backFill` property which is responsible for filling in new styles into
+ * already processed keyframes if a new style shows up later within the animation sequence.
+ *
+ * ```
+ * sequence([
+ *   style({ width: 0 }),
+ *   animate(1000, style({ width: 100 })),
+ *   animate(1000, style({ width: 200 })),
+ *   animate(1000, style({ width: 300 }))
+ *   animate(1000, style({ width: 400, height: 400 })) // notice how `height` doesn't exist anywhere
+ * else
+ * ])
+ * ```
+ *
+ * What is happening here is that the `height` value is added later in the sequence, but is missing
+ * from all previous animation steps. Therefore when a keyframe is created it would also be missing
+ * from all previous keyframes up until where it is first used. For the timeline keyframe generation
+ * to properly fill in the style it will place the previous value (the value from the parent
+ * timeline) or a default value of `*` into the backFill map. The `copyStyles` method in util.ts
+ * handles propagating that backfill map to the styles object.
+ *
+ * When a sub-timeline is created it will have its own backFill property. This is done so that
+ * styles present within the sub-timeline do not accidentally seep into the previous/future timeline
+ * keyframes
+ *
+ * [Validation]
+ * The code in this file is not responsible for validation. That functionality happens with within
+ * the `AnimationValidatorVisitor` code.
+ */
+function buildAnimationTimelines(driver, rootElement, ast, enterClassName, leaveClassName, startingStyles = new Map(), finalStyles = new Map(), options, subInstructions, errors = []) {
+  return new AnimationTimelineBuilderVisitor().buildKeyframes(driver, rootElement, ast, enterClassName, leaveClassName, startingStyles, finalStyles, options, subInstructions, errors);
+}
+class AnimationTimelineBuilderVisitor {
+  buildKeyframes(driver, rootElement, ast, enterClassName, leaveClassName, startingStyles, finalStyles, options, subInstructions, errors = []) {
+    subInstructions = subInstructions || new ElementInstructionMap();
+    const context = new AnimationTimelineContext(driver, rootElement, subInstructions, enterClassName, leaveClassName, errors, []);
+    context.options = options;
+    const delay = options.delay ? resolveTimingValue(options.delay) : 0;
+    context.currentTimeline.delayNextStep(delay);
+    context.currentTimeline.setStyles([startingStyles], null, context.errors, options);
+    visitDslNode(this, ast, context);
+    // this checks to see if an actual animation happened
+    const timelines = context.timelines.filter(timeline => timeline.containsAnimation());
+    // note: we just want to apply the final styles for the rootElement, so we do not
+    //       just apply the styles to the last timeline but the last timeline which
+    //       element is the root one (basically `*`-styles are replaced with the actual
+    //       state style values only for the root element)
+    if (timelines.length && finalStyles.size) {
+      let lastRootTimeline;
+      for (let i = timelines.length - 1; i >= 0; i--) {
+        const timeline = timelines[i];
+        if (timeline.element === rootElement) {
+          lastRootTimeline = timeline;
+          break;
+        }
+      }
+      if (lastRootTimeline && !lastRootTimeline.allowOnlyTimelineStyles()) {
+        lastRootTimeline.setStyles([finalStyles], null, context.errors, options);
+      }
+    }
+    return timelines.length ? timelines.map(timeline => timeline.buildKeyframes()) : [createTimelineInstruction(rootElement, [], [], [], 0, delay, '', false)];
+  }
+  visitTrigger(ast, context) {
+    // these values are not visited in this AST
+  }
+  visitState(ast, context) {
+    // these values are not visited in this AST
+  }
+  visitTransition(ast, context) {
+    // these values are not visited in this AST
+  }
+  visitAnimateChild(ast, context) {
+    const elementInstructions = context.subInstructions.get(context.element);
+    if (elementInstructions) {
+      const innerContext = context.createSubContext(ast.options);
+      const startTime = context.currentTimeline.currentTime;
+      const endTime = this._visitSubInstructions(elementInstructions, innerContext, innerContext.options);
+      if (startTime != endTime) {
+        // we do this on the upper context because we created a sub context for
+        // the sub child animations
+        context.transformIntoNewTimeline(endTime);
+      }
+    }
+    context.previousNode = ast;
+  }
+  visitAnimateRef(ast, context) {
+    const innerContext = context.createSubContext(ast.options);
+    innerContext.transformIntoNewTimeline();
+    this._applyAnimationRefDelays([ast.options, ast.animation.options], context, innerContext);
+    this.visitReference(ast.animation, innerContext);
+    context.transformIntoNewTimeline(innerContext.currentTimeline.currentTime);
+    context.previousNode = ast;
+  }
+  _applyAnimationRefDelays(animationsRefsOptions, context, innerContext) {
+    for (const animationRefOptions of animationsRefsOptions) {
+      const animationDelay = animationRefOptions?.delay;
+      if (animationDelay) {
+        const animationDelayValue = typeof animationDelay === 'number' ? animationDelay : resolveTimingValue(interpolateParams(animationDelay, animationRefOptions?.params ?? {}, context.errors));
+        innerContext.delayNextStep(animationDelayValue);
+      }
+    }
+  }
+  _visitSubInstructions(instructions, context, options) {
+    const startTime = context.currentTimeline.currentTime;
+    let furthestTime = startTime;
+    // this is a special-case for when a user wants to skip a sub
+    // animation from being fired entirely.
+    const duration = options.duration != null ? resolveTimingValue(options.duration) : null;
+    const delay = options.delay != null ? resolveTimingValue(options.delay) : null;
+    if (duration !== 0) {
+      instructions.forEach(instruction => {
+        const instructionTimings = context.appendInstructionToTimeline(instruction, duration, delay);
+        furthestTime = Math.max(furthestTime, instructionTimings.duration + instructionTimings.delay);
+      });
+    }
+    return furthestTime;
+  }
+  visitReference(ast, context) {
+    context.updateOptions(ast.options, true);
+    visitDslNode(this, ast.animation, context);
+    context.previousNode = ast;
+  }
+  visitSequence(ast, context) {
+    const subContextCount = context.subContextCount;
+    let ctx = context;
+    const options = ast.options;
+    if (options && (options.params || options.delay)) {
+      ctx = context.createSubContext(options);
+      ctx.transformIntoNewTimeline();
+      if (options.delay != null) {
+        if (ctx.previousNode.type == 6 /* AnimationMetadataType.Style */) {
+          ctx.currentTimeline.snapshotCurrentStyles();
+          ctx.previousNode = DEFAULT_NOOP_PREVIOUS_NODE;
+        }
+        const delay = resolveTimingValue(options.delay);
+        ctx.delayNextStep(delay);
+      }
+    }
+    if (ast.steps.length) {
+      ast.steps.forEach(s => visitDslNode(this, s, ctx));
+      // this is here just in case the inner steps only contain or end with a style() call
+      ctx.currentTimeline.applyStylesToKeyframe();
+      // this means that some animation function within the sequence
+      // ended up creating a sub timeline (which means the current
+      // timeline cannot overlap with the contents of the sequence)
+      if (ctx.subContextCount > subContextCount) {
+        ctx.transformIntoNewTimeline();
+      }
+    }
+    context.previousNode = ast;
+  }
+  visitGroup(ast, context) {
+    const innerTimelines = [];
+    let furthestTime = context.currentTimeline.currentTime;
+    const delay = ast.options && ast.options.delay ? resolveTimingValue(ast.options.delay) : 0;
+    ast.steps.forEach(s => {
+      const innerContext = context.createSubContext(ast.options);
+      if (delay) {
+        innerContext.delayNextStep(delay);
+      }
+      visitDslNode(this, s, innerContext);
+      furthestTime = Math.max(furthestTime, innerContext.currentTimeline.currentTime);
+      innerTimelines.push(innerContext.currentTimeline);
+    });
+    // this operation is run after the AST loop because otherwise
+    // if the parent timeline's collected styles were updated then
+    // it would pass in invalid data into the new-to-be forked items
+    innerTimelines.forEach(timeline => context.currentTimeline.mergeTimelineCollectedStyles(timeline));
+    context.transformIntoNewTimeline(furthestTime);
+    context.previousNode = ast;
+  }
+  _visitTiming(ast, context) {
+    if (ast.dynamic) {
+      const strValue = ast.strValue;
+      const timingValue = context.params ? interpolateParams(strValue, context.params, context.errors) : strValue;
+      return resolveTiming(timingValue, context.errors);
+    } else {
+      return {
+        duration: ast.duration,
+        delay: ast.delay,
+        easing: ast.easing
+      };
+    }
+  }
+  visitAnimate(ast, context) {
+    const timings = context.currentAnimateTimings = this._visitTiming(ast.timings, context);
+    const timeline = context.currentTimeline;
+    if (timings.delay) {
+      context.incrementTime(timings.delay);
+      timeline.snapshotCurrentStyles();
+    }
+    const style = ast.style;
+    if (style.type == 5 /* AnimationMetadataType.Keyframes */) {
+      this.visitKeyframes(style, context);
+    } else {
+      context.incrementTime(timings.duration);
+      this.visitStyle(style, context);
+      timeline.applyStylesToKeyframe();
+    }
+    context.currentAnimateTimings = null;
+    context.previousNode = ast;
+  }
+  visitStyle(ast, context) {
+    const timeline = context.currentTimeline;
+    const timings = context.currentAnimateTimings;
+    // this is a special case for when a style() call
+    // directly follows  an animate() call (but not inside of an animate() call)
+    if (!timings && timeline.hasCurrentStyleProperties()) {
+      timeline.forwardFrame();
+    }
+    const easing = timings && timings.easing || ast.easing;
+    if (ast.isEmptyStep) {
+      timeline.applyEmptyStep(easing);
+    } else {
+      timeline.setStyles(ast.styles, easing, context.errors, context.options);
+    }
+    context.previousNode = ast;
+  }
+  visitKeyframes(ast, context) {
+    const currentAnimateTimings = context.currentAnimateTimings;
+    const startTime = context.currentTimeline.duration;
+    const duration = currentAnimateTimings.duration;
+    const innerContext = context.createSubContext();
+    const innerTimeline = innerContext.currentTimeline;
+    innerTimeline.easing = currentAnimateTimings.easing;
+    ast.styles.forEach(step => {
+      const offset = step.offset || 0;
+      innerTimeline.forwardTime(offset * duration);
+      innerTimeline.setStyles(step.styles, step.easing, context.errors, context.options);
+      innerTimeline.applyStylesToKeyframe();
+    });
+    // this will ensure that the parent timeline gets all the styles from
+    // the child even if the new timeline below is not used
+    context.currentTimeline.mergeTimelineCollectedStyles(innerTimeline);
+    // we do this because the window between this timeline and the sub timeline
+    // should ensure that the styles within are exactly the same as they were before
+    context.transformIntoNewTimeline(startTime + duration);
+    context.previousNode = ast;
+  }
+  visitQuery(ast, context) {
+    // in the event that the first step before this is a style step we need
+    // to ensure the styles are applied before the children are animated
+    const startTime = context.currentTimeline.currentTime;
+    const options = ast.options || {};
+    const delay = options.delay ? resolveTimingValue(options.delay) : 0;
+    if (delay && (context.previousNode.type === 6 /* AnimationMetadataType.Style */ || startTime == 0 && context.currentTimeline.hasCurrentStyleProperties())) {
+      context.currentTimeline.snapshotCurrentStyles();
+      context.previousNode = DEFAULT_NOOP_PREVIOUS_NODE;
+    }
+    let furthestTime = startTime;
+    const elms = context.invokeQuery(ast.selector, ast.originalSelector, ast.limit, ast.includeSelf, options.optional ? true : false, context.errors);
+    context.currentQueryTotal = elms.length;
+    let sameElementTimeline = null;
+    elms.forEach((element, i) => {
+      context.currentQueryIndex = i;
+      const innerContext = context.createSubContext(ast.options, element);
+      if (delay) {
+        innerContext.delayNextStep(delay);
+      }
+      if (element === context.element) {
+        sameElementTimeline = innerContext.currentTimeline;
+      }
+      visitDslNode(this, ast.animation, innerContext);
+      // this is here just incase the inner steps only contain or end
+      // with a style() call (which is here to signal that this is a preparatory
+      // call to style an element before it is animated again)
+      innerContext.currentTimeline.applyStylesToKeyframe();
+      const endTime = innerContext.currentTimeline.currentTime;
+      furthestTime = Math.max(furthestTime, endTime);
+    });
+    context.currentQueryIndex = 0;
+    context.currentQueryTotal = 0;
+    context.transformIntoNewTimeline(furthestTime);
+    if (sameElementTimeline) {
+      context.currentTimeline.mergeTimelineCollectedStyles(sameElementTimeline);
+      context.currentTimeline.snapshotCurrentStyles();
+    }
+    context.previousNode = ast;
+  }
+  visitStagger(ast, context) {
+    const parentContext = context.parentContext;
+    const tl = context.currentTimeline;
+    const timings = ast.timings;
+    const duration = Math.abs(timings.duration);
+    const maxTime = duration * (context.currentQueryTotal - 1);
+    let delay = duration * context.currentQueryIndex;
+    let staggerTransformer = timings.duration < 0 ? 'reverse' : timings.easing;
+    switch (staggerTransformer) {
+      case 'reverse':
+        delay = maxTime - delay;
+        break;
+      case 'full':
+        delay = parentContext.currentStaggerTime;
+        break;
+    }
+    const timeline = context.currentTimeline;
+    if (delay) {
+      timeline.delayNextStep(delay);
+    }
+    const startingTime = timeline.currentTime;
+    visitDslNode(this, ast.animation, context);
+    context.previousNode = ast;
+    // time = duration + delay
+    // the reason why this computation is so complex is because
+    // the inner timeline may either have a delay value or a stretched
+    // keyframe depending on if a subtimeline is not used or is used.
+    parentContext.currentStaggerTime = tl.currentTime - startingTime + (tl.startTime - parentContext.currentTimeline.startTime);
+  }
+}
+const DEFAULT_NOOP_PREVIOUS_NODE = {};
+class AnimationTimelineContext {
+  constructor(_driver, element, subInstructions, _enterClassName, _leaveClassName, errors, timelines, initialTimeline) {
+    this._driver = _driver;
+    this.element = element;
+    this.subInstructions = subInstructions;
+    this._enterClassName = _enterClassName;
+    this._leaveClassName = _leaveClassName;
+    this.errors = errors;
+    this.timelines = timelines;
+    this.parentContext = null;
+    this.currentAnimateTimings = null;
+    this.previousNode = DEFAULT_NOOP_PREVIOUS_NODE;
+    this.subContextCount = 0;
+    this.options = {};
+    this.currentQueryIndex = 0;
+    this.currentQueryTotal = 0;
+    this.currentStaggerTime = 0;
+    this.currentTimeline = initialTimeline || new TimelineBuilder(this._driver, element, 0);
+    timelines.push(this.currentTimeline);
+  }
+  get params() {
+    return this.options.params;
+  }
+  updateOptions(options, skipIfExists) {
+    if (!options) return;
+    const newOptions = options;
+    let optionsToUpdate = this.options;
+    // NOTE: this will get patched up when other animation methods support duration overrides
+    if (newOptions.duration != null) {
+      optionsToUpdate.duration = resolveTimingValue(newOptions.duration);
+    }
+    if (newOptions.delay != null) {
+      optionsToUpdate.delay = resolveTimingValue(newOptions.delay);
+    }
+    const newParams = newOptions.params;
+    if (newParams) {
+      let paramsToUpdate = optionsToUpdate.params;
+      if (!paramsToUpdate) {
+        paramsToUpdate = this.options.params = {};
+      }
+      Object.keys(newParams).forEach(name => {
+        if (!skipIfExists || !paramsToUpdate.hasOwnProperty(name)) {
+          paramsToUpdate[name] = interpolateParams(newParams[name], paramsToUpdate, this.errors);
+        }
+      });
+    }
+  }
+  _copyOptions() {
+    const options = {};
+    if (this.options) {
+      const oldParams = this.options.params;
+      if (oldParams) {
+        const params = options['params'] = {};
+        Object.keys(oldParams).forEach(name => {
+          params[name] = oldParams[name];
+        });
+      }
+    }
+    return options;
+  }
+  createSubContext(options = null, element, newTime) {
+    const target = element || this.element;
+    const context = new AnimationTimelineContext(this._driver, target, this.subInstructions, this._enterClassName, this._leaveClassName, this.errors, this.timelines, this.currentTimeline.fork(target, newTime || 0));
+    context.previousNode = this.previousNode;
+    context.currentAnimateTimings = this.currentAnimateTimings;
+    context.options = this._copyOptions();
+    context.updateOptions(options);
+    context.currentQueryIndex = this.currentQueryIndex;
+    context.currentQueryTotal = this.currentQueryTotal;
+    context.parentContext = this;
+    this.subContextCount++;
+    return context;
+  }
+  transformIntoNewTimeline(newTime) {
+    this.previousNode = DEFAULT_NOOP_PREVIOUS_NODE;
+    this.currentTimeline = this.currentTimeline.fork(this.element, newTime);
+    this.timelines.push(this.currentTimeline);
+    return this.currentTimeline;
+  }
+  appendInstructionToTimeline(instruction, duration, delay) {
+    const updatedTimings = {
+      duration: duration != null ? duration : instruction.duration,
+      delay: this.currentTimeline.currentTime + (delay != null ? delay : 0) + instruction.delay,
+      easing: ''
+    };
+    const builder = new SubTimelineBuilder(this._driver, instruction.element, instruction.keyframes, instruction.preStyleProps, instruction.postStyleProps, updatedTimings, instruction.stretchStartingKeyframe);
+    this.timelines.push(builder);
+    return updatedTimings;
+  }
+  incrementTime(time) {
+    this.currentTimeline.forwardTime(this.currentTimeline.duration + time);
+  }
+  delayNextStep(delay) {
+    // negative delays are not yet supported
+    if (delay > 0) {
+      this.currentTimeline.delayNextStep(delay);
+    }
+  }
+  invokeQuery(selector, originalSelector, limit, includeSelf, optional, errors) {
+    let results = [];
+    if (includeSelf) {
+      results.push(this.element);
+    }
+    if (selector.length > 0) {
+      // only if :self is used then the selector can be empty
+      selector = selector.replace(ENTER_TOKEN_REGEX, '.' + this._enterClassName);
+      selector = selector.replace(LEAVE_TOKEN_REGEX, '.' + this._leaveClassName);
+      const multi = limit != 1;
+      let elements = this._driver.query(this.element, selector, multi);
+      if (limit !== 0) {
+        elements = limit < 0 ? elements.slice(elements.length + limit, elements.length) : elements.slice(0, limit);
+      }
+      results.push(...elements);
+    }
+    if (!optional && results.length == 0) {
+      errors.push(invalidQuery(originalSelector));
+    }
+    return results;
+  }
+}
+class TimelineBuilder {
+  constructor(_driver, element, startTime, _elementTimelineStylesLookup) {
+    this._driver = _driver;
+    this.element = element;
+    this.startTime = startTime;
+    this._elementTimelineStylesLookup = _elementTimelineStylesLookup;
+    this.duration = 0;
+    this.easing = null;
+    this._previousKeyframe = new Map();
+    this._currentKeyframe = new Map();
+    this._keyframes = new Map();
+    this._styleSummary = new Map();
+    this._localTimelineStyles = new Map();
+    this._pendingStyles = new Map();
+    this._backFill = new Map();
+    this._currentEmptyStepKeyframe = null;
+    if (!this._elementTimelineStylesLookup) {
+      this._elementTimelineStylesLookup = new Map();
+    }
+    this._globalTimelineStyles = this._elementTimelineStylesLookup.get(element);
+    if (!this._globalTimelineStyles) {
+      this._globalTimelineStyles = this._localTimelineStyles;
+      this._elementTimelineStylesLookup.set(element, this._localTimelineStyles);
+    }
+    this._loadKeyframe();
+  }
+  containsAnimation() {
+    switch (this._keyframes.size) {
+      case 0:
+        return false;
+      case 1:
+        return this.hasCurrentStyleProperties();
+      default:
+        return true;
+    }
+  }
+  hasCurrentStyleProperties() {
+    return this._currentKeyframe.size > 0;
+  }
+  get currentTime() {
+    return this.startTime + this.duration;
+  }
+  delayNextStep(delay) {
+    // in the event that a style() step is placed right before a stagger()
+    // and that style() step is the very first style() value in the animation
+    // then we need to make a copy of the keyframe [0, copy, 1] so that the delay
+    // properly applies the style() values to work with the stagger...
+    const hasPreStyleStep = this._keyframes.size === 1 && this._pendingStyles.size;
+    if (this.duration || hasPreStyleStep) {
+      this.forwardTime(this.currentTime + delay);
+      if (hasPreStyleStep) {
+        this.snapshotCurrentStyles();
+      }
+    } else {
+      this.startTime += delay;
+    }
+  }
+  fork(element, currentTime) {
+    this.applyStylesToKeyframe();
+    return new TimelineBuilder(this._driver, element, currentTime || this.currentTime, this._elementTimelineStylesLookup);
+  }
+  _loadKeyframe() {
+    if (this._currentKeyframe) {
+      this._previousKeyframe = this._currentKeyframe;
+    }
+    this._currentKeyframe = this._keyframes.get(this.duration);
+    if (!this._currentKeyframe) {
+      this._currentKeyframe = new Map();
+      this._keyframes.set(this.duration, this._currentKeyframe);
+    }
+  }
+  forwardFrame() {
+    this.duration += ONE_FRAME_IN_MILLISECONDS;
+    this._loadKeyframe();
+  }
+  forwardTime(time) {
+    this.applyStylesToKeyframe();
+    this.duration = time;
+    this._loadKeyframe();
+  }
+  _updateStyle(prop, value) {
+    this._localTimelineStyles.set(prop, value);
+    this._globalTimelineStyles.set(prop, value);
+    this._styleSummary.set(prop, {
+      time: this.currentTime,
+      value
+    });
+  }
+  allowOnlyTimelineStyles() {
+    return this._currentEmptyStepKeyframe !== this._currentKeyframe;
+  }
+  applyEmptyStep(easing) {
+    if (easing) {
+      this._previousKeyframe.set('easing', easing);
+    }
+    // special case for animate(duration):
+    // all missing styles are filled with a `*` value then
+    // if any destination styles are filled in later on the same
+    // keyframe then they will override the overridden styles
+    // We use `_globalTimelineStyles` here because there may be
+    // styles in previous keyframes that are not present in this timeline
+    for (let [prop, value] of this._globalTimelineStyles) {
+      this._backFill.set(prop, value || _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE);
+      this._currentKeyframe.set(prop, _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE);
+    }
+    this._currentEmptyStepKeyframe = this._currentKeyframe;
+  }
+  setStyles(input, easing, errors, options) {
+    if (easing) {
+      this._previousKeyframe.set('easing', easing);
+    }
+    const params = options && options.params || {};
+    const styles = flattenStyles(input, this._globalTimelineStyles);
+    for (let [prop, value] of styles) {
+      const val = interpolateParams(value, params, errors);
+      this._pendingStyles.set(prop, val);
+      if (!this._localTimelineStyles.has(prop)) {
+        this._backFill.set(prop, this._globalTimelineStyles.get(prop) ?? _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE);
+      }
+      this._updateStyle(prop, val);
+    }
+  }
+  applyStylesToKeyframe() {
+    if (this._pendingStyles.size == 0) return;
+    this._pendingStyles.forEach((val, prop) => {
+      this._currentKeyframe.set(prop, val);
+    });
+    this._pendingStyles.clear();
+    this._localTimelineStyles.forEach((val, prop) => {
+      if (!this._currentKeyframe.has(prop)) {
+        this._currentKeyframe.set(prop, val);
+      }
+    });
+  }
+  snapshotCurrentStyles() {
+    for (let [prop, val] of this._localTimelineStyles) {
+      this._pendingStyles.set(prop, val);
+      this._updateStyle(prop, val);
+    }
+  }
+  getFinalKeyframe() {
+    return this._keyframes.get(this.duration);
+  }
+  get properties() {
+    const properties = [];
+    for (let prop in this._currentKeyframe) {
+      properties.push(prop);
+    }
+    return properties;
+  }
+  mergeTimelineCollectedStyles(timeline) {
+    timeline._styleSummary.forEach((details1, prop) => {
+      const details0 = this._styleSummary.get(prop);
+      if (!details0 || details1.time > details0.time) {
+        this._updateStyle(prop, details1.value);
+      }
+    });
+  }
+  buildKeyframes() {
+    this.applyStylesToKeyframe();
+    const preStyleProps = new Set();
+    const postStyleProps = new Set();
+    const isEmpty = this._keyframes.size === 1 && this.duration === 0;
+    let finalKeyframes = [];
+    this._keyframes.forEach((keyframe, time) => {
+      const finalKeyframe = copyStyles(keyframe, new Map(), this._backFill);
+      finalKeyframe.forEach((value, prop) => {
+        if (value === _angular_animations__WEBPACK_IMPORTED_MODULE_1__["ɵPRE_STYLE"]) {
+          preStyleProps.add(prop);
+        } else if (value === _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE) {
+          postStyleProps.add(prop);
+        }
+      });
+      if (!isEmpty) {
+        finalKeyframe.set('offset', time / this.duration);
+      }
+      finalKeyframes.push(finalKeyframe);
+    });
+    const preProps = preStyleProps.size ? iteratorToArray(preStyleProps.values()) : [];
+    const postProps = postStyleProps.size ? iteratorToArray(postStyleProps.values()) : [];
+    // special case for a 0-second animation (which is designed just to place styles onscreen)
+    if (isEmpty) {
+      const kf0 = finalKeyframes[0];
+      const kf1 = new Map(kf0);
+      kf0.set('offset', 0);
+      kf1.set('offset', 1);
+      finalKeyframes = [kf0, kf1];
+    }
+    return createTimelineInstruction(this.element, finalKeyframes, preProps, postProps, this.duration, this.startTime, this.easing, false);
+  }
+}
+class SubTimelineBuilder extends TimelineBuilder {
+  constructor(driver, element, keyframes, preStyleProps, postStyleProps, timings, _stretchStartingKeyframe = false) {
+    super(driver, element, timings.delay);
+    this.keyframes = keyframes;
+    this.preStyleProps = preStyleProps;
+    this.postStyleProps = postStyleProps;
+    this._stretchStartingKeyframe = _stretchStartingKeyframe;
+    this.timings = {
+      duration: timings.duration,
+      delay: timings.delay,
+      easing: timings.easing
+    };
+  }
+  containsAnimation() {
+    return this.keyframes.length > 1;
+  }
+  buildKeyframes() {
+    let keyframes = this.keyframes;
+    let {
+      delay,
+      duration,
+      easing
+    } = this.timings;
+    if (this._stretchStartingKeyframe && delay) {
+      const newKeyframes = [];
+      const totalTime = duration + delay;
+      const startingGap = delay / totalTime;
+      // the original starting keyframe now starts once the delay is done
+      const newFirstKeyframe = copyStyles(keyframes[0]);
+      newFirstKeyframe.set('offset', 0);
+      newKeyframes.push(newFirstKeyframe);
+      const oldFirstKeyframe = copyStyles(keyframes[0]);
+      oldFirstKeyframe.set('offset', roundOffset(startingGap));
+      newKeyframes.push(oldFirstKeyframe);
+      /*
+        When the keyframe is stretched then it means that the delay before the animation
+        starts is gone. Instead the first keyframe is placed at the start of the animation
+        and it is then copied to where it starts when the original delay is over. This basically
+        means nothing animates during that delay, but the styles are still rendered. For this
+        to work the original offset values that exist in the original keyframes must be "warped"
+        so that they can take the new keyframe + delay into account.
+               delay=1000, duration=1000, keyframes = 0 .5 1
+               turns into
+               delay=0, duration=2000, keyframes = 0 .33 .66 1
+       */
+      // offsets between 1 ... n -1 are all warped by the keyframe stretch
+      const limit = keyframes.length - 1;
+      for (let i = 1; i <= limit; i++) {
+        let kf = copyStyles(keyframes[i]);
+        const oldOffset = kf.get('offset');
+        const timeAtKeyframe = delay + oldOffset * duration;
+        kf.set('offset', roundOffset(timeAtKeyframe / totalTime));
+        newKeyframes.push(kf);
+      }
+      // the new starting keyframe should be added at the start
+      duration = totalTime;
+      delay = 0;
+      easing = '';
+      keyframes = newKeyframes;
+    }
+    return createTimelineInstruction(this.element, keyframes, this.preStyleProps, this.postStyleProps, duration, delay, easing, true);
+  }
+}
+function roundOffset(offset, decimalPoints = 3) {
+  const mult = Math.pow(10, decimalPoints - 1);
+  return Math.round(offset * mult) / mult;
+}
+function flattenStyles(input, allStyles) {
+  const styles = new Map();
+  let allProperties;
+  input.forEach(token => {
+    if (token === '*') {
+      allProperties = allProperties || allStyles.keys();
+      for (let prop of allProperties) {
+        styles.set(prop, _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE);
+      }
+    } else {
+      copyStyles(token, styles);
+    }
+  });
+  return styles;
+}
+class Animation {
+  constructor(_driver, input) {
+    this._driver = _driver;
+    const errors = [];
+    const warnings = [];
+    const ast = buildAnimationAst(_driver, input, errors, warnings);
+    if (errors.length) {
+      throw validationFailed(errors);
+    }
+    if (warnings.length) {
+      warnValidation(warnings);
+    }
+    this._animationAst = ast;
+  }
+  buildTimelines(element, startingStyles, destinationStyles, options, subInstructions) {
+    const start = Array.isArray(startingStyles) ? normalizeStyles(startingStyles) : startingStyles;
+    const dest = Array.isArray(destinationStyles) ? normalizeStyles(destinationStyles) : destinationStyles;
+    const errors = [];
+    subInstructions = subInstructions || new ElementInstructionMap();
+    const result = buildAnimationTimelines(this._driver, element, this._animationAst, ENTER_CLASSNAME, LEAVE_CLASSNAME, start, dest, options, subInstructions, errors);
+    if (errors.length) {
+      throw buildingFailed(errors);
+    }
+    return result;
+  }
+}
+
+/**
+ * @publicApi
+ */
+class AnimationStyleNormalizer {}
+/**
+ * @publicApi
+ */
+class NoopAnimationStyleNormalizer {
+  normalizePropertyName(propertyName, errors) {
+    return propertyName;
+  }
+  normalizeStyleValue(userProvidedProperty, normalizedProperty, value, errors) {
+    return value;
+  }
+}
+const DIMENSIONAL_PROP_SET = new Set(['width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight', 'left', 'top', 'bottom', 'right', 'fontSize', 'outlineWidth', 'outlineOffset', 'paddingTop', 'paddingLeft', 'paddingBottom', 'paddingRight', 'marginTop', 'marginLeft', 'marginBottom', 'marginRight', 'borderRadius', 'borderWidth', 'borderTopWidth', 'borderLeftWidth', 'borderRightWidth', 'borderBottomWidth', 'textIndent', 'perspective']);
+class WebAnimationsStyleNormalizer extends AnimationStyleNormalizer {
+  normalizePropertyName(propertyName, errors) {
+    return dashCaseToCamelCase(propertyName);
+  }
+  normalizeStyleValue(userProvidedProperty, normalizedProperty, value, errors) {
+    let unit = '';
+    const strVal = value.toString().trim();
+    if (DIMENSIONAL_PROP_SET.has(normalizedProperty) && value !== 0 && value !== '0') {
+      if (typeof value === 'number') {
+        unit = 'px';
+      } else {
+        const valAndSuffixMatch = value.match(/^[+-]?[\d\.]+([a-z]*)$/);
+        if (valAndSuffixMatch && valAndSuffixMatch[1].length == 0) {
+          errors.push(invalidCssUnitValue(userProvidedProperty, value));
+        }
+      }
+    }
+    return strVal + unit;
+  }
+}
+function createTransitionInstruction(element, triggerName, fromState, toState, isRemovalTransition, fromStyles, toStyles, timelines, queriedElements, preStyleProps, postStyleProps, totalTime, errors) {
+  return {
+    type: 0 /* AnimationTransitionInstructionType.TransitionAnimation */,
+    element,
+    triggerName,
+    isRemovalTransition,
+    fromState,
+    fromStyles,
+    toState,
+    toStyles,
+    timelines,
+    queriedElements,
+    preStyleProps,
+    postStyleProps,
+    totalTime,
+    errors
+  };
+}
+const EMPTY_OBJECT = {};
+class AnimationTransitionFactory {
+  constructor(_triggerName, ast, _stateStyles) {
+    this._triggerName = _triggerName;
+    this.ast = ast;
+    this._stateStyles = _stateStyles;
+  }
+  match(currentState, nextState, element, params) {
+    return oneOrMoreTransitionsMatch(this.ast.matchers, currentState, nextState, element, params);
+  }
+  buildStyles(stateName, params, errors) {
+    let styler = this._stateStyles.get('*');
+    if (stateName !== undefined) {
+      styler = this._stateStyles.get(stateName?.toString()) || styler;
+    }
+    return styler ? styler.buildStyles(params, errors) : new Map();
+  }
+  build(driver, element, currentState, nextState, enterClassName, leaveClassName, currentOptions, nextOptions, subInstructions, skipAstBuild) {
+    const errors = [];
+    const transitionAnimationParams = this.ast.options && this.ast.options.params || EMPTY_OBJECT;
+    const currentAnimationParams = currentOptions && currentOptions.params || EMPTY_OBJECT;
+    const currentStateStyles = this.buildStyles(currentState, currentAnimationParams, errors);
+    const nextAnimationParams = nextOptions && nextOptions.params || EMPTY_OBJECT;
+    const nextStateStyles = this.buildStyles(nextState, nextAnimationParams, errors);
+    const queriedElements = new Set();
+    const preStyleMap = new Map();
+    const postStyleMap = new Map();
+    const isRemoval = nextState === 'void';
+    const animationOptions = {
+      params: applyParamDefaults(nextAnimationParams, transitionAnimationParams),
+      delay: this.ast.options?.delay
+    };
+    const timelines = skipAstBuild ? [] : buildAnimationTimelines(driver, element, this.ast.animation, enterClassName, leaveClassName, currentStateStyles, nextStateStyles, animationOptions, subInstructions, errors);
+    let totalTime = 0;
+    timelines.forEach(tl => {
+      totalTime = Math.max(tl.duration + tl.delay, totalTime);
+    });
+    if (errors.length) {
+      return createTransitionInstruction(element, this._triggerName, currentState, nextState, isRemoval, currentStateStyles, nextStateStyles, [], [], preStyleMap, postStyleMap, totalTime, errors);
+    }
+    timelines.forEach(tl => {
+      const elm = tl.element;
+      const preProps = getOrSetDefaultValue(preStyleMap, elm, new Set());
+      tl.preStyleProps.forEach(prop => preProps.add(prop));
+      const postProps = getOrSetDefaultValue(postStyleMap, elm, new Set());
+      tl.postStyleProps.forEach(prop => postProps.add(prop));
+      if (elm !== element) {
+        queriedElements.add(elm);
+      }
+    });
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      checkNonAnimatableInTimelines(timelines, this._triggerName, driver);
+    }
+    const queriedElementsList = iteratorToArray(queriedElements.values());
+    return createTransitionInstruction(element, this._triggerName, currentState, nextState, isRemoval, currentStateStyles, nextStateStyles, timelines, queriedElementsList, preStyleMap, postStyleMap, totalTime);
+  }
+}
+/**
+ * Checks inside a set of timelines if they try to animate a css property which is not considered
+ * animatable, in that case it prints a warning on the console.
+ * Besides that the function doesn't have any other effect.
+ *
+ * Note: this check is done here after the timelines are built instead of doing on a lower level so
+ * that we can make sure that the warning appears only once per instruction (we can aggregate here
+ * all the issues instead of finding them separately).
+ *
+ * @param timelines The built timelines for the current instruction.
+ * @param triggerName The name of the trigger for the current instruction.
+ * @param driver Animation driver used to perform the check.
+ *
+ */
+function checkNonAnimatableInTimelines(timelines, triggerName, driver) {
+  if (!driver.validateAnimatableStyleProperty) {
+    return;
+  }
+  const allowedNonAnimatableProps = new Set([
+  // 'easing' is a utility/synthetic prop we use to represent
+  // easing functions, it represents a property of the animation
+  // which is not animatable but different values can be used
+  // in different steps
+  'easing']);
+  const invalidNonAnimatableProps = new Set();
+  timelines.forEach(({
+    keyframes
+  }) => {
+    const nonAnimatablePropsInitialValues = new Map();
+    keyframes.forEach(keyframe => {
+      const entriesToCheck = Array.from(keyframe.entries()).filter(([prop]) => !allowedNonAnimatableProps.has(prop));
+      for (const [prop, value] of entriesToCheck) {
+        if (!driver.validateAnimatableStyleProperty(prop)) {
+          if (nonAnimatablePropsInitialValues.has(prop) && !invalidNonAnimatableProps.has(prop)) {
+            const propInitialValue = nonAnimatablePropsInitialValues.get(prop);
+            if (propInitialValue !== value) {
+              invalidNonAnimatableProps.add(prop);
+            }
+          } else {
+            nonAnimatablePropsInitialValues.set(prop, value);
+          }
+        }
+      }
+    });
+  });
+  if (invalidNonAnimatableProps.size > 0) {
+    console.warn(`Warning: The animation trigger "${triggerName}" is attempting to animate the following` + ' not animatable properties: ' + Array.from(invalidNonAnimatableProps).join(', ') + '\n' + '(to check the list of all animatable properties visit https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animated_properties)');
+  }
+}
+function oneOrMoreTransitionsMatch(matchFns, currentState, nextState, element, params) {
+  return matchFns.some(fn => fn(currentState, nextState, element, params));
+}
+function applyParamDefaults(userParams, defaults) {
+  const result = copyObj(defaults);
+  for (const key in userParams) {
+    if (userParams.hasOwnProperty(key) && userParams[key] != null) {
+      result[key] = userParams[key];
+    }
+  }
+  return result;
+}
+class AnimationStateStyles {
+  constructor(styles, defaultParams, normalizer) {
+    this.styles = styles;
+    this.defaultParams = defaultParams;
+    this.normalizer = normalizer;
+  }
+  buildStyles(params, errors) {
+    const finalStyles = new Map();
+    const combinedParams = copyObj(this.defaultParams);
+    Object.keys(params).forEach(key => {
+      const value = params[key];
+      if (value !== null) {
+        combinedParams[key] = value;
+      }
+    });
+    this.styles.styles.forEach(value => {
+      if (typeof value !== 'string') {
+        value.forEach((val, prop) => {
+          if (val) {
+            val = interpolateParams(val, combinedParams, errors);
+          }
+          const normalizedProp = this.normalizer.normalizePropertyName(prop, errors);
+          val = this.normalizer.normalizeStyleValue(prop, normalizedProp, val, errors);
+          finalStyles.set(prop, val);
+        });
+      }
+    });
+    return finalStyles;
+  }
+}
+function buildTrigger(name, ast, normalizer) {
+  return new AnimationTrigger(name, ast, normalizer);
+}
+class AnimationTrigger {
+  constructor(name, ast, _normalizer) {
+    this.name = name;
+    this.ast = ast;
+    this._normalizer = _normalizer;
+    this.transitionFactories = [];
+    this.states = new Map();
+    ast.states.forEach(ast => {
+      const defaultParams = ast.options && ast.options.params || {};
+      this.states.set(ast.name, new AnimationStateStyles(ast.style, defaultParams, _normalizer));
+    });
+    balanceProperties(this.states, 'true', '1');
+    balanceProperties(this.states, 'false', '0');
+    ast.transitions.forEach(ast => {
+      this.transitionFactories.push(new AnimationTransitionFactory(name, ast, this.states));
+    });
+    this.fallbackTransition = createFallbackTransition(name, this.states, this._normalizer);
+  }
+  get containsQueries() {
+    return this.ast.queryCount > 0;
+  }
+  matchTransition(currentState, nextState, element, params) {
+    const entry = this.transitionFactories.find(f => f.match(currentState, nextState, element, params));
+    return entry || null;
+  }
+  matchStyles(currentState, params, errors) {
+    return this.fallbackTransition.buildStyles(currentState, params, errors);
+  }
+}
+function createFallbackTransition(triggerName, states, normalizer) {
+  const matchers = [(fromState, toState) => true];
+  const animation = {
+    type: 2 /* AnimationMetadataType.Sequence */,
+    steps: [],
+    options: null
+  };
+  const transition = {
+    type: 1 /* AnimationMetadataType.Transition */,
+    animation,
+    matchers,
+    options: null,
+    queryCount: 0,
+    depCount: 0
+  };
+  return new AnimationTransitionFactory(triggerName, transition, states);
+}
+function balanceProperties(stateMap, key1, key2) {
+  if (stateMap.has(key1)) {
+    if (!stateMap.has(key2)) {
+      stateMap.set(key2, stateMap.get(key1));
+    }
+  } else if (stateMap.has(key2)) {
+    stateMap.set(key1, stateMap.get(key2));
+  }
+}
+const EMPTY_INSTRUCTION_MAP = new ElementInstructionMap();
+class TimelineAnimationEngine {
+  constructor(bodyNode, _driver, _normalizer) {
+    this.bodyNode = bodyNode;
+    this._driver = _driver;
+    this._normalizer = _normalizer;
+    this._animations = new Map();
+    this._playersById = new Map();
+    this.players = [];
+  }
+  register(id, metadata) {
+    const errors = [];
+    const warnings = [];
+    const ast = buildAnimationAst(this._driver, metadata, errors, warnings);
+    if (errors.length) {
+      throw registerFailed(errors);
+    } else {
+      if (warnings.length) {
+        warnRegister(warnings);
+      }
+      this._animations.set(id, ast);
+    }
+  }
+  _buildPlayer(i, preStyles, postStyles) {
+    const element = i.element;
+    const keyframes = normalizeKeyframes$1(this._normalizer, i.keyframes, preStyles, postStyles);
+    return this._driver.animate(element, keyframes, i.duration, i.delay, i.easing, [], true);
+  }
+  create(id, element, options = {}) {
+    const errors = [];
+    const ast = this._animations.get(id);
+    let instructions;
+    const autoStylesMap = new Map();
+    if (ast) {
+      instructions = buildAnimationTimelines(this._driver, element, ast, ENTER_CLASSNAME, LEAVE_CLASSNAME, new Map(), new Map(), options, EMPTY_INSTRUCTION_MAP, errors);
+      instructions.forEach(inst => {
+        const styles = getOrSetDefaultValue(autoStylesMap, inst.element, new Map());
+        inst.postStyleProps.forEach(prop => styles.set(prop, null));
+      });
+    } else {
+      errors.push(missingOrDestroyedAnimation());
+      instructions = [];
+    }
+    if (errors.length) {
+      throw createAnimationFailed(errors);
+    }
+    autoStylesMap.forEach((styles, element) => {
+      styles.forEach((_, prop) => {
+        styles.set(prop, this._driver.computeStyle(element, prop, _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE));
+      });
+    });
+    const players = instructions.map(i => {
+      const styles = autoStylesMap.get(i.element);
+      return this._buildPlayer(i, new Map(), styles);
+    });
+    const player = optimizeGroupPlayer(players);
+    this._playersById.set(id, player);
+    player.onDestroy(() => this.destroy(id));
+    this.players.push(player);
+    return player;
+  }
+  destroy(id) {
+    const player = this._getPlayer(id);
+    player.destroy();
+    this._playersById.delete(id);
+    const index = this.players.indexOf(player);
+    if (index >= 0) {
+      this.players.splice(index, 1);
+    }
+  }
+  _getPlayer(id) {
+    const player = this._playersById.get(id);
+    if (!player) {
+      throw missingPlayer(id);
+    }
+    return player;
+  }
+  listen(id, element, eventName, callback) {
+    // triggerName, fromState, toState are all ignored for timeline animations
+    const baseEvent = makeAnimationEvent(element, '', '', '');
+    listenOnPlayer(this._getPlayer(id), eventName, baseEvent, callback);
+    return () => {};
+  }
+  command(id, element, command, args) {
+    if (command == 'register') {
+      this.register(id, args[0]);
+      return;
+    }
+    if (command == 'create') {
+      const options = args[0] || {};
+      this.create(id, element, options);
+      return;
+    }
+    const player = this._getPlayer(id);
+    switch (command) {
+      case 'play':
+        player.play();
+        break;
+      case 'pause':
+        player.pause();
+        break;
+      case 'reset':
+        player.reset();
+        break;
+      case 'restart':
+        player.restart();
+        break;
+      case 'finish':
+        player.finish();
+        break;
+      case 'init':
+        player.init();
+        break;
+      case 'setPosition':
+        player.setPosition(parseFloat(args[0]));
+        break;
+      case 'destroy':
+        this.destroy(id);
+        break;
+    }
+  }
+}
+const QUEUED_CLASSNAME = 'ng-animate-queued';
+const QUEUED_SELECTOR = '.ng-animate-queued';
+const DISABLED_CLASSNAME = 'ng-animate-disabled';
+const DISABLED_SELECTOR = '.ng-animate-disabled';
+const STAR_CLASSNAME = 'ng-star-inserted';
+const STAR_SELECTOR = '.ng-star-inserted';
+const EMPTY_PLAYER_ARRAY = [];
+const NULL_REMOVAL_STATE = {
+  namespaceId: '',
+  setForRemoval: false,
+  setForMove: false,
+  hasAnimation: false,
+  removedBeforeQueried: false
+};
+const NULL_REMOVED_QUERIED_STATE = {
+  namespaceId: '',
+  setForMove: false,
+  setForRemoval: false,
+  hasAnimation: false,
+  removedBeforeQueried: true
+};
+const REMOVAL_FLAG = '__ng_removed';
+class StateValue {
+  get params() {
+    return this.options.params;
+  }
+  constructor(input, namespaceId = '') {
+    this.namespaceId = namespaceId;
+    const isObj = input && input.hasOwnProperty('value');
+    const value = isObj ? input['value'] : input;
+    this.value = normalizeTriggerValue(value);
+    if (isObj) {
+      const options = copyObj(input);
+      delete options['value'];
+      this.options = options;
+    } else {
+      this.options = {};
+    }
+    if (!this.options.params) {
+      this.options.params = {};
+    }
+  }
+  absorbOptions(options) {
+    const newParams = options.params;
+    if (newParams) {
+      const oldParams = this.options.params;
+      Object.keys(newParams).forEach(prop => {
+        if (oldParams[prop] == null) {
+          oldParams[prop] = newParams[prop];
+        }
+      });
+    }
+  }
+}
+const VOID_VALUE = 'void';
+const DEFAULT_STATE_VALUE = new StateValue(VOID_VALUE);
+class AnimationTransitionNamespace {
+  constructor(id, hostElement, _engine) {
+    this.id = id;
+    this.hostElement = hostElement;
+    this._engine = _engine;
+    this.players = [];
+    this._triggers = new Map();
+    this._queue = [];
+    this._elementListeners = new Map();
+    this._hostClassName = 'ng-tns-' + id;
+    addClass(hostElement, this._hostClassName);
+  }
+  listen(element, name, phase, callback) {
+    if (!this._triggers.has(name)) {
+      throw missingTrigger(phase, name);
+    }
+    if (phase == null || phase.length == 0) {
+      throw missingEvent(name);
+    }
+    if (!isTriggerEventValid(phase)) {
+      throw unsupportedTriggerEvent(phase, name);
+    }
+    const listeners = getOrSetDefaultValue(this._elementListeners, element, []);
+    const data = {
+      name,
+      phase,
+      callback
+    };
+    listeners.push(data);
+    const triggersWithStates = getOrSetDefaultValue(this._engine.statesByElement, element, new Map());
+    if (!triggersWithStates.has(name)) {
+      addClass(element, NG_TRIGGER_CLASSNAME);
+      addClass(element, NG_TRIGGER_CLASSNAME + '-' + name);
+      triggersWithStates.set(name, DEFAULT_STATE_VALUE);
+    }
+    return () => {
+      // the event listener is removed AFTER the flush has occurred such
+      // that leave animations callbacks can fire (otherwise if the node
+      // is removed in between then the listeners would be deregistered)
+      this._engine.afterFlush(() => {
+        const index = listeners.indexOf(data);
+        if (index >= 0) {
+          listeners.splice(index, 1);
+        }
+        if (!this._triggers.has(name)) {
+          triggersWithStates.delete(name);
+        }
+      });
+    };
+  }
+  register(name, ast) {
+    if (this._triggers.has(name)) {
+      // throw
+      return false;
+    } else {
+      this._triggers.set(name, ast);
+      return true;
+    }
+  }
+  _getTrigger(name) {
+    const trigger = this._triggers.get(name);
+    if (!trigger) {
+      throw unregisteredTrigger(name);
+    }
+    return trigger;
+  }
+  trigger(element, triggerName, value, defaultToFallback = true) {
+    const trigger = this._getTrigger(triggerName);
+    const player = new TransitionAnimationPlayer(this.id, triggerName, element);
+    let triggersWithStates = this._engine.statesByElement.get(element);
+    if (!triggersWithStates) {
+      addClass(element, NG_TRIGGER_CLASSNAME);
+      addClass(element, NG_TRIGGER_CLASSNAME + '-' + triggerName);
+      this._engine.statesByElement.set(element, triggersWithStates = new Map());
+    }
+    let fromState = triggersWithStates.get(triggerName);
+    const toState = new StateValue(value, this.id);
+    const isObj = value && value.hasOwnProperty('value');
+    if (!isObj && fromState) {
+      toState.absorbOptions(fromState.options);
+    }
+    triggersWithStates.set(triggerName, toState);
+    if (!fromState) {
+      fromState = DEFAULT_STATE_VALUE;
+    }
+    const isRemoval = toState.value === VOID_VALUE;
+    // normally this isn't reached by here, however, if an object expression
+    // is passed in then it may be a new object each time. Comparing the value
+    // is important since that will stay the same despite there being a new object.
+    // The removal arc here is special cased because the same element is triggered
+    // twice in the event that it contains animations on the outer/inner portions
+    // of the host container
+    if (!isRemoval && fromState.value === toState.value) {
+      // this means that despite the value not changing, some inner params
+      // have changed which means that the animation final styles need to be applied
+      if (!objEquals(fromState.params, toState.params)) {
+        const errors = [];
+        const fromStyles = trigger.matchStyles(fromState.value, fromState.params, errors);
+        const toStyles = trigger.matchStyles(toState.value, toState.params, errors);
+        if (errors.length) {
+          this._engine.reportError(errors);
+        } else {
+          this._engine.afterFlush(() => {
+            eraseStyles(element, fromStyles);
+            setStyles(element, toStyles);
+          });
+        }
+      }
+      return;
+    }
+    const playersOnElement = getOrSetDefaultValue(this._engine.playersByElement, element, []);
+    playersOnElement.forEach(player => {
+      // only remove the player if it is queued on the EXACT same trigger/namespace
+      // we only also deal with queued players here because if the animation has
+      // started then we want to keep the player alive until the flush happens
+      // (which is where the previousPlayers are passed into the new player)
+      if (player.namespaceId == this.id && player.triggerName == triggerName && player.queued) {
+        player.destroy();
+      }
+    });
+    let transition = trigger.matchTransition(fromState.value, toState.value, element, toState.params);
+    let isFallbackTransition = false;
+    if (!transition) {
+      if (!defaultToFallback) return;
+      transition = trigger.fallbackTransition;
+      isFallbackTransition = true;
+    }
+    this._engine.totalQueuedPlayers++;
+    this._queue.push({
+      element,
+      triggerName,
+      transition,
+      fromState,
+      toState,
+      player,
+      isFallbackTransition
+    });
+    if (!isFallbackTransition) {
+      addClass(element, QUEUED_CLASSNAME);
+      player.onStart(() => {
+        removeClass(element, QUEUED_CLASSNAME);
+      });
+    }
+    player.onDone(() => {
+      let index = this.players.indexOf(player);
+      if (index >= 0) {
+        this.players.splice(index, 1);
+      }
+      const players = this._engine.playersByElement.get(element);
+      if (players) {
+        let index = players.indexOf(player);
+        if (index >= 0) {
+          players.splice(index, 1);
+        }
+      }
+    });
+    this.players.push(player);
+    playersOnElement.push(player);
+    return player;
+  }
+  deregister(name) {
+    this._triggers.delete(name);
+    this._engine.statesByElement.forEach(stateMap => stateMap.delete(name));
+    this._elementListeners.forEach((listeners, element) => {
+      this._elementListeners.set(element, listeners.filter(entry => {
+        return entry.name != name;
+      }));
+    });
+  }
+  clearElementCache(element) {
+    this._engine.statesByElement.delete(element);
+    this._elementListeners.delete(element);
+    const elementPlayers = this._engine.playersByElement.get(element);
+    if (elementPlayers) {
+      elementPlayers.forEach(player => player.destroy());
+      this._engine.playersByElement.delete(element);
+    }
+  }
+  _signalRemovalForInnerTriggers(rootElement, context) {
+    const elements = this._engine.driver.query(rootElement, NG_TRIGGER_SELECTOR, true);
+    // emulate a leave animation for all inner nodes within this node.
+    // If there are no animations found for any of the nodes then clear the cache
+    // for the element.
+    elements.forEach(elm => {
+      // this means that an inner remove() operation has already kicked off
+      // the animation on this element...
+      if (elm[REMOVAL_FLAG]) return;
+      const namespaces = this._engine.fetchNamespacesByElement(elm);
+      if (namespaces.size) {
+        namespaces.forEach(ns => ns.triggerLeaveAnimation(elm, context, false, true));
+      } else {
+        this.clearElementCache(elm);
+      }
+    });
+    // If the child elements were removed along with the parent, their animations might not
+    // have completed. Clear all the elements from the cache so we don't end up with a memory leak.
+    this._engine.afterFlushAnimationsDone(() => elements.forEach(elm => this.clearElementCache(elm)));
+  }
+  triggerLeaveAnimation(element, context, destroyAfterComplete, defaultToFallback) {
+    const triggerStates = this._engine.statesByElement.get(element);
+    const previousTriggersValues = new Map();
+    if (triggerStates) {
+      const players = [];
+      triggerStates.forEach((state, triggerName) => {
+        previousTriggersValues.set(triggerName, state.value);
+        // this check is here in the event that an element is removed
+        // twice (both on the host level and the component level)
+        if (this._triggers.has(triggerName)) {
+          const player = this.trigger(element, triggerName, VOID_VALUE, defaultToFallback);
+          if (player) {
+            players.push(player);
+          }
+        }
+      });
+      if (players.length) {
+        this._engine.markElementAsRemoved(this.id, element, true, context, previousTriggersValues);
+        if (destroyAfterComplete) {
+          optimizeGroupPlayer(players).onDone(() => this._engine.processLeaveNode(element));
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+  prepareLeaveAnimationListeners(element) {
+    const listeners = this._elementListeners.get(element);
+    const elementStates = this._engine.statesByElement.get(element);
+    // if this statement fails then it means that the element was picked up
+    // by an earlier flush (or there are no listeners at all to track the leave).
+    if (listeners && elementStates) {
+      const visitedTriggers = new Set();
+      listeners.forEach(listener => {
+        const triggerName = listener.name;
+        if (visitedTriggers.has(triggerName)) return;
+        visitedTriggers.add(triggerName);
+        const trigger = this._triggers.get(triggerName);
+        const transition = trigger.fallbackTransition;
+        const fromState = elementStates.get(triggerName) || DEFAULT_STATE_VALUE;
+        const toState = new StateValue(VOID_VALUE);
+        const player = new TransitionAnimationPlayer(this.id, triggerName, element);
+        this._engine.totalQueuedPlayers++;
+        this._queue.push({
+          element,
+          triggerName,
+          transition,
+          fromState,
+          toState,
+          player,
+          isFallbackTransition: true
+        });
+      });
+    }
+  }
+  removeNode(element, context) {
+    const engine = this._engine;
+    if (element.childElementCount) {
+      this._signalRemovalForInnerTriggers(element, context);
+    }
+    // this means that a * => VOID animation was detected and kicked off
+    if (this.triggerLeaveAnimation(element, context, true)) return;
+    // find the player that is animating and make sure that the
+    // removal is delayed until that player has completed
+    let containsPotentialParentTransition = false;
+    if (engine.totalAnimations) {
+      const currentPlayers = engine.players.length ? engine.playersByQueriedElement.get(element) : [];
+      // when this `if statement` does not continue forward it means that
+      // a previous animation query has selected the current element and
+      // is animating it. In this situation want to continue forwards and
+      // allow the element to be queued up for animation later.
+      if (currentPlayers && currentPlayers.length) {
+        containsPotentialParentTransition = true;
+      } else {
+        let parent = element;
+        while (parent = parent.parentNode) {
+          const triggers = engine.statesByElement.get(parent);
+          if (triggers) {
+            containsPotentialParentTransition = true;
+            break;
+          }
+        }
+      }
+    }
+    // at this stage we know that the element will either get removed
+    // during flush or will be picked up by a parent query. Either way
+    // we need to fire the listeners for this element when it DOES get
+    // removed (once the query parent animation is done or after flush)
+    this.prepareLeaveAnimationListeners(element);
+    // whether or not a parent has an animation we need to delay the deferral of the leave
+    // operation until we have more information (which we do after flush() has been called)
+    if (containsPotentialParentTransition) {
+      engine.markElementAsRemoved(this.id, element, false, context);
+    } else {
+      const removalFlag = element[REMOVAL_FLAG];
+      if (!removalFlag || removalFlag === NULL_REMOVAL_STATE) {
+        // we do this after the flush has occurred such
+        // that the callbacks can be fired
+        engine.afterFlush(() => this.clearElementCache(element));
+        engine.destroyInnerAnimations(element);
+        engine._onRemovalComplete(element, context);
+      }
+    }
+  }
+  insertNode(element, parent) {
+    addClass(element, this._hostClassName);
+  }
+  drainQueuedTransitions(microtaskId) {
+    const instructions = [];
+    this._queue.forEach(entry => {
+      const player = entry.player;
+      if (player.destroyed) return;
+      const element = entry.element;
+      const listeners = this._elementListeners.get(element);
+      if (listeners) {
+        listeners.forEach(listener => {
+          if (listener.name == entry.triggerName) {
+            const baseEvent = makeAnimationEvent(element, entry.triggerName, entry.fromState.value, entry.toState.value);
+            baseEvent['_data'] = microtaskId;
+            listenOnPlayer(entry.player, listener.phase, baseEvent, listener.callback);
+          }
+        });
+      }
+      if (player.markedForDestroy) {
+        this._engine.afterFlush(() => {
+          // now we can destroy the element properly since the event listeners have
+          // been bound to the player
+          player.destroy();
+        });
+      } else {
+        instructions.push(entry);
+      }
+    });
+    this._queue = [];
+    return instructions.sort((a, b) => {
+      // if depCount == 0 them move to front
+      // otherwise if a contains b then move back
+      const d0 = a.transition.ast.depCount;
+      const d1 = b.transition.ast.depCount;
+      if (d0 == 0 || d1 == 0) {
+        return d0 - d1;
+      }
+      return this._engine.driver.containsElement(a.element, b.element) ? 1 : -1;
+    });
+  }
+  destroy(context) {
+    this.players.forEach(p => p.destroy());
+    this._signalRemovalForInnerTriggers(this.hostElement, context);
+  }
+}
+class TransitionAnimationEngine {
+  /** @internal */
+  _onRemovalComplete(element, context) {
+    this.onRemovalComplete(element, context);
+  }
+  constructor(bodyNode, driver, _normalizer) {
+    this.bodyNode = bodyNode;
+    this.driver = driver;
+    this._normalizer = _normalizer;
+    this.players = [];
+    this.newHostElements = new Map();
+    this.playersByElement = new Map();
+    this.playersByQueriedElement = new Map();
+    this.statesByElement = new Map();
+    this.disabledNodes = new Set();
+    this.totalAnimations = 0;
+    this.totalQueuedPlayers = 0;
+    this._namespaceLookup = {};
+    this._namespaceList = [];
+    this._flushFns = [];
+    this._whenQuietFns = [];
+    this.namespacesByHostElement = new Map();
+    this.collectedEnterElements = [];
+    this.collectedLeaveElements = [];
+    // this method is designed to be overridden by the code that uses this engine
+    this.onRemovalComplete = (element, context) => {};
+  }
+  get queuedPlayers() {
+    const players = [];
+    this._namespaceList.forEach(ns => {
+      ns.players.forEach(player => {
+        if (player.queued) {
+          players.push(player);
+        }
+      });
+    });
+    return players;
+  }
+  createNamespace(namespaceId, hostElement) {
+    const ns = new AnimationTransitionNamespace(namespaceId, hostElement, this);
+    if (this.bodyNode && this.driver.containsElement(this.bodyNode, hostElement)) {
+      this._balanceNamespaceList(ns, hostElement);
+    } else {
+      // defer this later until flush during when the host element has
+      // been inserted so that we know exactly where to place it in
+      // the namespace list
+      this.newHostElements.set(hostElement, ns);
+      // given that this host element is a part of the animation code, it
+      // may or may not be inserted by a parent node that is of an
+      // animation renderer type. If this happens then we can still have
+      // access to this item when we query for :enter nodes. If the parent
+      // is a renderer then the set data-structure will normalize the entry
+      this.collectEnterElement(hostElement);
+    }
+    return this._namespaceLookup[namespaceId] = ns;
+  }
+  _balanceNamespaceList(ns, hostElement) {
+    const namespaceList = this._namespaceList;
+    const namespacesByHostElement = this.namespacesByHostElement;
+    const limit = namespaceList.length - 1;
+    if (limit >= 0) {
+      let found = false;
+      // Find the closest ancestor with an existing namespace so we can then insert `ns` after it,
+      // establishing a top-down ordering of namespaces in `this._namespaceList`.
+      let ancestor = this.driver.getParentElement(hostElement);
+      while (ancestor) {
+        const ancestorNs = namespacesByHostElement.get(ancestor);
+        if (ancestorNs) {
+          // An animation namespace has been registered for this ancestor, so we insert `ns`
+          // right after it to establish top-down ordering of animation namespaces.
+          const index = namespaceList.indexOf(ancestorNs);
+          namespaceList.splice(index + 1, 0, ns);
+          found = true;
+          break;
+        }
+        ancestor = this.driver.getParentElement(ancestor);
+      }
+      if (!found) {
+        // No namespace exists that is an ancestor of `ns`, so `ns` is inserted at the front to
+        // ensure that any existing descendants are ordered after `ns`, retaining the desired
+        // top-down ordering.
+        namespaceList.unshift(ns);
+      }
+    } else {
+      namespaceList.push(ns);
+    }
+    namespacesByHostElement.set(hostElement, ns);
+    return ns;
+  }
+  register(namespaceId, hostElement) {
+    let ns = this._namespaceLookup[namespaceId];
+    if (!ns) {
+      ns = this.createNamespace(namespaceId, hostElement);
+    }
+    return ns;
+  }
+  registerTrigger(namespaceId, name, trigger) {
+    let ns = this._namespaceLookup[namespaceId];
+    if (ns && ns.register(name, trigger)) {
+      this.totalAnimations++;
+    }
+  }
+  destroy(namespaceId, context) {
+    if (!namespaceId) return;
+    this.afterFlush(() => {});
+    this.afterFlushAnimationsDone(() => {
+      const ns = this._fetchNamespace(namespaceId);
+      this.namespacesByHostElement.delete(ns.hostElement);
+      const index = this._namespaceList.indexOf(ns);
+      if (index >= 0) {
+        this._namespaceList.splice(index, 1);
+      }
+      ns.destroy(context);
+      delete this._namespaceLookup[namespaceId];
+    });
+  }
+  _fetchNamespace(id) {
+    return this._namespaceLookup[id];
+  }
+  fetchNamespacesByElement(element) {
+    // normally there should only be one namespace per element, however
+    // if @triggers are placed on both the component element and then
+    // its host element (within the component code) then there will be
+    // two namespaces returned. We use a set here to simply deduplicate
+    // the namespaces in case (for the reason described above) there are multiple triggers
+    const namespaces = new Set();
+    const elementStates = this.statesByElement.get(element);
+    if (elementStates) {
+      for (let stateValue of elementStates.values()) {
+        if (stateValue.namespaceId) {
+          const ns = this._fetchNamespace(stateValue.namespaceId);
+          if (ns) {
+            namespaces.add(ns);
+          }
+        }
+      }
+    }
+    return namespaces;
+  }
+  trigger(namespaceId, element, name, value) {
+    if (isElementNode(element)) {
+      const ns = this._fetchNamespace(namespaceId);
+      if (ns) {
+        ns.trigger(element, name, value);
+        return true;
+      }
+    }
+    return false;
+  }
+  insertNode(namespaceId, element, parent, insertBefore) {
+    if (!isElementNode(element)) return;
+    // special case for when an element is removed and reinserted (move operation)
+    // when this occurs we do not want to use the element for deletion later
+    const details = element[REMOVAL_FLAG];
+    if (details && details.setForRemoval) {
+      details.setForRemoval = false;
+      details.setForMove = true;
+      const index = this.collectedLeaveElements.indexOf(element);
+      if (index >= 0) {
+        this.collectedLeaveElements.splice(index, 1);
+      }
+    }
+    // in the event that the namespaceId is blank then the caller
+    // code does not contain any animation code in it, but it is
+    // just being called so that the node is marked as being inserted
+    if (namespaceId) {
+      const ns = this._fetchNamespace(namespaceId);
+      // This if-statement is a workaround for router issue #21947.
+      // The router sometimes hits a race condition where while a route
+      // is being instantiated a new navigation arrives, triggering leave
+      // animation of DOM that has not been fully initialized, until this
+      // is resolved, we need to handle the scenario when DOM is not in a
+      // consistent state during the animation.
+      if (ns) {
+        ns.insertNode(element, parent);
+      }
+    }
+    // only *directives and host elements are inserted before
+    if (insertBefore) {
+      this.collectEnterElement(element);
+    }
+  }
+  collectEnterElement(element) {
+    this.collectedEnterElements.push(element);
+  }
+  markElementAsDisabled(element, value) {
+    if (value) {
+      if (!this.disabledNodes.has(element)) {
+        this.disabledNodes.add(element);
+        addClass(element, DISABLED_CLASSNAME);
+      }
+    } else if (this.disabledNodes.has(element)) {
+      this.disabledNodes.delete(element);
+      removeClass(element, DISABLED_CLASSNAME);
+    }
+  }
+  removeNode(namespaceId, element, context) {
+    if (isElementNode(element)) {
+      const ns = namespaceId ? this._fetchNamespace(namespaceId) : null;
+      if (ns) {
+        ns.removeNode(element, context);
+      } else {
+        this.markElementAsRemoved(namespaceId, element, false, context);
+      }
+      const hostNS = this.namespacesByHostElement.get(element);
+      if (hostNS && hostNS.id !== namespaceId) {
+        hostNS.removeNode(element, context);
+      }
+    } else {
+      this._onRemovalComplete(element, context);
+    }
+  }
+  markElementAsRemoved(namespaceId, element, hasAnimation, context, previousTriggersValues) {
+    this.collectedLeaveElements.push(element);
+    element[REMOVAL_FLAG] = {
+      namespaceId,
+      setForRemoval: context,
+      hasAnimation,
+      removedBeforeQueried: false,
+      previousTriggersValues
+    };
+  }
+  listen(namespaceId, element, name, phase, callback) {
+    if (isElementNode(element)) {
+      return this._fetchNamespace(namespaceId).listen(element, name, phase, callback);
+    }
+    return () => {};
+  }
+  _buildInstruction(entry, subTimelines, enterClassName, leaveClassName, skipBuildAst) {
+    return entry.transition.build(this.driver, entry.element, entry.fromState.value, entry.toState.value, enterClassName, leaveClassName, entry.fromState.options, entry.toState.options, subTimelines, skipBuildAst);
+  }
+  destroyInnerAnimations(containerElement) {
+    let elements = this.driver.query(containerElement, NG_TRIGGER_SELECTOR, true);
+    elements.forEach(element => this.destroyActiveAnimationsForElement(element));
+    if (this.playersByQueriedElement.size == 0) return;
+    elements = this.driver.query(containerElement, NG_ANIMATING_SELECTOR, true);
+    elements.forEach(element => this.finishActiveQueriedAnimationOnElement(element));
+  }
+  destroyActiveAnimationsForElement(element) {
+    const players = this.playersByElement.get(element);
+    if (players) {
+      players.forEach(player => {
+        // special case for when an element is set for destruction, but hasn't started.
+        // in this situation we want to delay the destruction until the flush occurs
+        // so that any event listeners attached to the player are triggered.
+        if (player.queued) {
+          player.markedForDestroy = true;
+        } else {
+          player.destroy();
+        }
+      });
+    }
+  }
+  finishActiveQueriedAnimationOnElement(element) {
+    const players = this.playersByQueriedElement.get(element);
+    if (players) {
+      players.forEach(player => player.finish());
+    }
+  }
+  whenRenderingDone() {
+    return new Promise(resolve => {
+      if (this.players.length) {
+        return optimizeGroupPlayer(this.players).onDone(() => resolve());
+      } else {
+        resolve();
+      }
+    });
+  }
+  processLeaveNode(element) {
+    const details = element[REMOVAL_FLAG];
+    if (details && details.setForRemoval) {
+      // this will prevent it from removing it twice
+      element[REMOVAL_FLAG] = NULL_REMOVAL_STATE;
+      if (details.namespaceId) {
+        this.destroyInnerAnimations(element);
+        const ns = this._fetchNamespace(details.namespaceId);
+        if (ns) {
+          ns.clearElementCache(element);
+        }
+      }
+      this._onRemovalComplete(element, details.setForRemoval);
+    }
+    if (element.classList?.contains(DISABLED_CLASSNAME)) {
+      this.markElementAsDisabled(element, false);
+    }
+    this.driver.query(element, DISABLED_SELECTOR, true).forEach(node => {
+      this.markElementAsDisabled(node, false);
+    });
+  }
+  flush(microtaskId = -1) {
+    let players = [];
+    if (this.newHostElements.size) {
+      this.newHostElements.forEach((ns, element) => this._balanceNamespaceList(ns, element));
+      this.newHostElements.clear();
+    }
+    if (this.totalAnimations && this.collectedEnterElements.length) {
+      for (let i = 0; i < this.collectedEnterElements.length; i++) {
+        const elm = this.collectedEnterElements[i];
+        addClass(elm, STAR_CLASSNAME);
+      }
+    }
+    if (this._namespaceList.length && (this.totalQueuedPlayers || this.collectedLeaveElements.length)) {
+      const cleanupFns = [];
+      try {
+        players = this._flushAnimations(cleanupFns, microtaskId);
+      } finally {
+        for (let i = 0; i < cleanupFns.length; i++) {
+          cleanupFns[i]();
+        }
+      }
+    } else {
+      for (let i = 0; i < this.collectedLeaveElements.length; i++) {
+        const element = this.collectedLeaveElements[i];
+        this.processLeaveNode(element);
+      }
+    }
+    this.totalQueuedPlayers = 0;
+    this.collectedEnterElements.length = 0;
+    this.collectedLeaveElements.length = 0;
+    this._flushFns.forEach(fn => fn());
+    this._flushFns = [];
+    if (this._whenQuietFns.length) {
+      // we move these over to a variable so that
+      // if any new callbacks are registered in another
+      // flush they do not populate the existing set
+      const quietFns = this._whenQuietFns;
+      this._whenQuietFns = [];
+      if (players.length) {
+        optimizeGroupPlayer(players).onDone(() => {
+          quietFns.forEach(fn => fn());
+        });
+      } else {
+        quietFns.forEach(fn => fn());
+      }
+    }
+  }
+  reportError(errors) {
+    throw triggerTransitionsFailed(errors);
+  }
+  _flushAnimations(cleanupFns, microtaskId) {
+    const subTimelines = new ElementInstructionMap();
+    const skippedPlayers = [];
+    const skippedPlayersMap = new Map();
+    const queuedInstructions = [];
+    const queriedElements = new Map();
+    const allPreStyleElements = new Map();
+    const allPostStyleElements = new Map();
+    const disabledElementsSet = new Set();
+    this.disabledNodes.forEach(node => {
+      disabledElementsSet.add(node);
+      const nodesThatAreDisabled = this.driver.query(node, QUEUED_SELECTOR, true);
+      for (let i = 0; i < nodesThatAreDisabled.length; i++) {
+        disabledElementsSet.add(nodesThatAreDisabled[i]);
+      }
+    });
+    const bodyNode = this.bodyNode;
+    const allTriggerElements = Array.from(this.statesByElement.keys());
+    const enterNodeMap = buildRootMap(allTriggerElements, this.collectedEnterElements);
+    // this must occur before the instructions are built below such that
+    // the :enter queries match the elements (since the timeline queries
+    // are fired during instruction building).
+    const enterNodeMapIds = new Map();
+    let i = 0;
+    enterNodeMap.forEach((nodes, root) => {
+      const className = ENTER_CLASSNAME + i++;
+      enterNodeMapIds.set(root, className);
+      nodes.forEach(node => addClass(node, className));
+    });
+    const allLeaveNodes = [];
+    const mergedLeaveNodes = new Set();
+    const leaveNodesWithoutAnimations = new Set();
+    for (let i = 0; i < this.collectedLeaveElements.length; i++) {
+      const element = this.collectedLeaveElements[i];
+      const details = element[REMOVAL_FLAG];
+      if (details && details.setForRemoval) {
+        allLeaveNodes.push(element);
+        mergedLeaveNodes.add(element);
+        if (details.hasAnimation) {
+          this.driver.query(element, STAR_SELECTOR, true).forEach(elm => mergedLeaveNodes.add(elm));
+        } else {
+          leaveNodesWithoutAnimations.add(element);
+        }
+      }
+    }
+    const leaveNodeMapIds = new Map();
+    const leaveNodeMap = buildRootMap(allTriggerElements, Array.from(mergedLeaveNodes));
+    leaveNodeMap.forEach((nodes, root) => {
+      const className = LEAVE_CLASSNAME + i++;
+      leaveNodeMapIds.set(root, className);
+      nodes.forEach(node => addClass(node, className));
+    });
+    cleanupFns.push(() => {
+      enterNodeMap.forEach((nodes, root) => {
+        const className = enterNodeMapIds.get(root);
+        nodes.forEach(node => removeClass(node, className));
+      });
+      leaveNodeMap.forEach((nodes, root) => {
+        const className = leaveNodeMapIds.get(root);
+        nodes.forEach(node => removeClass(node, className));
+      });
+      allLeaveNodes.forEach(element => {
+        this.processLeaveNode(element);
+      });
+    });
+    const allPlayers = [];
+    const erroneousTransitions = [];
+    for (let i = this._namespaceList.length - 1; i >= 0; i--) {
+      const ns = this._namespaceList[i];
+      ns.drainQueuedTransitions(microtaskId).forEach(entry => {
+        const player = entry.player;
+        const element = entry.element;
+        allPlayers.push(player);
+        if (this.collectedEnterElements.length) {
+          const details = element[REMOVAL_FLAG];
+          // animations for move operations (elements being removed and reinserted,
+          // e.g. when the order of an *ngFor list changes) are currently not supported
+          if (details && details.setForMove) {
+            if (details.previousTriggersValues && details.previousTriggersValues.has(entry.triggerName)) {
+              const previousValue = details.previousTriggersValues.get(entry.triggerName);
+              // we need to restore the previous trigger value since the element has
+              // only been moved and hasn't actually left the DOM
+              const triggersWithStates = this.statesByElement.get(entry.element);
+              if (triggersWithStates && triggersWithStates.has(entry.triggerName)) {
+                const state = triggersWithStates.get(entry.triggerName);
+                state.value = previousValue;
+                triggersWithStates.set(entry.triggerName, state);
+              }
+            }
+            player.destroy();
+            return;
+          }
+        }
+        const nodeIsOrphaned = !bodyNode || !this.driver.containsElement(bodyNode, element);
+        const leaveClassName = leaveNodeMapIds.get(element);
+        const enterClassName = enterNodeMapIds.get(element);
+        const instruction = this._buildInstruction(entry, subTimelines, enterClassName, leaveClassName, nodeIsOrphaned);
+        if (instruction.errors && instruction.errors.length) {
+          erroneousTransitions.push(instruction);
+          return;
+        }
+        // even though the element may not be in the DOM, it may still
+        // be added at a later point (due to the mechanics of content
+        // projection and/or dynamic component insertion) therefore it's
+        // important to still style the element.
+        if (nodeIsOrphaned) {
+          player.onStart(() => eraseStyles(element, instruction.fromStyles));
+          player.onDestroy(() => setStyles(element, instruction.toStyles));
+          skippedPlayers.push(player);
+          return;
+        }
+        // if an unmatched transition is queued and ready to go
+        // then it SHOULD NOT render an animation and cancel the
+        // previously running animations.
+        if (entry.isFallbackTransition) {
+          player.onStart(() => eraseStyles(element, instruction.fromStyles));
+          player.onDestroy(() => setStyles(element, instruction.toStyles));
+          skippedPlayers.push(player);
+          return;
+        }
+        // this means that if a parent animation uses this animation as a sub-trigger
+        // then it will instruct the timeline builder not to add a player delay, but
+        // instead stretch the first keyframe gap until the animation starts. This is
+        // important in order to prevent extra initialization styles from being
+        // required by the user for the animation.
+        const timelines = [];
+        instruction.timelines.forEach(tl => {
+          tl.stretchStartingKeyframe = true;
+          if (!this.disabledNodes.has(tl.element)) {
+            timelines.push(tl);
+          }
+        });
+        instruction.timelines = timelines;
+        subTimelines.append(element, instruction.timelines);
+        const tuple = {
+          instruction,
+          player,
+          element
+        };
+        queuedInstructions.push(tuple);
+        instruction.queriedElements.forEach(element => getOrSetDefaultValue(queriedElements, element, []).push(player));
+        instruction.preStyleProps.forEach((stringMap, element) => {
+          if (stringMap.size) {
+            let setVal = allPreStyleElements.get(element);
+            if (!setVal) {
+              allPreStyleElements.set(element, setVal = new Set());
+            }
+            stringMap.forEach((_, prop) => setVal.add(prop));
+          }
+        });
+        instruction.postStyleProps.forEach((stringMap, element) => {
+          let setVal = allPostStyleElements.get(element);
+          if (!setVal) {
+            allPostStyleElements.set(element, setVal = new Set());
+          }
+          stringMap.forEach((_, prop) => setVal.add(prop));
+        });
+      });
+    }
+    if (erroneousTransitions.length) {
+      const errors = [];
+      erroneousTransitions.forEach(instruction => {
+        errors.push(transitionFailed(instruction.triggerName, instruction.errors));
+      });
+      allPlayers.forEach(player => player.destroy());
+      this.reportError(errors);
+    }
+    const allPreviousPlayersMap = new Map();
+    // this map tells us which element in the DOM tree is contained by
+    // which animation. Further down this map will get populated once
+    // the players are built and in doing so we can use it to efficiently
+    // figure out if a sub player is skipped due to a parent player having priority.
+    const animationElementMap = new Map();
+    queuedInstructions.forEach(entry => {
+      const element = entry.element;
+      if (subTimelines.has(element)) {
+        animationElementMap.set(element, element);
+        this._beforeAnimationBuild(entry.player.namespaceId, entry.instruction, allPreviousPlayersMap);
+      }
+    });
+    skippedPlayers.forEach(player => {
+      const element = player.element;
+      const previousPlayers = this._getPreviousPlayers(element, false, player.namespaceId, player.triggerName, null);
+      previousPlayers.forEach(prevPlayer => {
+        getOrSetDefaultValue(allPreviousPlayersMap, element, []).push(prevPlayer);
+        prevPlayer.destroy();
+      });
+    });
+    // this is a special case for nodes that will be removed either by
+    // having their own leave animations or by being queried in a container
+    // that will be removed once a parent animation is complete. The idea
+    // here is that * styles must be identical to ! styles because of
+    // backwards compatibility (* is also filled in by default in many places).
+    // Otherwise * styles will return an empty value or "auto" since the element
+    // passed to getComputedStyle will not be visible (since * === destination)
+    const replaceNodes = allLeaveNodes.filter(node => {
+      return replacePostStylesAsPre(node, allPreStyleElements, allPostStyleElements);
+    });
+    // POST STAGE: fill the * styles
+    const postStylesMap = new Map();
+    const allLeaveQueriedNodes = cloakAndComputeStyles(postStylesMap, this.driver, leaveNodesWithoutAnimations, allPostStyleElements, _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AUTO_STYLE);
+    allLeaveQueriedNodes.forEach(node => {
+      if (replacePostStylesAsPre(node, allPreStyleElements, allPostStyleElements)) {
+        replaceNodes.push(node);
+      }
+    });
+    // PRE STAGE: fill the ! styles
+    const preStylesMap = new Map();
+    enterNodeMap.forEach((nodes, root) => {
+      cloakAndComputeStyles(preStylesMap, this.driver, new Set(nodes), allPreStyleElements, _angular_animations__WEBPACK_IMPORTED_MODULE_1__["ɵPRE_STYLE"]);
+    });
+    replaceNodes.forEach(node => {
+      const post = postStylesMap.get(node);
+      const pre = preStylesMap.get(node);
+      postStylesMap.set(node, new Map([...(post?.entries() ?? []), ...(pre?.entries() ?? [])]));
+    });
+    const rootPlayers = [];
+    const subPlayers = [];
+    const NO_PARENT_ANIMATION_ELEMENT_DETECTED = {};
+    queuedInstructions.forEach(entry => {
+      const {
+        element,
+        player,
+        instruction
+      } = entry;
+      // this means that it was never consumed by a parent animation which
+      // means that it is independent and therefore should be set for animation
+      if (subTimelines.has(element)) {
+        if (disabledElementsSet.has(element)) {
+          player.onDestroy(() => setStyles(element, instruction.toStyles));
+          player.disabled = true;
+          player.overrideTotalTime(instruction.totalTime);
+          skippedPlayers.push(player);
+          return;
+        }
+        // this will flow up the DOM and query the map to figure out
+        // if a parent animation has priority over it. In the situation
+        // that a parent is detected then it will cancel the loop. If
+        // nothing is detected, or it takes a few hops to find a parent,
+        // then it will fill in the missing nodes and signal them as having
+        // a detected parent (or a NO_PARENT value via a special constant).
+        let parentWithAnimation = NO_PARENT_ANIMATION_ELEMENT_DETECTED;
+        if (animationElementMap.size > 1) {
+          let elm = element;
+          const parentsToAdd = [];
+          while (elm = elm.parentNode) {
+            const detectedParent = animationElementMap.get(elm);
+            if (detectedParent) {
+              parentWithAnimation = detectedParent;
+              break;
+            }
+            parentsToAdd.push(elm);
+          }
+          parentsToAdd.forEach(parent => animationElementMap.set(parent, parentWithAnimation));
+        }
+        const innerPlayer = this._buildAnimation(player.namespaceId, instruction, allPreviousPlayersMap, skippedPlayersMap, preStylesMap, postStylesMap);
+        player.setRealPlayer(innerPlayer);
+        if (parentWithAnimation === NO_PARENT_ANIMATION_ELEMENT_DETECTED) {
+          rootPlayers.push(player);
+        } else {
+          const parentPlayers = this.playersByElement.get(parentWithAnimation);
+          if (parentPlayers && parentPlayers.length) {
+            player.parentPlayer = optimizeGroupPlayer(parentPlayers);
+          }
+          skippedPlayers.push(player);
+        }
+      } else {
+        eraseStyles(element, instruction.fromStyles);
+        player.onDestroy(() => setStyles(element, instruction.toStyles));
+        // there still might be a ancestor player animating this
+        // element therefore we will still add it as a sub player
+        // even if its animation may be disabled
+        subPlayers.push(player);
+        if (disabledElementsSet.has(element)) {
+          skippedPlayers.push(player);
+        }
+      }
+    });
+    // find all of the sub players' corresponding inner animation players
+    subPlayers.forEach(player => {
+      // even if no players are found for a sub animation it
+      // will still complete itself after the next tick since it's Noop
+      const playersForElement = skippedPlayersMap.get(player.element);
+      if (playersForElement && playersForElement.length) {
+        const innerPlayer = optimizeGroupPlayer(playersForElement);
+        player.setRealPlayer(innerPlayer);
+      }
+    });
+    // the reason why we don't actually play the animation is
+    // because all that a skipped player is designed to do is to
+    // fire the start/done transition callback events
+    skippedPlayers.forEach(player => {
+      if (player.parentPlayer) {
+        player.syncPlayerEvents(player.parentPlayer);
+      } else {
+        player.destroy();
+      }
+    });
+    // run through all of the queued removals and see if they
+    // were picked up by a query. If not then perform the removal
+    // operation right away unless a parent animation is ongoing.
+    for (let i = 0; i < allLeaveNodes.length; i++) {
+      const element = allLeaveNodes[i];
+      const details = element[REMOVAL_FLAG];
+      removeClass(element, LEAVE_CLASSNAME);
+      // this means the element has a removal animation that is being
+      // taken care of and therefore the inner elements will hang around
+      // until that animation is over (or the parent queried animation)
+      if (details && details.hasAnimation) continue;
+      let players = [];
+      // if this element is queried or if it contains queried children
+      // then we want for the element not to be removed from the page
+      // until the queried animations have finished
+      if (queriedElements.size) {
+        let queriedPlayerResults = queriedElements.get(element);
+        if (queriedPlayerResults && queriedPlayerResults.length) {
+          players.push(...queriedPlayerResults);
+        }
+        let queriedInnerElements = this.driver.query(element, NG_ANIMATING_SELECTOR, true);
+        for (let j = 0; j < queriedInnerElements.length; j++) {
+          let queriedPlayers = queriedElements.get(queriedInnerElements[j]);
+          if (queriedPlayers && queriedPlayers.length) {
+            players.push(...queriedPlayers);
+          }
+        }
+      }
+      const activePlayers = players.filter(p => !p.destroyed);
+      if (activePlayers.length) {
+        removeNodesAfterAnimationDone(this, element, activePlayers);
+      } else {
+        this.processLeaveNode(element);
+      }
+    }
+    // this is required so the cleanup method doesn't remove them
+    allLeaveNodes.length = 0;
+    rootPlayers.forEach(player => {
+      this.players.push(player);
+      player.onDone(() => {
+        player.destroy();
+        const index = this.players.indexOf(player);
+        this.players.splice(index, 1);
+      });
+      player.play();
+    });
+    return rootPlayers;
+  }
+  afterFlush(callback) {
+    this._flushFns.push(callback);
+  }
+  afterFlushAnimationsDone(callback) {
+    this._whenQuietFns.push(callback);
+  }
+  _getPreviousPlayers(element, isQueriedElement, namespaceId, triggerName, toStateValue) {
+    let players = [];
+    if (isQueriedElement) {
+      const queriedElementPlayers = this.playersByQueriedElement.get(element);
+      if (queriedElementPlayers) {
+        players = queriedElementPlayers;
+      }
+    } else {
+      const elementPlayers = this.playersByElement.get(element);
+      if (elementPlayers) {
+        const isRemovalAnimation = !toStateValue || toStateValue == VOID_VALUE;
+        elementPlayers.forEach(player => {
+          if (player.queued) return;
+          if (!isRemovalAnimation && player.triggerName != triggerName) return;
+          players.push(player);
+        });
+      }
+    }
+    if (namespaceId || triggerName) {
+      players = players.filter(player => {
+        if (namespaceId && namespaceId != player.namespaceId) return false;
+        if (triggerName && triggerName != player.triggerName) return false;
+        return true;
+      });
+    }
+    return players;
+  }
+  _beforeAnimationBuild(namespaceId, instruction, allPreviousPlayersMap) {
+    const triggerName = instruction.triggerName;
+    const rootElement = instruction.element;
+    // when a removal animation occurs, ALL previous players are collected
+    // and destroyed (even if they are outside of the current namespace)
+    const targetNameSpaceId = instruction.isRemovalTransition ? undefined : namespaceId;
+    const targetTriggerName = instruction.isRemovalTransition ? undefined : triggerName;
+    for (const timelineInstruction of instruction.timelines) {
+      const element = timelineInstruction.element;
+      const isQueriedElement = element !== rootElement;
+      const players = getOrSetDefaultValue(allPreviousPlayersMap, element, []);
+      const previousPlayers = this._getPreviousPlayers(element, isQueriedElement, targetNameSpaceId, targetTriggerName, instruction.toState);
+      previousPlayers.forEach(player => {
+        const realPlayer = player.getRealPlayer();
+        if (realPlayer.beforeDestroy) {
+          realPlayer.beforeDestroy();
+        }
+        player.destroy();
+        players.push(player);
+      });
+    }
+    // this needs to be done so that the PRE/POST styles can be
+    // computed properly without interfering with the previous animation
+    eraseStyles(rootElement, instruction.fromStyles);
+  }
+  _buildAnimation(namespaceId, instruction, allPreviousPlayersMap, skippedPlayersMap, preStylesMap, postStylesMap) {
+    const triggerName = instruction.triggerName;
+    const rootElement = instruction.element;
+    // we first run this so that the previous animation player
+    // data can be passed into the successive animation players
+    const allQueriedPlayers = [];
+    const allConsumedElements = new Set();
+    const allSubElements = new Set();
+    const allNewPlayers = instruction.timelines.map(timelineInstruction => {
+      const element = timelineInstruction.element;
+      allConsumedElements.add(element);
+      // FIXME (matsko): make sure to-be-removed animations are removed properly
+      const details = element[REMOVAL_FLAG];
+      if (details && details.removedBeforeQueried) return new _angular_animations__WEBPACK_IMPORTED_MODULE_1__.NoopAnimationPlayer(timelineInstruction.duration, timelineInstruction.delay);
+      const isQueriedElement = element !== rootElement;
+      const previousPlayers = flattenGroupPlayers((allPreviousPlayersMap.get(element) || EMPTY_PLAYER_ARRAY).map(p => p.getRealPlayer())).filter(p => {
+        // the `element` is not apart of the AnimationPlayer definition, but
+        // Mock/WebAnimations
+        // use the element within their implementation. This will be added in Angular5 to
+        // AnimationPlayer
+        const pp = p;
+        return pp.element ? pp.element === element : false;
+      });
+      const preStyles = preStylesMap.get(element);
+      const postStyles = postStylesMap.get(element);
+      const keyframes = normalizeKeyframes$1(this._normalizer, timelineInstruction.keyframes, preStyles, postStyles);
+      const player = this._buildPlayer(timelineInstruction, keyframes, previousPlayers);
+      // this means that this particular player belongs to a sub trigger. It is
+      // important that we match this player up with the corresponding (@trigger.listener)
+      if (timelineInstruction.subTimeline && skippedPlayersMap) {
+        allSubElements.add(element);
+      }
+      if (isQueriedElement) {
+        const wrappedPlayer = new TransitionAnimationPlayer(namespaceId, triggerName, element);
+        wrappedPlayer.setRealPlayer(player);
+        allQueriedPlayers.push(wrappedPlayer);
+      }
+      return player;
+    });
+    allQueriedPlayers.forEach(player => {
+      getOrSetDefaultValue(this.playersByQueriedElement, player.element, []).push(player);
+      player.onDone(() => deleteOrUnsetInMap(this.playersByQueriedElement, player.element, player));
+    });
+    allConsumedElements.forEach(element => addClass(element, NG_ANIMATING_CLASSNAME));
+    const player = optimizeGroupPlayer(allNewPlayers);
+    player.onDestroy(() => {
+      allConsumedElements.forEach(element => removeClass(element, NG_ANIMATING_CLASSNAME));
+      setStyles(rootElement, instruction.toStyles);
+    });
+    // this basically makes all of the callbacks for sub element animations
+    // be dependent on the upper players for when they finish
+    allSubElements.forEach(element => {
+      getOrSetDefaultValue(skippedPlayersMap, element, []).push(player);
+    });
+    return player;
+  }
+  _buildPlayer(instruction, keyframes, previousPlayers) {
+    if (keyframes.length > 0) {
+      return this.driver.animate(instruction.element, keyframes, instruction.duration, instruction.delay, instruction.easing, previousPlayers);
+    }
+    // special case for when an empty transition|definition is provided
+    // ... there is no point in rendering an empty animation
+    return new _angular_animations__WEBPACK_IMPORTED_MODULE_1__.NoopAnimationPlayer(instruction.duration, instruction.delay);
+  }
+}
+class TransitionAnimationPlayer {
+  constructor(namespaceId, triggerName, element) {
+    this.namespaceId = namespaceId;
+    this.triggerName = triggerName;
+    this.element = element;
+    this._player = new _angular_animations__WEBPACK_IMPORTED_MODULE_1__.NoopAnimationPlayer();
+    this._containsRealPlayer = false;
+    this._queuedCallbacks = new Map();
+    this.destroyed = false;
+    this.parentPlayer = null;
+    this.markedForDestroy = false;
+    this.disabled = false;
+    this.queued = true;
+    this.totalTime = 0;
+  }
+  setRealPlayer(player) {
+    if (this._containsRealPlayer) return;
+    this._player = player;
+    this._queuedCallbacks.forEach((callbacks, phase) => {
+      callbacks.forEach(callback => listenOnPlayer(player, phase, undefined, callback));
+    });
+    this._queuedCallbacks.clear();
+    this._containsRealPlayer = true;
+    this.overrideTotalTime(player.totalTime);
+    this.queued = false;
+  }
+  getRealPlayer() {
+    return this._player;
+  }
+  overrideTotalTime(totalTime) {
+    this.totalTime = totalTime;
+  }
+  syncPlayerEvents(player) {
+    const p = this._player;
+    if (p.triggerCallback) {
+      player.onStart(() => p.triggerCallback('start'));
+    }
+    player.onDone(() => this.finish());
+    player.onDestroy(() => this.destroy());
+  }
+  _queueEvent(name, callback) {
+    getOrSetDefaultValue(this._queuedCallbacks, name, []).push(callback);
+  }
+  onDone(fn) {
+    if (this.queued) {
+      this._queueEvent('done', fn);
+    }
+    this._player.onDone(fn);
+  }
+  onStart(fn) {
+    if (this.queued) {
+      this._queueEvent('start', fn);
+    }
+    this._player.onStart(fn);
+  }
+  onDestroy(fn) {
+    if (this.queued) {
+      this._queueEvent('destroy', fn);
+    }
+    this._player.onDestroy(fn);
+  }
+  init() {
+    this._player.init();
+  }
+  hasStarted() {
+    return this.queued ? false : this._player.hasStarted();
+  }
+  play() {
+    !this.queued && this._player.play();
+  }
+  pause() {
+    !this.queued && this._player.pause();
+  }
+  restart() {
+    !this.queued && this._player.restart();
+  }
+  finish() {
+    this._player.finish();
+  }
+  destroy() {
+    this.destroyed = true;
+    this._player.destroy();
+  }
+  reset() {
+    !this.queued && this._player.reset();
+  }
+  setPosition(p) {
+    if (!this.queued) {
+      this._player.setPosition(p);
+    }
+  }
+  getPosition() {
+    return this.queued ? 0 : this._player.getPosition();
+  }
+  /** @internal */
+  triggerCallback(phaseName) {
+    const p = this._player;
+    if (p.triggerCallback) {
+      p.triggerCallback(phaseName);
+    }
+  }
+}
+function deleteOrUnsetInMap(map, key, value) {
+  let currentValues = map.get(key);
+  if (currentValues) {
+    if (currentValues.length) {
+      const index = currentValues.indexOf(value);
+      currentValues.splice(index, 1);
+    }
+    if (currentValues.length == 0) {
+      map.delete(key);
+    }
+  }
+  return currentValues;
+}
+function normalizeTriggerValue(value) {
+  // we use `!= null` here because it's the most simple
+  // way to test against a "falsy" value without mixing
+  // in empty strings or a zero value. DO NOT OPTIMIZE.
+  return value != null ? value : null;
+}
+function isElementNode(node) {
+  return node && node['nodeType'] === 1;
+}
+function isTriggerEventValid(eventName) {
+  return eventName == 'start' || eventName == 'done';
+}
+function cloakElement(element, value) {
+  const oldValue = element.style.display;
+  element.style.display = value != null ? value : 'none';
+  return oldValue;
+}
+function cloakAndComputeStyles(valuesMap, driver, elements, elementPropsMap, defaultStyle) {
+  const cloakVals = [];
+  elements.forEach(element => cloakVals.push(cloakElement(element)));
+  const failedElements = [];
+  elementPropsMap.forEach((props, element) => {
+    const styles = new Map();
+    props.forEach(prop => {
+      const value = driver.computeStyle(element, prop, defaultStyle);
+      styles.set(prop, value);
+      // there is no easy way to detect this because a sub element could be removed
+      // by a parent animation element being detached.
+      if (!value || value.length == 0) {
+        element[REMOVAL_FLAG] = NULL_REMOVED_QUERIED_STATE;
+        failedElements.push(element);
+      }
+    });
+    valuesMap.set(element, styles);
+  });
+  // we use a index variable here since Set.forEach(a, i) does not return
+  // an index value for the closure (but instead just the value)
+  let i = 0;
+  elements.forEach(element => cloakElement(element, cloakVals[i++]));
+  return failedElements;
+}
+/*
+Since the Angular renderer code will return a collection of inserted
+nodes in all areas of a DOM tree, it's up to this algorithm to figure
+out which nodes are roots for each animation @trigger.
+
+By placing each inserted node into a Set and traversing upwards, it
+is possible to find the @trigger elements and well any direct *star
+insertion nodes, if a @trigger root is found then the enter element
+is placed into the Map[@trigger] spot.
+ */
+function buildRootMap(roots, nodes) {
+  const rootMap = new Map();
+  roots.forEach(root => rootMap.set(root, []));
+  if (nodes.length == 0) return rootMap;
+  const NULL_NODE = 1;
+  const nodeSet = new Set(nodes);
+  const localRootMap = new Map();
+  function getRoot(node) {
+    if (!node) return NULL_NODE;
+    let root = localRootMap.get(node);
+    if (root) return root;
+    const parent = node.parentNode;
+    if (rootMap.has(parent)) {
+      // ngIf inside @trigger
+      root = parent;
+    } else if (nodeSet.has(parent)) {
+      // ngIf inside ngIf
+      root = NULL_NODE;
+    } else {
+      // recurse upwards
+      root = getRoot(parent);
+    }
+    localRootMap.set(node, root);
+    return root;
+  }
+  nodes.forEach(node => {
+    const root = getRoot(node);
+    if (root !== NULL_NODE) {
+      rootMap.get(root).push(node);
+    }
+  });
+  return rootMap;
+}
+function addClass(element, className) {
+  element.classList?.add(className);
+}
+function removeClass(element, className) {
+  element.classList?.remove(className);
+}
+function removeNodesAfterAnimationDone(engine, element, players) {
+  optimizeGroupPlayer(players).onDone(() => engine.processLeaveNode(element));
+}
+function flattenGroupPlayers(players) {
+  const finalPlayers = [];
+  _flattenGroupPlayersRecur(players, finalPlayers);
+  return finalPlayers;
+}
+function _flattenGroupPlayersRecur(players, finalPlayers) {
+  for (let i = 0; i < players.length; i++) {
+    const player = players[i];
+    if (player instanceof _angular_animations__WEBPACK_IMPORTED_MODULE_1__["ɵAnimationGroupPlayer"]) {
+      _flattenGroupPlayersRecur(player.players, finalPlayers);
+    } else {
+      finalPlayers.push(player);
+    }
+  }
+}
+function objEquals(a, b) {
+  const k1 = Object.keys(a);
+  const k2 = Object.keys(b);
+  if (k1.length != k2.length) return false;
+  for (let i = 0; i < k1.length; i++) {
+    const prop = k1[i];
+    if (!b.hasOwnProperty(prop) || a[prop] !== b[prop]) return false;
+  }
+  return true;
+}
+function replacePostStylesAsPre(element, allPreStyleElements, allPostStyleElements) {
+  const postEntry = allPostStyleElements.get(element);
+  if (!postEntry) return false;
+  let preEntry = allPreStyleElements.get(element);
+  if (preEntry) {
+    postEntry.forEach(data => preEntry.add(data));
+  } else {
+    allPreStyleElements.set(element, postEntry);
+  }
+  allPostStyleElements.delete(element);
+  return true;
+}
+class AnimationEngine {
+  constructor(bodyNode, _driver, _normalizer) {
+    this.bodyNode = bodyNode;
+    this._driver = _driver;
+    this._normalizer = _normalizer;
+    this._triggerCache = {};
+    // this method is designed to be overridden by the code that uses this engine
+    this.onRemovalComplete = (element, context) => {};
+    this._transitionEngine = new TransitionAnimationEngine(bodyNode, _driver, _normalizer);
+    this._timelineEngine = new TimelineAnimationEngine(bodyNode, _driver, _normalizer);
+    this._transitionEngine.onRemovalComplete = (element, context) => this.onRemovalComplete(element, context);
+  }
+  registerTrigger(componentId, namespaceId, hostElement, name, metadata) {
+    const cacheKey = componentId + '-' + name;
+    let trigger = this._triggerCache[cacheKey];
+    if (!trigger) {
+      const errors = [];
+      const warnings = [];
+      const ast = buildAnimationAst(this._driver, metadata, errors, warnings);
+      if (errors.length) {
+        throw triggerBuildFailed(name, errors);
+      }
+      if (warnings.length) {
+        warnTriggerBuild(name, warnings);
+      }
+      trigger = buildTrigger(name, ast, this._normalizer);
+      this._triggerCache[cacheKey] = trigger;
+    }
+    this._transitionEngine.registerTrigger(namespaceId, name, trigger);
+  }
+  register(namespaceId, hostElement) {
+    this._transitionEngine.register(namespaceId, hostElement);
+  }
+  destroy(namespaceId, context) {
+    this._transitionEngine.destroy(namespaceId, context);
+  }
+  onInsert(namespaceId, element, parent, insertBefore) {
+    this._transitionEngine.insertNode(namespaceId, element, parent, insertBefore);
+  }
+  onRemove(namespaceId, element, context) {
+    this._transitionEngine.removeNode(namespaceId, element, context);
+  }
+  disableAnimations(element, disable) {
+    this._transitionEngine.markElementAsDisabled(element, disable);
+  }
+  process(namespaceId, element, property, value) {
+    if (property.charAt(0) == '@') {
+      const [id, action] = parseTimelineCommand(property);
+      const args = value;
+      this._timelineEngine.command(id, element, action, args);
+    } else {
+      this._transitionEngine.trigger(namespaceId, element, property, value);
+    }
+  }
+  listen(namespaceId, element, eventName, eventPhase, callback) {
+    // @@listen
+    if (eventName.charAt(0) == '@') {
+      const [id, action] = parseTimelineCommand(eventName);
+      return this._timelineEngine.listen(id, element, action, callback);
+    }
+    return this._transitionEngine.listen(namespaceId, element, eventName, eventPhase, callback);
+  }
+  flush(microtaskId = -1) {
+    this._transitionEngine.flush(microtaskId);
+  }
+  get players() {
+    return [...this._transitionEngine.players, ...this._timelineEngine.players];
+  }
+  whenRenderingDone() {
+    return this._transitionEngine.whenRenderingDone();
+  }
+  afterFlushAnimationsDone(cb) {
+    this._transitionEngine.afterFlushAnimationsDone(cb);
+  }
+}
+
+/**
+ * Returns an instance of `SpecialCasedStyles` if and when any special (non animateable) styles are
+ * detected.
+ *
+ * In CSS there exist properties that cannot be animated within a keyframe animation
+ * (whether it be via CSS keyframes or web-animations) and the animation implementation
+ * will ignore them. This function is designed to detect those special cased styles and
+ * return a container that will be executed at the start and end of the animation.
+ *
+ * @returns an instance of `SpecialCasedStyles` if any special styles are detected otherwise `null`
+ */
+function packageNonAnimatableStyles(element, styles) {
+  let startStyles = null;
+  let endStyles = null;
+  if (Array.isArray(styles) && styles.length) {
+    startStyles = filterNonAnimatableStyles(styles[0]);
+    if (styles.length > 1) {
+      endStyles = filterNonAnimatableStyles(styles[styles.length - 1]);
+    }
+  } else if (styles instanceof Map) {
+    startStyles = filterNonAnimatableStyles(styles);
+  }
+  return startStyles || endStyles ? new SpecialCasedStyles(element, startStyles, endStyles) : null;
+}
+/**
+ * Designed to be executed during a keyframe-based animation to apply any special-cased styles.
+ *
+ * When started (when the `start()` method is run) then the provided `startStyles`
+ * will be applied. When finished (when the `finish()` method is called) the
+ * `endStyles` will be applied as well any any starting styles. Finally when
+ * `destroy()` is called then all styles will be removed.
+ */
+class SpecialCasedStyles {
+  static #_ = this.initialStylesByElement = /* @__PURE__ */new WeakMap();
+  constructor(_element, _startStyles, _endStyles) {
+    this._element = _element;
+    this._startStyles = _startStyles;
+    this._endStyles = _endStyles;
+    this._state = 0 /* SpecialCasedStylesState.Pending */;
+    let initialStyles = SpecialCasedStyles.initialStylesByElement.get(_element);
+    if (!initialStyles) {
+      SpecialCasedStyles.initialStylesByElement.set(_element, initialStyles = new Map());
+    }
+    this._initialStyles = initialStyles;
+  }
+  start() {
+    if (this._state < 1 /* SpecialCasedStylesState.Started */) {
+      if (this._startStyles) {
+        setStyles(this._element, this._startStyles, this._initialStyles);
+      }
+      this._state = 1 /* SpecialCasedStylesState.Started */;
+    }
+  }
+
+  finish() {
+    this.start();
+    if (this._state < 2 /* SpecialCasedStylesState.Finished */) {
+      setStyles(this._element, this._initialStyles);
+      if (this._endStyles) {
+        setStyles(this._element, this._endStyles);
+        this._endStyles = null;
+      }
+      this._state = 1 /* SpecialCasedStylesState.Started */;
+    }
+  }
+
+  destroy() {
+    this.finish();
+    if (this._state < 3 /* SpecialCasedStylesState.Destroyed */) {
+      SpecialCasedStyles.initialStylesByElement.delete(this._element);
+      if (this._startStyles) {
+        eraseStyles(this._element, this._startStyles);
+        this._endStyles = null;
+      }
+      if (this._endStyles) {
+        eraseStyles(this._element, this._endStyles);
+        this._endStyles = null;
+      }
+      setStyles(this._element, this._initialStyles);
+      this._state = 3 /* SpecialCasedStylesState.Destroyed */;
+    }
+  }
+}
+
+function filterNonAnimatableStyles(styles) {
+  let result = null;
+  styles.forEach((val, prop) => {
+    if (isNonAnimatableStyle(prop)) {
+      result = result || new Map();
+      result.set(prop, val);
+    }
+  });
+  return result;
+}
+function isNonAnimatableStyle(prop) {
+  return prop === 'display' || prop === 'position';
+}
+class WebAnimationsPlayer {
+  constructor(element, keyframes, options, _specialStyles) {
+    this.element = element;
+    this.keyframes = keyframes;
+    this.options = options;
+    this._specialStyles = _specialStyles;
+    this._onDoneFns = [];
+    this._onStartFns = [];
+    this._onDestroyFns = [];
+    this._initialized = false;
+    this._finished = false;
+    this._started = false;
+    this._destroyed = false;
+    // the following original fns are persistent copies of the _onStartFns and _onDoneFns
+    // and are used to reset the fns to their original values upon reset()
+    // (since the _onStartFns and _onDoneFns get deleted after they are called)
+    this._originalOnDoneFns = [];
+    this._originalOnStartFns = [];
+    this.time = 0;
+    this.parentPlayer = null;
+    this.currentSnapshot = new Map();
+    this._duration = options['duration'];
+    this._delay = options['delay'] || 0;
+    this.time = this._duration + this._delay;
+  }
+  _onFinish() {
+    if (!this._finished) {
+      this._finished = true;
+      this._onDoneFns.forEach(fn => fn());
+      this._onDoneFns = [];
+    }
+  }
+  init() {
+    this._buildPlayer();
+    this._preparePlayerBeforeStart();
+  }
+  _buildPlayer() {
+    if (this._initialized) return;
+    this._initialized = true;
+    const keyframes = this.keyframes;
+    // @ts-expect-error overwriting a readonly property
+    this.domPlayer = this._triggerWebAnimation(this.element, keyframes, this.options);
+    this._finalKeyframe = keyframes.length ? keyframes[keyframes.length - 1] : new Map();
+    const onFinish = () => this._onFinish();
+    this.domPlayer.addEventListener('finish', onFinish);
+    this.onDestroy(() => {
+      // We must remove the `finish` event listener once an animation has completed all its
+      // iterations. This action is necessary to prevent a memory leak since the listener captures
+      // `this`, creating a closure that prevents `this` from being garbage collected.
+      this.domPlayer.removeEventListener('finish', onFinish);
+    });
+  }
+  _preparePlayerBeforeStart() {
+    // this is required so that the player doesn't start to animate right away
+    if (this._delay) {
+      this._resetDomPlayerState();
+    } else {
+      this.domPlayer.pause();
+    }
+  }
+  _convertKeyframesToObject(keyframes) {
+    const kfs = [];
+    keyframes.forEach(frame => {
+      kfs.push(Object.fromEntries(frame));
+    });
+    return kfs;
+  }
+  /** @internal */
+  _triggerWebAnimation(element, keyframes, options) {
+    return element.animate(this._convertKeyframesToObject(keyframes), options);
+  }
+  onStart(fn) {
+    this._originalOnStartFns.push(fn);
+    this._onStartFns.push(fn);
+  }
+  onDone(fn) {
+    this._originalOnDoneFns.push(fn);
+    this._onDoneFns.push(fn);
+  }
+  onDestroy(fn) {
+    this._onDestroyFns.push(fn);
+  }
+  play() {
+    this._buildPlayer();
+    if (!this.hasStarted()) {
+      this._onStartFns.forEach(fn => fn());
+      this._onStartFns = [];
+      this._started = true;
+      if (this._specialStyles) {
+        this._specialStyles.start();
+      }
+    }
+    this.domPlayer.play();
+  }
+  pause() {
+    this.init();
+    this.domPlayer.pause();
+  }
+  finish() {
+    this.init();
+    if (this._specialStyles) {
+      this._specialStyles.finish();
+    }
+    this._onFinish();
+    this.domPlayer.finish();
+  }
+  reset() {
+    this._resetDomPlayerState();
+    this._destroyed = false;
+    this._finished = false;
+    this._started = false;
+    this._onStartFns = this._originalOnStartFns;
+    this._onDoneFns = this._originalOnDoneFns;
+  }
+  _resetDomPlayerState() {
+    if (this.domPlayer) {
+      this.domPlayer.cancel();
+    }
+  }
+  restart() {
+    this.reset();
+    this.play();
+  }
+  hasStarted() {
+    return this._started;
+  }
+  destroy() {
+    if (!this._destroyed) {
+      this._destroyed = true;
+      this._resetDomPlayerState();
+      this._onFinish();
+      if (this._specialStyles) {
+        this._specialStyles.destroy();
+      }
+      this._onDestroyFns.forEach(fn => fn());
+      this._onDestroyFns = [];
+    }
+  }
+  setPosition(p) {
+    if (this.domPlayer === undefined) {
+      this.init();
+    }
+    this.domPlayer.currentTime = p * this.time;
+  }
+  getPosition() {
+    // tsc is complaining with TS2362 without the conversion to number
+    return +(this.domPlayer.currentTime ?? 0) / this.time;
+  }
+  get totalTime() {
+    return this._delay + this._duration;
+  }
+  beforeDestroy() {
+    const styles = new Map();
+    if (this.hasStarted()) {
+      // note: this code is invoked only when the `play` function was called prior to this
+      // (thus `hasStarted` returns true), this implies that the code that initializes
+      // `_finalKeyframe` has also been executed and the non-null assertion can be safely used here
+      const finalKeyframe = this._finalKeyframe;
+      finalKeyframe.forEach((val, prop) => {
+        if (prop !== 'offset') {
+          styles.set(prop, this._finished ? val : computeStyle(this.element, prop));
+        }
+      });
+    }
+    this.currentSnapshot = styles;
+  }
+  /** @internal */
+  triggerCallback(phaseName) {
+    const methods = phaseName === 'start' ? this._onStartFns : this._onDoneFns;
+    methods.forEach(fn => fn());
+    methods.length = 0;
+  }
+}
+class WebAnimationsDriver {
+  validateStyleProperty(prop) {
+    // Perform actual validation in dev mode only, in prod mode this check is a noop.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      return validateStyleProperty(prop);
+    }
+    return true;
+  }
+  validateAnimatableStyleProperty(prop) {
+    // Perform actual validation in dev mode only, in prod mode this check is a noop.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      const cssProp = camelCaseToDashCase(prop);
+      return validateWebAnimatableStyleProperty(cssProp);
+    }
+    return true;
+  }
+  matchesElement(_element, _selector) {
+    // This method is deprecated and no longer in use so we return false.
+    return false;
+  }
+  containsElement(elm1, elm2) {
+    return containsElement(elm1, elm2);
+  }
+  getParentElement(element) {
+    return getParentElement(element);
+  }
+  query(element, selector, multi) {
+    return invokeQuery(element, selector, multi);
+  }
+  computeStyle(element, prop, defaultValue) {
+    return window.getComputedStyle(element)[prop];
+  }
+  animate(element, keyframes, duration, delay, easing, previousPlayers = []) {
+    const fill = delay == 0 ? 'both' : 'forwards';
+    const playerOptions = {
+      duration,
+      delay,
+      fill
+    };
+    // we check for this to avoid having a null|undefined value be present
+    // for the easing (which results in an error for certain browsers #9752)
+    if (easing) {
+      playerOptions['easing'] = easing;
+    }
+    const previousStyles = new Map();
+    const previousWebAnimationPlayers = previousPlayers.filter(player => player instanceof WebAnimationsPlayer);
+    if (allowPreviousPlayerStylesMerge(duration, delay)) {
+      previousWebAnimationPlayers.forEach(player => {
+        player.currentSnapshot.forEach((val, prop) => previousStyles.set(prop, val));
+      });
+    }
+    let _keyframes = normalizeKeyframes(keyframes).map(styles => copyStyles(styles));
+    _keyframes = balancePreviousStylesIntoKeyframes(element, _keyframes, previousStyles);
+    const specialStyles = packageNonAnimatableStyles(element, _keyframes);
+    return new WebAnimationsPlayer(element, _keyframes, playerOptions, specialStyles);
+  }
+}
+
+/**
+ * @module
+ * @description
+ * Entry point for all animation APIs of the animation browser package.
+ */
+
+/**
+ * @module
+ * @description
+ * Entry point for all public APIs of this package.
+ */
+
+// This file is not used to build this module. It is only used during editing
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
 /***/ 6575:
 /*!**********************************************************!*\
   !*** ./node_modules/@angular/common/fesm2022/common.mjs ***!
@@ -55054,6 +60581,654 @@ class ReactiveFormsModule {
 
 /***/ }),
 
+/***/ 4987:
+/*!************************************************************************!*\
+  !*** ./node_modules/@angular/platform-browser/fesm2022/animations.mjs ***!
+  \************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ANIMATION_MODULE_TYPE: () => (/* reexport safe */ _angular_core__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_MODULE_TYPE),
+/* harmony export */   BrowserAnimationsModule: () => (/* binding */ BrowserAnimationsModule),
+/* harmony export */   NoopAnimationsModule: () => (/* binding */ NoopAnimationsModule),
+/* harmony export */   provideAnimations: () => (/* binding */ provideAnimations),
+/* harmony export */   provideNoopAnimations: () => (/* binding */ provideNoopAnimations),
+/* harmony export */   "ɵAnimationRenderer": () => (/* binding */ AnimationRenderer),
+/* harmony export */   "ɵAnimationRendererFactory": () => (/* binding */ AnimationRendererFactory),
+/* harmony export */   "ɵBrowserAnimationBuilder": () => (/* binding */ BrowserAnimationBuilder),
+/* harmony export */   "ɵBrowserAnimationFactory": () => (/* binding */ BrowserAnimationFactory),
+/* harmony export */   "ɵInjectableAnimationEngine": () => (/* binding */ InjectableAnimationEngine)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/platform-browser */ 6480);
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/animations */ 2501);
+/* harmony import */ var _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/animations/browser */ 570);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ 6575);
+/**
+ * @license Angular v16.2.12
+ * (c) 2010-2022 Google LLC. https://angular.io/
+ * License: MIT
+ */
+
+
+
+
+
+
+
+
+
+class BrowserAnimationBuilder extends _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AnimationBuilder {
+  constructor(rootRenderer, doc) {
+    super();
+    this._nextAnimationId = 0;
+    const typeData = {
+      id: '0',
+      encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewEncapsulation.None,
+      styles: [],
+      data: {
+        animation: []
+      }
+    };
+    this._renderer = rootRenderer.createRenderer(doc.body, typeData);
+  }
+  build(animation) {
+    const id = this._nextAnimationId.toString();
+    this._nextAnimationId++;
+    const entry = Array.isArray(animation) ? (0,_angular_animations__WEBPACK_IMPORTED_MODULE_1__.sequence)(animation) : animation;
+    issueAnimationCommand(this._renderer, null, id, 'register', [entry]);
+    return new BrowserAnimationFactory(id, this._renderer);
+  }
+  static #_ = this.ɵfac = function BrowserAnimationBuilder_Factory(t) {
+    return new (t || BrowserAnimationBuilder)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.RendererFactory2), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common__WEBPACK_IMPORTED_MODULE_2__.DOCUMENT));
+  };
+  static #_2 = this.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+    token: BrowserAnimationBuilder,
+    factory: BrowserAnimationBuilder.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BrowserAnimationBuilder, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable
+  }], function () {
+    return [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.RendererFactory2
+    }, {
+      type: undefined,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+        args: [_angular_common__WEBPACK_IMPORTED_MODULE_2__.DOCUMENT]
+      }]
+    }];
+  }, null);
+})();
+class BrowserAnimationFactory extends _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AnimationFactory {
+  constructor(_id, _renderer) {
+    super();
+    this._id = _id;
+    this._renderer = _renderer;
+  }
+  create(element, options) {
+    return new RendererAnimationPlayer(this._id, element, options || {}, this._renderer);
+  }
+}
+class RendererAnimationPlayer {
+  constructor(id, element, options, _renderer) {
+    this.id = id;
+    this.element = element;
+    this._renderer = _renderer;
+    this.parentPlayer = null;
+    this._started = false;
+    this.totalTime = 0;
+    this._command('create', options);
+  }
+  _listen(eventName, callback) {
+    return this._renderer.listen(this.element, `@@${this.id}:${eventName}`, callback);
+  }
+  _command(command, ...args) {
+    return issueAnimationCommand(this._renderer, this.element, this.id, command, args);
+  }
+  onDone(fn) {
+    this._listen('done', fn);
+  }
+  onStart(fn) {
+    this._listen('start', fn);
+  }
+  onDestroy(fn) {
+    this._listen('destroy', fn);
+  }
+  init() {
+    this._command('init');
+  }
+  hasStarted() {
+    return this._started;
+  }
+  play() {
+    this._command('play');
+    this._started = true;
+  }
+  pause() {
+    this._command('pause');
+  }
+  restart() {
+    this._command('restart');
+  }
+  finish() {
+    this._command('finish');
+  }
+  destroy() {
+    this._command('destroy');
+  }
+  reset() {
+    this._command('reset');
+    this._started = false;
+  }
+  setPosition(p) {
+    this._command('setPosition', p);
+  }
+  getPosition() {
+    return this._renderer.engine.players[+this.id]?.getPosition() ?? 0;
+  }
+}
+function issueAnimationCommand(renderer, element, id, command, args) {
+  return renderer.setProperty(element, `@@${id}:${command}`, args);
+}
+const ANIMATION_PREFIX = '@';
+const DISABLE_ANIMATIONS_FLAG = '@.disabled';
+class AnimationRendererFactory {
+  constructor(delegate, engine, _zone) {
+    this.delegate = delegate;
+    this.engine = engine;
+    this._zone = _zone;
+    this._currentId = 0;
+    this._microtaskId = 1;
+    this._animationCallbacksBuffer = [];
+    this._rendererCache = new Map();
+    this._cdRecurDepth = 0;
+    engine.onRemovalComplete = (element, delegate) => {
+      // Note: if a component element has a leave animation, and a host leave animation,
+      // the view engine will call `removeChild` for the parent
+      // component renderer as well as for the child component renderer.
+      // Therefore, we need to check if we already removed the element.
+      const parentNode = delegate?.parentNode(element);
+      if (parentNode) {
+        delegate.removeChild(parentNode, element);
+      }
+    };
+  }
+  createRenderer(hostElement, type) {
+    const EMPTY_NAMESPACE_ID = '';
+    // cache the delegates to find out which cached delegate can
+    // be used by which cached renderer
+    const delegate = this.delegate.createRenderer(hostElement, type);
+    if (!hostElement || !type || !type.data || !type.data['animation']) {
+      let renderer = this._rendererCache.get(delegate);
+      if (!renderer) {
+        // Ensure that the renderer is removed from the cache on destroy
+        // since it may contain references to detached DOM nodes.
+        const onRendererDestroy = () => this._rendererCache.delete(delegate);
+        renderer = new BaseAnimationRenderer(EMPTY_NAMESPACE_ID, delegate, this.engine, onRendererDestroy);
+        // only cache this result when the base renderer is used
+        this._rendererCache.set(delegate, renderer);
+      }
+      return renderer;
+    }
+    const componentId = type.id;
+    const namespaceId = type.id + '-' + this._currentId;
+    this._currentId++;
+    this.engine.register(namespaceId, hostElement);
+    const registerTrigger = trigger => {
+      if (Array.isArray(trigger)) {
+        trigger.forEach(registerTrigger);
+      } else {
+        this.engine.registerTrigger(componentId, namespaceId, hostElement, trigger.name, trigger);
+      }
+    };
+    const animationTriggers = type.data['animation'];
+    animationTriggers.forEach(registerTrigger);
+    return new AnimationRenderer(this, namespaceId, delegate, this.engine);
+  }
+  begin() {
+    this._cdRecurDepth++;
+    if (this.delegate.begin) {
+      this.delegate.begin();
+    }
+  }
+  _scheduleCountTask() {
+    queueMicrotask(() => {
+      this._microtaskId++;
+    });
+  }
+  /** @internal */
+  scheduleListenerCallback(count, fn, data) {
+    if (count >= 0 && count < this._microtaskId) {
+      this._zone.run(() => fn(data));
+      return;
+    }
+    if (this._animationCallbacksBuffer.length == 0) {
+      queueMicrotask(() => {
+        this._zone.run(() => {
+          this._animationCallbacksBuffer.forEach(tuple => {
+            const [fn, data] = tuple;
+            fn(data);
+          });
+          this._animationCallbacksBuffer = [];
+        });
+      });
+    }
+    this._animationCallbacksBuffer.push([fn, data]);
+  }
+  end() {
+    this._cdRecurDepth--;
+    // this is to prevent animations from running twice when an inner
+    // component does CD when a parent component instead has inserted it
+    if (this._cdRecurDepth == 0) {
+      this._zone.runOutsideAngular(() => {
+        this._scheduleCountTask();
+        this.engine.flush(this._microtaskId);
+      });
+    }
+    if (this.delegate.end) {
+      this.delegate.end();
+    }
+  }
+  whenRenderingDone() {
+    return this.engine.whenRenderingDone();
+  }
+  static #_ = this.ɵfac = function AnimationRendererFactory_Factory(t) {
+    return new (t || AnimationRendererFactory)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.RendererFactory2), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationEngine"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.NgZone));
+  };
+  static #_2 = this.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+    token: AnimationRendererFactory,
+    factory: AnimationRendererFactory.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AnimationRendererFactory, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable
+  }], function () {
+    return [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.RendererFactory2
+    }, {
+      type: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationEngine"]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgZone
+    }];
+  }, null);
+})();
+class BaseAnimationRenderer {
+  constructor(namespaceId, delegate, engine, _onDestroy) {
+    this.namespaceId = namespaceId;
+    this.delegate = delegate;
+    this.engine = engine;
+    this._onDestroy = _onDestroy;
+  }
+  get data() {
+    return this.delegate.data;
+  }
+  destroyNode(node) {
+    this.delegate.destroyNode?.(node);
+  }
+  destroy() {
+    this.engine.destroy(this.namespaceId, this.delegate);
+    this.engine.afterFlushAnimationsDone(() => {
+      // Call the renderer destroy method after the animations has finished as otherwise
+      // styles will be removed too early which will cause an unstyled animation.
+      queueMicrotask(() => {
+        this.delegate.destroy();
+      });
+    });
+    this._onDestroy?.();
+  }
+  createElement(name, namespace) {
+    return this.delegate.createElement(name, namespace);
+  }
+  createComment(value) {
+    return this.delegate.createComment(value);
+  }
+  createText(value) {
+    return this.delegate.createText(value);
+  }
+  appendChild(parent, newChild) {
+    this.delegate.appendChild(parent, newChild);
+    this.engine.onInsert(this.namespaceId, newChild, parent, false);
+  }
+  insertBefore(parent, newChild, refChild, isMove = true) {
+    this.delegate.insertBefore(parent, newChild, refChild);
+    // If `isMove` true than we should animate this insert.
+    this.engine.onInsert(this.namespaceId, newChild, parent, isMove);
+  }
+  removeChild(parent, oldChild, isHostElement) {
+    this.engine.onRemove(this.namespaceId, oldChild, this.delegate);
+  }
+  selectRootElement(selectorOrNode, preserveContent) {
+    return this.delegate.selectRootElement(selectorOrNode, preserveContent);
+  }
+  parentNode(node) {
+    return this.delegate.parentNode(node);
+  }
+  nextSibling(node) {
+    return this.delegate.nextSibling(node);
+  }
+  setAttribute(el, name, value, namespace) {
+    this.delegate.setAttribute(el, name, value, namespace);
+  }
+  removeAttribute(el, name, namespace) {
+    this.delegate.removeAttribute(el, name, namespace);
+  }
+  addClass(el, name) {
+    this.delegate.addClass(el, name);
+  }
+  removeClass(el, name) {
+    this.delegate.removeClass(el, name);
+  }
+  setStyle(el, style, value, flags) {
+    this.delegate.setStyle(el, style, value, flags);
+  }
+  removeStyle(el, style, flags) {
+    this.delegate.removeStyle(el, style, flags);
+  }
+  setProperty(el, name, value) {
+    if (name.charAt(0) == ANIMATION_PREFIX && name == DISABLE_ANIMATIONS_FLAG) {
+      this.disableAnimations(el, !!value);
+    } else {
+      this.delegate.setProperty(el, name, value);
+    }
+  }
+  setValue(node, value) {
+    this.delegate.setValue(node, value);
+  }
+  listen(target, eventName, callback) {
+    return this.delegate.listen(target, eventName, callback);
+  }
+  disableAnimations(element, value) {
+    this.engine.disableAnimations(element, value);
+  }
+}
+class AnimationRenderer extends BaseAnimationRenderer {
+  constructor(factory, namespaceId, delegate, engine, onDestroy) {
+    super(namespaceId, delegate, engine, onDestroy);
+    this.factory = factory;
+    this.namespaceId = namespaceId;
+  }
+  setProperty(el, name, value) {
+    if (name.charAt(0) == ANIMATION_PREFIX) {
+      if (name.charAt(1) == '.' && name == DISABLE_ANIMATIONS_FLAG) {
+        value = value === undefined ? true : !!value;
+        this.disableAnimations(el, value);
+      } else {
+        this.engine.process(this.namespaceId, el, name.slice(1), value);
+      }
+    } else {
+      this.delegate.setProperty(el, name, value);
+    }
+  }
+  listen(target, eventName, callback) {
+    if (eventName.charAt(0) == ANIMATION_PREFIX) {
+      const element = resolveElementFromTarget(target);
+      let name = eventName.slice(1);
+      let phase = '';
+      // @listener.phase is for trigger animation callbacks
+      // @@listener is for animation builder callbacks
+      if (name.charAt(0) != ANIMATION_PREFIX) {
+        [name, phase] = parseTriggerCallbackName(name);
+      }
+      return this.engine.listen(this.namespaceId, element, name, phase, event => {
+        const countId = event['_data'] || -1;
+        this.factory.scheduleListenerCallback(countId, callback, event);
+      });
+    }
+    return this.delegate.listen(target, eventName, callback);
+  }
+}
+function resolveElementFromTarget(target) {
+  switch (target) {
+    case 'body':
+      return document.body;
+    case 'document':
+      return document;
+    case 'window':
+      return window;
+    default:
+      return target;
+  }
+}
+function parseTriggerCallbackName(triggerName) {
+  const dotIndex = triggerName.indexOf('.');
+  const trigger = triggerName.substring(0, dotIndex);
+  const phase = triggerName.slice(dotIndex + 1);
+  return [trigger, phase];
+}
+class InjectableAnimationEngine extends _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationEngine"] {
+  // The `ApplicationRef` is injected here explicitly to force the dependency ordering.
+  // Since the `ApplicationRef` should be created earlier before the `AnimationEngine`, they
+  // both have `ngOnDestroy` hooks and `flush()` must be called after all views are destroyed.
+  constructor(doc, driver, normalizer, appRef) {
+    super(doc.body, driver, normalizer);
+  }
+  ngOnDestroy() {
+    this.flush();
+  }
+  static #_ = this.ɵfac = function InjectableAnimationEngine_Factory(t) {
+    return new (t || InjectableAnimationEngine)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common__WEBPACK_IMPORTED_MODULE_2__.DOCUMENT), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__.AnimationDriver), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationStyleNormalizer"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef));
+  };
+  static #_2 = this.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+    token: InjectableAnimationEngine,
+    factory: InjectableAnimationEngine.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](InjectableAnimationEngine, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable
+  }], function () {
+    return [{
+      type: undefined,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+        args: [_angular_common__WEBPACK_IMPORTED_MODULE_2__.DOCUMENT]
+      }]
+    }, {
+      type: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__.AnimationDriver
+    }, {
+      type: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationStyleNormalizer"]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef
+    }];
+  }, null);
+})();
+function instantiateDefaultStyleNormalizer() {
+  return new _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵWebAnimationsStyleNormalizer"]();
+}
+function instantiateRendererFactory(renderer, engine, zone) {
+  return new AnimationRendererFactory(renderer, engine, zone);
+}
+const SHARED_ANIMATION_PROVIDERS = [{
+  provide: _angular_animations__WEBPACK_IMPORTED_MODULE_1__.AnimationBuilder,
+  useClass: BrowserAnimationBuilder
+}, {
+  provide: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationStyleNormalizer"],
+  useFactory: instantiateDefaultStyleNormalizer
+}, {
+  provide: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationEngine"],
+  useClass: InjectableAnimationEngine
+}, {
+  provide: _angular_core__WEBPACK_IMPORTED_MODULE_0__.RendererFactory2,
+  useFactory: instantiateRendererFactory,
+  deps: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__["ɵDomRendererFactory2"], _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵAnimationEngine"], _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgZone]
+}];
+/**
+ * Separate providers from the actual module so that we can do a local modification in Google3 to
+ * include them in the BrowserModule.
+ */
+const BROWSER_ANIMATIONS_PROVIDERS = [{
+  provide: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__.AnimationDriver,
+  useFactory: () => new _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵWebAnimationsDriver"]()
+}, {
+  provide: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_MODULE_TYPE,
+  useValue: 'BrowserAnimations'
+}, ...SHARED_ANIMATION_PROVIDERS];
+/**
+ * Separate providers from the actual module so that we can do a local modification in Google3 to
+ * include them in the BrowserTestingModule.
+ */
+const BROWSER_NOOP_ANIMATIONS_PROVIDERS = [{
+  provide: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__.AnimationDriver,
+  useClass: _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__["ɵNoopAnimationDriver"]
+}, {
+  provide: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_MODULE_TYPE,
+  useValue: 'NoopAnimations'
+}, ...SHARED_ANIMATION_PROVIDERS];
+
+/**
+ * Exports `BrowserModule` with additional [dependency-injection providers](guide/glossary#provider)
+ * for use with animations. See [Animations](guide/animations).
+ * @publicApi
+ */
+class BrowserAnimationsModule {
+  /**
+   * Configures the module based on the specified object.
+   *
+   * @param config Object used to configure the behavior of the `BrowserAnimationsModule`.
+   * @see {@link BrowserAnimationsModuleConfig}
+   *
+   * @usageNotes
+   * When registering the `BrowserAnimationsModule`, you can use the `withConfig`
+   * function as follows:
+   * ```
+   * @NgModule({
+   *   imports: [BrowserAnimationsModule.withConfig(config)]
+   * })
+   * class MyNgModule {}
+   * ```
+   */
+  static withConfig(config) {
+    return {
+      ngModule: BrowserAnimationsModule,
+      providers: config.disableAnimations ? BROWSER_NOOP_ANIMATIONS_PROVIDERS : BROWSER_ANIMATIONS_PROVIDERS
+    };
+  }
+  static #_ = this.ɵfac = function BrowserAnimationsModule_Factory(t) {
+    return new (t || BrowserAnimationsModule)();
+  };
+  static #_2 = this.ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: BrowserAnimationsModule
+  });
+  static #_3 = this.ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    providers: BROWSER_ANIMATIONS_PROVIDERS,
+    imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__.BrowserModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BrowserAnimationsModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      exports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__.BrowserModule],
+      providers: BROWSER_ANIMATIONS_PROVIDERS
+    }]
+  }], null, null);
+})();
+/**
+ * Returns the set of [dependency-injection providers](guide/glossary#provider)
+ * to enable animations in an application. See [animations guide](guide/animations)
+ * to learn more about animations in Angular.
+ *
+ * @usageNotes
+ *
+ * The function is useful when you want to enable animations in an application
+ * bootstrapped using the `bootstrapApplication` function. In this scenario there
+ * is no need to import the `BrowserAnimationsModule` NgModule at all, just add
+ * providers returned by this function to the `providers` list as show below.
+ *
+ * ```typescript
+ * bootstrapApplication(RootComponent, {
+ *   providers: [
+ *     provideAnimations()
+ *   ]
+ * });
+ * ```
+ *
+ * @publicApi
+ */
+function provideAnimations() {
+  // Return a copy to prevent changes to the original array in case any in-place
+  // alterations are performed to the `provideAnimations` call results in app code.
+  return [...BROWSER_ANIMATIONS_PROVIDERS];
+}
+/**
+ * A null player that must be imported to allow disabling of animations.
+ * @publicApi
+ */
+class NoopAnimationsModule {
+  static #_ = this.ɵfac = function NoopAnimationsModule_Factory(t) {
+    return new (t || NoopAnimationsModule)();
+  };
+  static #_2 = this.ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: NoopAnimationsModule
+  });
+  static #_3 = this.ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    providers: BROWSER_NOOP_ANIMATIONS_PROVIDERS,
+    imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__.BrowserModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](NoopAnimationsModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      exports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__.BrowserModule],
+      providers: BROWSER_NOOP_ANIMATIONS_PROVIDERS
+    }]
+  }], null, null);
+})();
+/**
+ * Returns the set of [dependency-injection providers](guide/glossary#provider)
+ * to disable animations in an application. See [animations guide](guide/animations)
+ * to learn more about animations in Angular.
+ *
+ * @usageNotes
+ *
+ * The function is useful when you want to bootstrap an application using
+ * the `bootstrapApplication` function, but you need to disable animations
+ * (for example, when running tests).
+ *
+ * ```typescript
+ * bootstrapApplication(RootComponent, {
+ *   providers: [
+ *     provideNoopAnimations()
+ *   ]
+ * });
+ * ```
+ *
+ * @publicApi
+ */
+function provideNoopAnimations() {
+  // Return a copy to prevent changes to the original array in case any in-place
+  // alterations are performed to the `provideNoopAnimations` call results in app code.
+  return [...BROWSER_NOOP_ANIMATIONS_PROVIDERS];
+}
+
+/**
+ * @module
+ * @description
+ * Entry point for all animation APIs of the animation browser package.
+ */
+
+/**
+ * @module
+ * @description
+ * Entry point for all public APIs of this package.
+ */
+
+// This file is not used to build this module. It is only used during editing
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
 /***/ 6480:
 /*!******************************************************************************!*\
   !*** ./node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs ***!
@@ -68612,6 +74787,6010 @@ function createReducer(initialState, ...ons) {
  *
  * This file is automatically generated at build
  */
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 8026:
+/*!*******************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-api.mjs ***!
+  \*******************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ConfirmEventType: () => (/* binding */ ConfirmEventType),
+/* harmony export */   ConfirmationService: () => (/* binding */ ConfirmationService),
+/* harmony export */   ContextMenuService: () => (/* binding */ ContextMenuService),
+/* harmony export */   FilterMatchMode: () => (/* binding */ FilterMatchMode),
+/* harmony export */   FilterOperator: () => (/* binding */ FilterOperator),
+/* harmony export */   FilterService: () => (/* binding */ FilterService),
+/* harmony export */   Footer: () => (/* binding */ Footer),
+/* harmony export */   Header: () => (/* binding */ Header),
+/* harmony export */   MessageService: () => (/* binding */ MessageService),
+/* harmony export */   OverlayService: () => (/* binding */ OverlayService),
+/* harmony export */   PrimeIcons: () => (/* binding */ PrimeIcons),
+/* harmony export */   PrimeNGConfig: () => (/* binding */ PrimeNGConfig),
+/* harmony export */   PrimeTemplate: () => (/* binding */ PrimeTemplate),
+/* harmony export */   SharedModule: () => (/* binding */ SharedModule),
+/* harmony export */   TranslationKeys: () => (/* binding */ TranslationKeys),
+/* harmony export */   TreeDragDropService: () => (/* binding */ TreeDragDropService)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ 2513);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primeng/utils */ 5861);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ 6575);
+
+
+
+
+
+
+/**
+ * Type of the confirm event.
+ */
+const _c0 = ["*"];
+var ConfirmEventType;
+(function (ConfirmEventType) {
+  ConfirmEventType[ConfirmEventType["ACCEPT"] = 0] = "ACCEPT";
+  ConfirmEventType[ConfirmEventType["REJECT"] = 1] = "REJECT";
+  ConfirmEventType[ConfirmEventType["CANCEL"] = 2] = "CANCEL";
+})(ConfirmEventType || (ConfirmEventType = {}));
+
+/**
+ * Methods used in confirmation service.
+ * @group Service
+ */
+class ConfirmationService {
+  requireConfirmationSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  acceptConfirmationSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  requireConfirmation$ = this.requireConfirmationSource.asObservable();
+  accept = this.acceptConfirmationSource.asObservable();
+  /**
+   * Callback to invoke on confirm.
+   * @param {Confirmation} confirmation - Represents a confirmation dialog configuration.
+   * @group Method
+   */
+  confirm(confirmation) {
+    this.requireConfirmationSource.next(confirmation);
+    return this;
+  }
+  /**
+   * Closes the dialog.
+   * @group Method
+   */
+  close() {
+    this.requireConfirmationSource.next(null);
+    return this;
+  }
+  /**
+   * Accepts the dialog.
+   * @group Method
+   */
+  onAccept() {
+    this.acceptConfirmationSource.next(null);
+  }
+  static ɵfac = function ConfirmationService_Factory(t) {
+    return new (t || ConfirmationService)();
+  };
+  static ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({
+    token: ConfirmationService,
+    factory: ConfirmationService.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](ConfirmationService, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Injectable
+  }], null, null);
+})();
+class ContextMenuService {
+  activeItemKeyChange = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  activeItemKeyChange$ = this.activeItemKeyChange.asObservable();
+  activeItemKey;
+  changeKey(key) {
+    this.activeItemKey = key;
+    this.activeItemKeyChange.next(this.activeItemKey);
+  }
+  reset() {
+    this.activeItemKey = null;
+    this.activeItemKeyChange.next(this.activeItemKey);
+  }
+  static ɵfac = function ContextMenuService_Factory(t) {
+    return new (t || ContextMenuService)();
+  };
+  static ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({
+    token: ContextMenuService,
+    factory: ContextMenuService.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](ContextMenuService, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Injectable
+  }], null, null);
+})();
+class FilterMatchMode {
+  static STARTS_WITH = 'startsWith';
+  static CONTAINS = 'contains';
+  static NOT_CONTAINS = 'notContains';
+  static ENDS_WITH = 'endsWith';
+  static EQUALS = 'equals';
+  static NOT_EQUALS = 'notEquals';
+  static IN = 'in';
+  static LESS_THAN = 'lt';
+  static LESS_THAN_OR_EQUAL_TO = 'lte';
+  static GREATER_THAN = 'gt';
+  static GREATER_THAN_OR_EQUAL_TO = 'gte';
+  static BETWEEN = 'between';
+  static IS = 'is';
+  static IS_NOT = 'isNot';
+  static BEFORE = 'before';
+  static AFTER = 'after';
+  static DATE_IS = 'dateIs';
+  static DATE_IS_NOT = 'dateIsNot';
+  static DATE_BEFORE = 'dateBefore';
+  static DATE_AFTER = 'dateAfter';
+}
+class FilterOperator {
+  static AND = 'and';
+  static OR = 'or';
+}
+class FilterService {
+  filter(value, fields, filterValue, filterMatchMode, filterLocale) {
+    let filteredItems = [];
+    if (value) {
+      for (let item of value) {
+        for (let field of fields) {
+          let fieldValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.resolveFieldData(item, field);
+          if (this.filters[filterMatchMode](fieldValue, filterValue, filterLocale)) {
+            filteredItems.push(item);
+            break;
+          }
+        }
+      }
+    }
+    return filteredItems;
+  }
+  filters = {
+    startsWith: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null || filter.trim() === '') {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      let filterValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(filter.toString()).toLocaleLowerCase(filterLocale);
+      let stringValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(value.toString()).toLocaleLowerCase(filterLocale);
+      return stringValue.slice(0, filterValue.length) === filterValue;
+    },
+    contains: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null || typeof filter === 'string' && filter.trim() === '') {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      let filterValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(filter.toString()).toLocaleLowerCase(filterLocale);
+      let stringValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(value.toString()).toLocaleLowerCase(filterLocale);
+      return stringValue.indexOf(filterValue) !== -1;
+    },
+    notContains: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null || typeof filter === 'string' && filter.trim() === '') {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      let filterValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(filter.toString()).toLocaleLowerCase(filterLocale);
+      let stringValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(value.toString()).toLocaleLowerCase(filterLocale);
+      return stringValue.indexOf(filterValue) === -1;
+    },
+    endsWith: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null || filter.trim() === '') {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      let filterValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(filter.toString()).toLocaleLowerCase(filterLocale);
+      let stringValue = primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(value.toString()).toLocaleLowerCase(filterLocale);
+      return stringValue.indexOf(filterValue, stringValue.length - filterValue.length) !== -1;
+    },
+    equals: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null || typeof filter === 'string' && filter.trim() === '') {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      if (value.getTime && filter.getTime) return value.getTime() === filter.getTime();else return primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(value.toString()).toLocaleLowerCase(filterLocale) == primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(filter.toString()).toLocaleLowerCase(filterLocale);
+    },
+    notEquals: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null || typeof filter === 'string' && filter.trim() === '') {
+        return false;
+      }
+      if (value === undefined || value === null) {
+        return true;
+      }
+      if (value.getTime && filter.getTime) return value.getTime() !== filter.getTime();else return primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(value.toString()).toLocaleLowerCase(filterLocale) != primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.removeAccents(filter.toString()).toLocaleLowerCase(filterLocale);
+    },
+    in: (value, filter) => {
+      if (filter === undefined || filter === null || filter.length === 0) {
+        return true;
+      }
+      for (let i = 0; i < filter.length; i++) {
+        if (primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.equals(value, filter[i])) {
+          return true;
+        }
+      }
+      return false;
+    },
+    between: (value, filter) => {
+      if (filter == null || filter[0] == null || filter[1] == null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      if (value.getTime) return filter[0].getTime() <= value.getTime() && value.getTime() <= filter[1].getTime();else return filter[0] <= value && value <= filter[1];
+    },
+    lt: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      if (value.getTime && filter.getTime) return value.getTime() < filter.getTime();else return value < filter;
+    },
+    lte: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      if (value.getTime && filter.getTime) return value.getTime() <= filter.getTime();else return value <= filter;
+    },
+    gt: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      if (value.getTime && filter.getTime) return value.getTime() > filter.getTime();else return value > filter;
+    },
+    gte: (value, filter, filterLocale) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      if (value.getTime && filter.getTime) return value.getTime() >= filter.getTime();else return value >= filter;
+    },
+    is: (value, filter, filterLocale) => {
+      return this.filters.equals(value, filter, filterLocale);
+    },
+    isNot: (value, filter, filterLocale) => {
+      return this.filters.notEquals(value, filter, filterLocale);
+    },
+    before: (value, filter, filterLocale) => {
+      return this.filters.lt(value, filter, filterLocale);
+    },
+    after: (value, filter, filterLocale) => {
+      return this.filters.gt(value, filter, filterLocale);
+    },
+    dateIs: (value, filter) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      return value.toDateString() === filter.toDateString();
+    },
+    dateIsNot: (value, filter) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      return value.toDateString() !== filter.toDateString();
+    },
+    dateBefore: (value, filter) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      return value.getTime() < filter.getTime();
+    },
+    dateAfter: (value, filter) => {
+      if (filter === undefined || filter === null) {
+        return true;
+      }
+      if (value === undefined || value === null) {
+        return false;
+      }
+      return value.getTime() > filter.getTime();
+    }
+  };
+  register(rule, fn) {
+    this.filters[rule] = fn;
+  }
+  static ɵfac = function FilterService_Factory(t) {
+    return new (t || FilterService)();
+  };
+  static ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({
+    token: FilterService,
+    factory: FilterService.ɵfac,
+    providedIn: 'root'
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](FilterService, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Injectable,
+    args: [{
+      providedIn: 'root'
+    }]
+  }], null, null);
+})();
+
+/**
+ * Message service used in messages and toast components.
+ * @group Service
+ */
+class MessageService {
+  messageSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  clearSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  messageObserver = this.messageSource.asObservable();
+  clearObserver = this.clearSource.asObservable();
+  /**
+   * Inserts single message.
+   * @param {Message} message - Message to be added.
+   * @group Method
+   */
+  add(message) {
+    if (message) {
+      this.messageSource.next(message);
+    }
+  }
+  /**
+   * Insterts new messages.
+   * @param {Message[]} messages - Messages to be added.
+   * @group Method
+   */
+  addAll(messages) {
+    if (messages && messages.length) {
+      this.messageSource.next(messages);
+    }
+  }
+  /**
+   * Clears the message with the given key.
+   * @param {string} key - Key of the message to be cleared.
+   * @group Method
+   */
+  clear(key) {
+    this.clearSource.next(key || null);
+  }
+  static ɵfac = function MessageService_Factory(t) {
+    return new (t || MessageService)();
+  };
+  static ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({
+    token: MessageService,
+    factory: MessageService.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](MessageService, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Injectable
+  }], null, null);
+})();
+class OverlayService {
+  clickSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  clickObservable = this.clickSource.asObservable();
+  add(event) {
+    if (event) {
+      this.clickSource.next(event);
+    }
+  }
+  static ɵfac = function OverlayService_Factory(t) {
+    return new (t || OverlayService)();
+  };
+  static ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({
+    token: OverlayService,
+    factory: OverlayService.ɵfac,
+    providedIn: 'root'
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](OverlayService, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Injectable,
+    args: [{
+      providedIn: 'root'
+    }]
+  }], null, null);
+})();
+class PrimeIcons {
+  static ALIGN_CENTER = 'pi pi-align-center';
+  static ALIGN_JUSTIFY = 'pi pi-align-justify';
+  static ALIGN_LEFT = 'pi pi-align-left';
+  static ALIGN_RIGHT = 'pi pi-align-right';
+  static AMAZON = 'pi pi-amazon';
+  static ANDROID = 'pi pi-android';
+  static ANGLE_DOUBLE_DOWN = 'pi pi-angle-double-down';
+  static ANGLE_DOUBLE_LEFT = 'pi pi-angle-double-left';
+  static ANGLE_DOUBLE_RIGHT = 'pi pi-angle-double-right';
+  static ANGLE_DOUBLE_UP = 'pi pi-angle-double-up';
+  static ANGLE_DOWN = 'pi pi-angle-down';
+  static ANGLE_LEFT = 'pi pi-angle-left';
+  static ANGLE_RIGHT = 'pi pi-angle-right';
+  static ANGLE_UP = 'pi pi-angle-up';
+  static APPLE = 'pi pi-apple';
+  static ARROWS_ALT = 'pi pi-arrows-alt';
+  static ARROW_CIRCLE_DOWN = 'pi pi-arrow-circle-down';
+  static ARROW_CIRCLE_LEFT = 'pi pi-arrow-circle-left';
+  static ARROW_CIRCLE_RIGHT = 'pi pi-arrow-circle-right';
+  static ARROW_CIRCLE_UP = 'pi pi-arrow-circle-up';
+  static ARROW_DOWN = 'pi pi-arrow-down';
+  static ARROW_DOWN_LEFT = 'pi pi-arrow-down-left';
+  static ARROW_DOWN_RIGHT = 'pi pi-arrow-down-right';
+  static ARROW_LEFT = 'pi pi-arrow-left';
+  static ARROW_RIGHT_ARROW_LEFT = 'pi pi-arrow-right-arrow-left';
+  static ARROW_RIGHT = 'pi pi-arrow-right';
+  static ARROW_UP = 'pi pi-arrow-up';
+  static ARROW_UP_LEFT = 'pi pi-arrow-up-left';
+  static ARROW_UP_RIGHT = 'pi pi-arrow-up-right';
+  static ARROW_H = 'pi pi-arrows-h';
+  static ARROW_V = 'pi pi-arrows-v';
+  static AT = 'pi pi-at';
+  static BACKWARD = 'pi pi-backward';
+  static BAN = 'pi pi-ban';
+  static BARS = 'pi pi-bars';
+  static BELL = 'pi pi-bell';
+  static BITCOIN = 'pi pi-bitcoin';
+  static BOLT = 'pi pi-bolt';
+  static BOOK = 'pi pi-book';
+  static BOOKMARK = 'pi pi-bookmark';
+  static BOOKMARK_FILL = 'pi pi-bookmark-fill';
+  static BOX = 'pi pi-box';
+  static BRIEFCASE = 'pi pi-briefcase';
+  static BUILDING = 'pi pi-building';
+  static CALCULATOR = 'pi pi-calculator';
+  static CALENDAR = 'pi pi-calendar';
+  static CALENDAR_MINUS = 'pi pi-calendar-minus';
+  static CALENDAR_PLUS = 'pi pi-calendar-plus';
+  static CALENDAR_TIMES = 'pi pi-calendar-times';
+  static CAMERA = 'pi pi-camera';
+  static CAR = 'pi pi-car';
+  static CARET_DOWN = 'pi pi-caret-down';
+  static CARET_LEFT = 'pi pi-caret-left';
+  static CARET_RIGHT = 'pi pi-caret-right';
+  static CARET_UP = 'pi pi-caret-up';
+  static CART_PLUS = 'pi pi-cart-plus';
+  static CHART_BAR = 'pi pi-chart-bar';
+  static CHART_LINE = 'pi pi-chart-line';
+  static CHART_PIE = 'pi pi-chart-pie';
+  static CHECK = 'pi pi-check';
+  static CHECK_CIRCLE = 'pi pi-check-circle';
+  static CHECK_SQUARE = 'pi pi-check-square';
+  static CHEVRON_CIRCLE_DOWN = 'pi pi-chevron-circle-down';
+  static CHEVRON_CIRCLE_LEFT = 'pi pi-chevron-circle-left';
+  static CHEVRON_CIRCLE_RIGHT = 'pi pi-chevron-circle-right';
+  static CHEVRON_CIRCLE_UP = 'pi pi-chevron-circle-up';
+  static CHEVRON_DOWN = 'pi pi-chevron-down';
+  static CHEVRON_LEFT = 'pi pi-chevron-left';
+  static CHEVRON_RIGHT = 'pi pi-chevron-right';
+  static CHEVRON_UP = 'pi pi-chevron-up';
+  static CIRCLE = 'pi pi-circle';
+  static CIRCLE_FILL = 'pi pi-circle-fill';
+  static CLOCK = 'pi pi-clock';
+  static CLONE = 'pi pi-clone';
+  static CLOUD = 'pi pi-cloud';
+  static CLOUD_DOWNLOAD = 'pi pi-cloud-download';
+  static CLOUD_UPLOAD = 'pi pi-cloud-upload';
+  static CODE = 'pi pi-code';
+  static COG = 'pi pi-cog';
+  static COMMENT = 'pi pi-comment';
+  static COMMENTS = 'pi pi-comments';
+  static COMPASS = 'pi pi-compass';
+  static COPY = 'pi pi-copy';
+  static CREDIT_CARD = 'pi pi-credit-card';
+  static DATABASE = 'pi pi-database';
+  static DESKTOP = 'pi pi-desktop';
+  static DELETE_LEFT = 'pi pi-delete-left';
+  static DIRECTIONS = 'pi pi-directions';
+  static DIRECTIONS_ALT = 'pi pi-directions-alt';
+  static DISCORD = 'pi pi-discord';
+  static DOLLAR = 'pi pi-dollar';
+  static DOWNLOAD = 'pi pi-download';
+  static EJECT = 'pi pi-eject';
+  static ELLIPSIS_H = 'pi pi-ellipsis-h';
+  static ELLIPSIS_V = 'pi pi-ellipsis-v';
+  static ENVELOPE = 'pi pi-envelope';
+  static ERASER = 'pi pi-eraser';
+  static EURO = 'pi pi-euro';
+  static EXCLAMATION_CIRCLE = 'pi pi-exclamation-circle';
+  static EXCLAMATION_TRIANGLE = 'pi pi-exclamation-triangle';
+  static EXTERNAL_LINK = 'pi pi-external-link';
+  static EYE = 'pi pi-eye';
+  static EYE_SLASH = 'pi pi-eye-slash';
+  static FACEBOOK = 'pi pi-facebook';
+  static FAST_BACKWARD = 'pi pi-fast-backward';
+  static FAST_FORWARD = 'pi pi-fast-forward';
+  static FILE = 'pi pi-file';
+  static FILE_EDIT = 'pi pi-file-edit';
+  static FILE_IMPORT = 'pi pi-file-import';
+  static FILE_PDF = 'pi pi-file-pdf';
+  static FILE_EXCEL = 'pi pi-file-excel';
+  static FILE_EXPORT = 'pi pi-file-export';
+  static FILE_WORD = 'pi pi-file-word';
+  static FILTER = 'pi pi-filter';
+  static FILTER_FILL = 'pi pi-filter-fill';
+  static FILTER_SLASH = 'pi pi-filter-slash';
+  static FLAG = 'pi pi-flag';
+  static FLAG_FILL = 'pi pi-flag-fill';
+  static FOLDER = 'pi pi-folder';
+  static FOLDER_OPEN = 'pi pi-folder-open';
+  static FORWARD = 'pi pi-forward';
+  static GIFT = 'pi pi-gift';
+  static GITHUB = 'pi pi-github';
+  static GLOBE = 'pi pi-globe';
+  static GOOGLE = 'pi pi-google';
+  static HASHTAG = 'pi pi-hashtag';
+  static HEART = 'pi pi-heart';
+  static HEART_FILL = 'pi pi-heart-fill';
+  static HISTORY = 'pi pi-history';
+  static HOME = 'pi pi-home';
+  static HOURGLASS = 'pi pi-hourglass';
+  static ID_CARD = 'pi pi-id-card';
+  static IMAGE = 'pi pi-image';
+  static IMAGES = 'pi pi-images';
+  static INBOX = 'pi pi-inbox';
+  static INFO = 'pi pi-info';
+  static INFO_CIRCLE = 'pi pi-info-circle';
+  static INSTAGRAM = 'pi pi-instagram';
+  static KEY = 'pi pi-key';
+  static LANGUAGE = 'pi pi-language';
+  static LINK = 'pi pi-link';
+  static LINKEDIN = 'pi pi-linkedin';
+  static LIST = 'pi pi-list';
+  static LOCK = 'pi pi-lock';
+  static LOCK_OPEN = 'pi pi-lock-open';
+  static MAP = 'pi pi-map';
+  static MAP_MARKER = 'pi pi-map-marker';
+  static MEGAPHONE = 'pi pi-megaphone';
+  static MICROPHONE = 'pi pi-microphone';
+  static MICROSOFT = 'pi pi-microsoft';
+  static MINUS = 'pi pi-minus';
+  static MINUS_CIRCLE = 'pi pi-minus-circle';
+  static MOBILE = 'pi pi-mobile';
+  static MONEY_BILL = 'pi pi-money-bill';
+  static MOON = 'pi pi-moon';
+  static PALETTE = 'pi pi-palette';
+  static PAPERCLIP = 'pi pi-paperclip';
+  static PAUSE = 'pi pi-pause';
+  static PAYPAL = 'pi pi-paypal';
+  static PENCIL = 'pi pi-pencil';
+  static PERCENTAGE = 'pi pi-percentage';
+  static PHONE = 'pi pi-phone';
+  static PLAY = 'pi pi-play';
+  static PLUS = 'pi pi-plus';
+  static PLUS_CIRCLE = 'pi pi-plus-circle';
+  static POUND = 'pi pi-pound';
+  static POWER_OFF = 'pi pi-power-off';
+  static PRIME = 'pi pi-prime';
+  static PRINT = 'pi pi-print';
+  static QRCODE = 'pi pi-qrcode';
+  static QUESTION = 'pi pi-question';
+  static QUESTION_CIRCLE = 'pi pi-question-circle';
+  static REDDIT = 'pi pi-reddit';
+  static REFRESH = 'pi pi-refresh';
+  static REPLAY = 'pi pi-replay';
+  static REPLY = 'pi pi-reply';
+  static SAVE = 'pi pi-save';
+  static SEARCH = 'pi pi-search';
+  static SEARCH_MINUS = 'pi pi-search-minus';
+  static SEARCH_PLUS = 'pi pi-search-plus';
+  static SEND = 'pi pi-send';
+  static SERVER = 'pi pi-server';
+  static SHARE_ALT = 'pi pi-share-alt';
+  static SHIELD = 'pi pi-shield';
+  static SHOPPING_BAG = 'pi pi-shopping-bag';
+  static SHOPPING_CART = 'pi pi-shopping-cart';
+  static SIGN_IN = 'pi pi-sign-in';
+  static SIGN_OUT = 'pi pi-sign-out';
+  static SITEMAP = 'pi pi-sitemap';
+  static SLACK = 'pi pi-slack';
+  static SLIDERS_H = 'pi pi-sliders-h';
+  static SLIDERS_V = 'pi pi-sliders-v';
+  static SORT = 'pi pi-sort';
+  static SORT_ALPHA_DOWN = 'pi pi-sort-alpha-down';
+  static SORT_ALPHA_ALT_DOWN = 'pi pi-sort-alpha-alt-down';
+  static SORT_ALPHA_UP = 'pi pi-sort-alpha-up';
+  static SORT_ALPHA_ALT_UP = 'pi pi-sort-alpha-alt-up';
+  static SORT_ALT = 'pi pi-sort-alt';
+  static SORT_ALT_SLASH = 'pi pi-sort-slash';
+  static SORT_AMOUNT_DOWN = 'pi pi-sort-amount-down';
+  static SORT_AMOUNT_DOWN_ALT = 'pi pi-sort-amount-down-alt';
+  static SORT_AMOUNT_UP = 'pi pi-sort-amount-up';
+  static SORT_AMOUNT_UP_ALT = 'pi pi-sort-amount-up-alt';
+  static SORT_DOWN = 'pi pi-sort-down';
+  static SORT_NUMERIC_DOWN = 'pi pi-sort-numeric-down';
+  static SORT_NUMERIC_ALT_DOWN = 'pi pi-sort-numeric-alt-down';
+  static SORT_NUMERIC_UP = 'pi pi-sort-numeric-up';
+  static SORT_NUMERIC_ALT_UP = 'pi pi-sort-numeric-alt-up';
+  static SORT_UP = 'pi pi-sort-up';
+  static SPINNER = 'pi pi-spinner';
+  static STAR = 'pi pi-star';
+  static STAR_FILL = 'pi pi-star-fill';
+  static STEP_BACKWARD = 'pi pi-step-backward';
+  static STEP_BACKWARD_ALT = 'pi pi-step-backward-alt';
+  static STEP_FORWARD = 'pi pi-step-forward';
+  static STEP_FORWARD_ALT = 'pi pi-step-forward-alt';
+  static STOP = 'pi pi-stop';
+  static STOP_CIRCLE = 'pi pi-stop-circle';
+  static STOPWATCH = 'pi pi-stopwatch';
+  static SUN = 'pi pi-sun';
+  static SYNC = 'pi pi-sync';
+  static TABLE = 'pi pi-table';
+  static TABLET = 'pi pi-tablet';
+  static TAG = 'pi pi-tag';
+  static TAGS = 'pi pi-tags';
+  static TELEGRAM = 'pi pi-telegram';
+  static TH_LARGE = 'pi pi-th-large';
+  static THUMBS_DOWN = 'pi pi-thumbs-down';
+  static THUMBS_DOWN_FILL = 'pi pi-thumbs-down-fill';
+  static THUMBS_UP = 'pi pi-thumbs-up';
+  static THUMBS_UP_FILL = 'pi pi-thumbs-up-fill';
+  static TICKET = 'pi pi-ticket';
+  static TIMES = 'pi pi-times';
+  static TIMES_CIRCLE = 'pi pi-times-circle';
+  static TRASH = 'pi pi-trash';
+  static TRUCK = 'pi pi-truck';
+  static TWITTER = 'pi pi-twitter';
+  static UNDO = 'pi pi-undo';
+  static UNLOCK = 'pi pi-unlock';
+  static UPLOAD = 'pi pi-upload';
+  static USER = 'pi pi-user';
+  static USER_EDIT = 'pi pi-user-edit';
+  static USER_MINUS = 'pi pi-user-minus';
+  static USER_PLUS = 'pi pi-user-plus';
+  static USERS = 'pi pi-users';
+  static VERIFIED = 'pi pi-verified';
+  static VIDEO = 'pi pi-video';
+  static VIMEO = 'pi pi-vimeo';
+  static VOLUME_DOWN = 'pi pi-volume-down';
+  static VOLUME_OFF = 'pi pi-volume-off';
+  static VOLUME_UP = 'pi pi-volume-up';
+  static WALLET = 'pi pi-wallet';
+  static WHATSAPP = 'pi pi-whatsapp';
+  static WIFI = 'pi pi-wifi';
+  static WINDOW_MAXIMIZE = 'pi pi-window-maximize';
+  static WINDOW_MINIMIZE = 'pi pi-window-minimize';
+  static WRENCH = 'pi pi-wrench';
+  static YOUTUBE = 'pi pi-youtube';
+}
+class PrimeNGConfig {
+  ripple = false;
+  inputStyle = 'outlined';
+  overlayOptions = {};
+  filterMatchModeOptions = {
+    text: [FilterMatchMode.STARTS_WITH, FilterMatchMode.CONTAINS, FilterMatchMode.NOT_CONTAINS, FilterMatchMode.ENDS_WITH, FilterMatchMode.EQUALS, FilterMatchMode.NOT_EQUALS],
+    numeric: [FilterMatchMode.EQUALS, FilterMatchMode.NOT_EQUALS, FilterMatchMode.LESS_THAN, FilterMatchMode.LESS_THAN_OR_EQUAL_TO, FilterMatchMode.GREATER_THAN, FilterMatchMode.GREATER_THAN_OR_EQUAL_TO],
+    date: [FilterMatchMode.DATE_IS, FilterMatchMode.DATE_IS_NOT, FilterMatchMode.DATE_BEFORE, FilterMatchMode.DATE_AFTER]
+  };
+  translation = {
+    startsWith: 'Starts with',
+    contains: 'Contains',
+    notContains: 'Not contains',
+    endsWith: 'Ends with',
+    equals: 'Equals',
+    notEquals: 'Not equals',
+    noFilter: 'No Filter',
+    lt: 'Less than',
+    lte: 'Less than or equal to',
+    gt: 'Greater than',
+    gte: 'Greater than or equal to',
+    is: 'Is',
+    isNot: 'Is not',
+    before: 'Before',
+    after: 'After',
+    dateIs: 'Date is',
+    dateIsNot: 'Date is not',
+    dateBefore: 'Date is before',
+    dateAfter: 'Date is after',
+    clear: 'Clear',
+    apply: 'Apply',
+    matchAll: 'Match All',
+    matchAny: 'Match Any',
+    addRule: 'Add Rule',
+    removeRule: 'Remove Rule',
+    accept: 'Yes',
+    reject: 'No',
+    choose: 'Choose',
+    upload: 'Upload',
+    cancel: 'Cancel',
+    pending: 'Pending',
+    fileSizeTypes: ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+    dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    chooseYear: 'Choose Year',
+    chooseMonth: 'Choose Month',
+    chooseDate: 'Choose Date',
+    prevDecade: 'Previous Decade',
+    nextDecade: 'Next Decade',
+    prevYear: 'Previous Year',
+    nextYear: 'Next Year',
+    prevMonth: 'Previous Month',
+    nextMonth: 'Next Month',
+    prevHour: 'Previous Hour',
+    nextHour: 'Next Hour',
+    prevMinute: 'Previous Minute',
+    nextMinute: 'Next Minute',
+    prevSecond: 'Previous Second',
+    nextSecond: 'Next Second',
+    am: 'am',
+    pm: 'pm',
+    dateFormat: 'mm/dd/yy',
+    firstDayOfWeek: 0,
+    today: 'Today',
+    weekHeader: 'Wk',
+    weak: 'Weak',
+    medium: 'Medium',
+    strong: 'Strong',
+    passwordPrompt: 'Enter a password',
+    emptyMessage: 'No results found',
+    searchMessage: '{0} results are available',
+    selectionMessage: '{0} items selected',
+    emptySelectionMessage: 'No selected item',
+    emptySearchMessage: 'No results found',
+    emptyFilterMessage: 'No results found',
+    aria: {
+      trueLabel: 'True',
+      falseLabel: 'False',
+      nullLabel: 'Not Selected',
+      star: '1 star',
+      stars: '{star} stars',
+      selectAll: 'All items selected',
+      unselectAll: 'All items unselected',
+      close: 'Close',
+      previous: 'Previous',
+      next: 'Next',
+      navigation: 'Navigation',
+      scrollTop: 'Scroll Top',
+      moveTop: 'Move Top',
+      moveUp: 'Move Up',
+      moveDown: 'Move Down',
+      moveBottom: 'Move Bottom',
+      moveToTarget: 'Move to Target',
+      moveToSource: 'Move to Source',
+      moveAllToTarget: 'Move All to Target',
+      moveAllToSource: 'Move All to Source',
+      pageLabel: '{page}',
+      firstPageLabel: 'First Page',
+      lastPageLabel: 'Last Page',
+      nextPageLabel: 'Next Page',
+      prevPageLabel: 'Previous Page',
+      rowsPerPageLabel: 'Rows per page',
+      previousPageLabel: 'Previous Page',
+      jumpToPageDropdownLabel: 'Jump to Page Dropdown',
+      jumpToPageInputLabel: 'Jump to Page Input',
+      selectRow: 'Row Selected',
+      unselectRow: 'Row Unselected',
+      expandRow: 'Row Expanded',
+      collapseRow: 'Row Collapsed',
+      showFilterMenu: 'Show Filter Menu',
+      hideFilterMenu: 'Hide Filter Menu',
+      filterOperator: 'Filter Operator',
+      filterConstraint: 'Filter Constraint',
+      editRow: 'Row Edit',
+      saveEdit: 'Save Edit',
+      cancelEdit: 'Cancel Edit',
+      listView: 'List View',
+      gridView: 'Grid View',
+      slide: 'Slide',
+      slideNumber: '{slideNumber}',
+      zoomImage: 'Zoom Image',
+      zoomIn: 'Zoom In',
+      zoomOut: 'Zoom Out',
+      rotateRight: 'Rotate Right',
+      rotateLeft: 'Rotate Left'
+    }
+  };
+  zIndex = {
+    modal: 1100,
+    overlay: 1000,
+    menu: 1000,
+    tooltip: 1100
+  };
+  translationSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  translationObserver = this.translationSource.asObservable();
+  getTranslation(key) {
+    return this.translation[key];
+  }
+  setTranslation(value) {
+    this.translation = {
+      ...this.translation,
+      ...value
+    };
+    this.translationSource.next(this.translation);
+  }
+  static ɵfac = function PrimeNGConfig_Factory(t) {
+    return new (t || PrimeNGConfig)();
+  };
+  static ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({
+    token: PrimeNGConfig,
+    factory: PrimeNGConfig.ɵfac,
+    providedIn: 'root'
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](PrimeNGConfig, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Injectable,
+    args: [{
+      providedIn: 'root'
+    }]
+  }], null, null);
+})();
+class Header {
+  static ɵfac = function Header_Factory(t) {
+    return new (t || Header)();
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: Header,
+    selectors: [["p-header"]],
+    ngContentSelectors: _c0,
+    decls: 1,
+    vars: 0,
+    template: function Header_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵprojectionDef"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵprojection"](0);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](Header, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Component,
+    args: [{
+      selector: 'p-header',
+      template: '<ng-content></ng-content>'
+    }]
+  }], null, null);
+})();
+class Footer {
+  static ɵfac = function Footer_Factory(t) {
+    return new (t || Footer)();
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: Footer,
+    selectors: [["p-footer"]],
+    ngContentSelectors: _c0,
+    decls: 1,
+    vars: 0,
+    template: function Footer_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵprojectionDef"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵprojection"](0);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](Footer, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Component,
+    args: [{
+      selector: 'p-footer',
+      template: '<ng-content></ng-content>'
+    }]
+  }], null, null);
+})();
+class PrimeTemplate {
+  template;
+  type;
+  name;
+  constructor(template) {
+    this.template = template;
+  }
+  getType() {
+    return this.name;
+  }
+  static ɵfac = function PrimeTemplate_Factory(t) {
+    return new (t || PrimeTemplate)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_1__.TemplateRef));
+  };
+  static ɵdir = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineDirective"]({
+    type: PrimeTemplate,
+    selectors: [["", "pTemplate", ""]],
+    inputs: {
+      type: "type",
+      name: ["pTemplate", "name"]
+    }
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](PrimeTemplate, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Directive,
+    args: [{
+      selector: '[pTemplate]',
+      host: {}
+    }]
+  }], function () {
+    return [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.TemplateRef
+    }];
+  }, {
+    type: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Input
+    }],
+    name: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Input,
+      args: ['pTemplate']
+    }]
+  });
+})();
+class SharedModule {
+  static ɵfac = function SharedModule_Factory(t) {
+    return new (t || SharedModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineNgModule"]({
+    type: SharedModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.CommonModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](SharedModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.CommonModule],
+      exports: [Header, Footer, PrimeTemplate],
+      declarations: [Header, Footer, PrimeTemplate]
+    }]
+  }], null, null);
+})();
+class TranslationKeys {
+  static STARTS_WITH = 'startsWith';
+  static CONTAINS = 'contains';
+  static NOT_CONTAINS = 'notContains';
+  static ENDS_WITH = 'endsWith';
+  static EQUALS = 'equals';
+  static NOT_EQUALS = 'notEquals';
+  static NO_FILTER = 'noFilter';
+  static LT = 'lt';
+  static LTE = 'lte';
+  static GT = 'gt';
+  static GTE = 'gte';
+  static IS = 'is';
+  static IS_NOT = 'isNot';
+  static BEFORE = 'before';
+  static AFTER = 'after';
+  static CLEAR = 'clear';
+  static APPLY = 'apply';
+  static MATCH_ALL = 'matchAll';
+  static MATCH_ANY = 'matchAny';
+  static ADD_RULE = 'addRule';
+  static REMOVE_RULE = 'removeRule';
+  static ACCEPT = 'accept';
+  static REJECT = 'reject';
+  static CHOOSE = 'choose';
+  static UPLOAD = 'upload';
+  static CANCEL = 'cancel';
+  static PENDING = 'pending';
+  static FILE_SIZE_TYPES = 'fileSizeTypes';
+  static DAY_NAMES = 'dayNames';
+  static DAY_NAMES_SHORT = 'dayNamesShort';
+  static DAY_NAMES_MIN = 'dayNamesMin';
+  static MONTH_NAMES = 'monthNames';
+  static MONTH_NAMES_SHORT = 'monthNamesShort';
+  static FIRST_DAY_OF_WEEK = 'firstDayOfWeek';
+  static TODAY = 'today';
+  static WEEK_HEADER = 'weekHeader';
+  static WEAK = 'weak';
+  static MEDIUM = 'medium';
+  static STRONG = 'strong';
+  static PASSWORD_PROMPT = 'passwordPrompt';
+  static EMPTY_MESSAGE = 'emptyMessage';
+  static EMPTY_FILTER_MESSAGE = 'emptyFilterMessage';
+}
+class TreeDragDropService {
+  dragStartSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  dragStopSource = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
+  dragStart$ = this.dragStartSource.asObservable();
+  dragStop$ = this.dragStopSource.asObservable();
+  startDrag(event) {
+    this.dragStartSource.next(event);
+  }
+  stopDrag(event) {
+    this.dragStopSource.next(event);
+  }
+  static ɵfac = function TreeDragDropService_Factory(t) {
+    return new (t || TreeDragDropService)();
+  };
+  static ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"]({
+    token: TreeDragDropService,
+    factory: TreeDragDropService.ɵfac
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](TreeDragDropService, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Injectable
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 3128:
+/*!************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-baseicon.mjs ***!
+  \************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BaseIcon: () => (/* binding */ BaseIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+const _c0 = ["*"];
+class BaseIcon {
+  label;
+  spin = false;
+  styleClass;
+  role;
+  ariaLabel;
+  ariaHidden;
+  ngOnInit() {
+    this.getAttributes();
+  }
+  getAttributes() {
+    const isLabelEmpty = primeng_utils__WEBPACK_IMPORTED_MODULE_0__.ObjectUtils.isEmpty(this.label);
+    this.role = !isLabelEmpty ? 'img' : undefined;
+    this.ariaLabel = !isLabelEmpty ? this.label : undefined;
+    this.ariaHidden = isLabelEmpty;
+  }
+  getClassNames() {
+    return `p-icon ${this.styleClass ? this.styleClass + ' ' : ''}${this.spin ? 'p-icon-spin' : ''}`;
+  }
+  static ɵfac = function BaseIcon_Factory(t) {
+    return new (t || BaseIcon)();
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: BaseIcon,
+    selectors: [["ng-component"]],
+    hostAttrs: [1, "p-element", "p-icon-wrapper"],
+    inputs: {
+      label: "label",
+      spin: "spin",
+      styleClass: "styleClass"
+    },
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵStandaloneFeature"]],
+    ngContentSelectors: _c0,
+    decls: 1,
+    vars: 0,
+    template: function BaseIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵprojectionDef"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵprojection"](0);
+      }
+    },
+    encapsulation: 2,
+    changeDetection: 0
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](BaseIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Component,
+    args: [{
+      template: ` <ng-content></ng-content> `,
+      standalone: true,
+      changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_1__.ChangeDetectionStrategy.OnPush,
+      encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_1__.ViewEncapsulation.None,
+      host: {
+        class: 'p-element p-icon-wrapper'
+      }
+    }]
+  }], null, {
+    label: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Input
+    }],
+    spin: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Input
+    }],
+    styleClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Input
+    }]
+  });
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 2947:
+/*!**********************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-button.mjs ***!
+  \**********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Button: () => (/* binding */ Button),
+/* harmony export */   ButtonDirective: () => (/* binding */ ButtonDirective),
+/* harmony export */   ButtonModule: () => (/* binding */ ButtonModule)
+/* harmony export */ });
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ 6575);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! primeng/api */ 8026);
+/* harmony import */ var primeng_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primeng/dom */ 4946);
+/* harmony import */ var primeng_icons_spinner__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! primeng/icons/spinner */ 9184);
+/* harmony import */ var primeng_ripple__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primeng/ripple */ 1339);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+
+
+
+
+
+
+
+function Button_ng_container_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainer"](0);
+  }
+}
+function Button_ng_container_3_ng_container_1_span_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "span", 8);
+  }
+  if (rf & 2) {
+    const ctx_r7 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"]("p-button-loading-icon pi-spin " + ctx_r7.loadingIcon);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", ctx_r7.iconClass());
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-hidden", true)("data-pc-section", "loadingicon");
+  }
+}
+function Button_ng_container_3_ng_container_1_SpinnerIcon_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "SpinnerIcon", 9);
+  }
+  if (rf & 2) {
+    const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("styleClass", ctx_r8.spinnerIconClass())("spin", true);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-hidden", true)("data-pc-section", "loadingicon");
+  }
+}
+function Button_ng_container_3_ng_container_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Button_ng_container_3_ng_container_1_span_1_Template, 1, 5, "span", 6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Button_ng_container_3_ng_container_1_SpinnerIcon_2_Template, 1, 4, "SpinnerIcon", 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r5 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r5.loadingIcon);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r5.loadingIcon);
+  }
+}
+function Button_ng_container_3_span_2_1_ng_template_0_Template(rf, ctx) {}
+function Button_ng_container_3_span_2_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](0, Button_ng_container_3_span_2_1_ng_template_0_Template, 0, 0, "ng-template");
+  }
+}
+function Button_ng_container_3_span_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 10);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Button_ng_container_3_span_2_1_Template, 1, 0, null, 1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", ctx_r6.iconClass());
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-hidden", true)("data-pc-section", "loadingicon");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r6.loadingIconTemplate);
+  }
+}
+function Button_ng_container_3_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Button_ng_container_3_ng_container_1_Template, 3, 2, "ng-container", 2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Button_ng_container_3_span_2_Template, 2, 4, "span", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r1.loadingIconTemplate);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r1.loadingIconTemplate);
+  }
+}
+function Button_ng_container_4_span_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "span", 8);
+  }
+  if (rf & 2) {
+    const ctx_r11 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx_r11.icon);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", ctx_r11.iconClass());
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "icon");
+  }
+}
+function Button_ng_container_4_span_2_1_ng_template_0_Template(rf, ctx) {}
+function Button_ng_container_4_span_2_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](0, Button_ng_container_4_span_2_1_ng_template_0_Template, 0, 0, "ng-template", 12);
+  }
+  if (rf & 2) {
+    const ctx_r13 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r13.icon);
+  }
+}
+function Button_ng_container_4_span_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 8);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Button_ng_container_4_span_2_1_Template, 1, 1, null, 1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", ctx_r12.iconClass());
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "icon");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r12.iconTemplate);
+  }
+}
+function Button_ng_container_4_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Button_ng_container_4_span_1_Template, 1, 4, "span", 6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Button_ng_container_4_span_2_Template, 2, 3, "span", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r2.icon && !ctx_r2.iconTemplate);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r2.icon && ctx_r2.iconTemplate);
+  }
+}
+function Button_span_5_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-hidden", ctx_r3.icon && !ctx_r3.label)("data-pc-section", "label");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx_r3.label);
+  }
+}
+function Button_span_6_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 8);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx_r4.badgeClass);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", ctx_r4.badgeStyleClass());
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "badge");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx_r4.badge);
+  }
+}
+const _c0 = ["*"];
+const INTERNAL_BUTTON_CLASSES = {
+  button: 'p-button',
+  component: 'p-component',
+  iconOnly: 'p-button-icon-only',
+  disabled: 'p-disabled',
+  loading: 'p-button-loading',
+  labelOnly: 'p-button-loading-label-only'
+};
+/**
+ * Button directive is an extension to button component.
+ * @group Components
+ */
+class ButtonDirective {
+  el;
+  document;
+  /**
+   * Position of the icon.
+   * @group Props
+   */
+  iconPos = 'left';
+  /**
+   * Uses to pass attributes to the loading icon's DOM element.
+   * @group Props
+   */
+  loadingIcon;
+  /**
+   * Text of the button.
+   * @group Props
+   */
+  get label() {
+    return this._label;
+  }
+  set label(val) {
+    this._label = val;
+    if (this.initialized) {
+      this.updateLabel();
+      this.updateIcon();
+      this.setStyleClass();
+    }
+  }
+  /**
+   * Name of the icon.
+   * @group Props
+   */
+  get icon() {
+    return this._icon;
+  }
+  set icon(val) {
+    this._icon = val;
+    if (this.initialized) {
+      this.updateIcon();
+      this.setStyleClass();
+    }
+  }
+  /**
+   * Whether the button is in loading state.
+   * @group Props
+   */
+  get loading() {
+    return this._loading;
+  }
+  set loading(val) {
+    this._loading = val;
+    if (this.initialized) {
+      this.updateIcon();
+      this.setStyleClass();
+    }
+  }
+  _label;
+  _icon;
+  _loading = false;
+  initialized;
+  get htmlElement() {
+    return this.el.nativeElement;
+  }
+  _internalClasses = Object.values(INTERNAL_BUTTON_CLASSES);
+  spinnerIcon = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="p-icon-spin">
+        <g clip-path="url(#clip0_417_21408)">
+            <path
+                d="M6.99701 14C5.85441 13.999 4.72939 13.7186 3.72012 13.1832C2.71084 12.6478 1.84795 11.8737 1.20673 10.9284C0.565504 9.98305 0.165424 8.89526 0.041387 7.75989C-0.0826496 6.62453 0.073125 5.47607 0.495122 4.4147C0.917119 3.35333 1.59252 2.4113 2.46241 1.67077C3.33229 0.930247 4.37024 0.413729 5.4857 0.166275C6.60117 -0.0811796 7.76026 -0.0520535 8.86188 0.251112C9.9635 0.554278 10.9742 1.12227 11.8057 1.90555C11.915 2.01493 11.9764 2.16319 11.9764 2.31778C11.9764 2.47236 11.915 2.62062 11.8057 2.73C11.7521 2.78503 11.688 2.82877 11.6171 2.85864C11.5463 2.8885 11.4702 2.90389 11.3933 2.90389C11.3165 2.90389 11.2404 2.8885 11.1695 2.85864C11.0987 2.82877 11.0346 2.78503 10.9809 2.73C9.9998 1.81273 8.73246 1.26138 7.39226 1.16876C6.05206 1.07615 4.72086 1.44794 3.62279 2.22152C2.52471 2.99511 1.72683 4.12325 1.36345 5.41602C1.00008 6.70879 1.09342 8.08723 1.62775 9.31926C2.16209 10.5513 3.10478 11.5617 4.29713 12.1803C5.48947 12.7989 6.85865 12.988 8.17414 12.7157C9.48963 12.4435 10.6711 11.7264 11.5196 10.6854C12.3681 9.64432 12.8319 8.34282 12.8328 7C12.8328 6.84529 12.8943 6.69692 13.0038 6.58752C13.1132 6.47812 13.2616 6.41667 13.4164 6.41667C13.5712 6.41667 13.7196 6.47812 13.8291 6.58752C13.9385 6.69692 14 6.84529 14 7C14 8.85651 13.2622 10.637 11.9489 11.9497C10.6356 13.2625 8.85432 14 6.99701 14Z"
+                fill="currentColor"
+            />
+        </g>
+        <defs>
+            <clipPath id="clip0_417_21408">
+                <rect width="14" height="14" fill="white" />
+            </clipPath>
+        </defs>
+    </svg>`;
+  constructor(el, document) {
+    this.el = el;
+    this.document = document;
+  }
+  ngAfterViewInit() {
+    primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.addMultipleClasses(this.htmlElement, this.getStyleClass().join(' '));
+    this.createIcon();
+    this.createLabel();
+    this.initialized = true;
+  }
+  getStyleClass() {
+    const styleClass = [INTERNAL_BUTTON_CLASSES.button, INTERNAL_BUTTON_CLASSES.component];
+    if (this.icon && !this.label && primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.isEmpty(this.htmlElement.textContent)) {
+      styleClass.push(INTERNAL_BUTTON_CLASSES.iconOnly);
+    }
+    if (this.loading) {
+      styleClass.push(INTERNAL_BUTTON_CLASSES.disabled, INTERNAL_BUTTON_CLASSES.loading);
+      if (!this.icon && this.label) {
+        styleClass.push(INTERNAL_BUTTON_CLASSES.labelOnly);
+      }
+      if (this.icon && !this.label && !primeng_utils__WEBPACK_IMPORTED_MODULE_2__.ObjectUtils.isEmpty(this.htmlElement.textContent)) {
+        styleClass.push(INTERNAL_BUTTON_CLASSES.iconOnly);
+      }
+    }
+    return styleClass;
+  }
+  setStyleClass() {
+    const styleClass = this.getStyleClass();
+    this.htmlElement.classList.remove(...this._internalClasses);
+    this.htmlElement.classList.add(...styleClass);
+  }
+  createLabel() {
+    if (this.label) {
+      let labelElement = this.document.createElement('span');
+      if (this.icon && !this.label) {
+        labelElement.setAttribute('aria-hidden', 'true');
+      }
+      labelElement.className = 'p-button-label';
+      labelElement.appendChild(this.document.createTextNode(this.label));
+      this.htmlElement.appendChild(labelElement);
+    }
+  }
+  createIcon() {
+    if (this.icon || this.loading) {
+      let iconElement = this.document.createElement('span');
+      iconElement.className = 'p-button-icon';
+      iconElement.setAttribute('aria-hidden', 'true');
+      let iconPosClass = this.label ? 'p-button-icon-' + this.iconPos : null;
+      if (iconPosClass) {
+        primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.addClass(iconElement, iconPosClass);
+      }
+      let iconClass = this.getIconClass();
+      if (iconClass) {
+        primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.addMultipleClasses(iconElement, iconClass);
+      }
+      if (!this.loadingIcon && this.loading) {
+        iconElement.innerHTML = this.spinnerIcon;
+      }
+      this.htmlElement.insertBefore(iconElement, this.htmlElement.firstChild);
+    }
+  }
+  updateLabel() {
+    let labelElement = primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.findSingle(this.htmlElement, '.p-button-label');
+    if (!this.label) {
+      labelElement && this.htmlElement.removeChild(labelElement);
+      return;
+    }
+    labelElement ? labelElement.textContent = this.label : this.createLabel();
+  }
+  updateIcon() {
+    let iconElement = primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.findSingle(this.htmlElement, '.p-button-icon');
+    let labelElement = primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.findSingle(this.htmlElement, '.p-button-label');
+    if (this.loading && !this.loadingIcon && iconElement) {
+      iconElement.innerHTML = this.spinnerIcon;
+    } else if (iconElement?.innerHTML) {
+      iconElement.innerHTML = '';
+    }
+    if (iconElement) {
+      if (this.iconPos) {
+        iconElement.className = 'p-button-icon ' + (labelElement ? 'p-button-icon-' + this.iconPos : '') + ' ' + this.getIconClass();
+      } else {
+        iconElement.className = 'p-button-icon ' + this.getIconClass();
+      }
+    } else {
+      this.createIcon();
+    }
+  }
+  getIconClass() {
+    return this.loading ? 'p-button-loading-icon ' + (this.loadingIcon ? this.loadingIcon : 'p-icon') : this.icon || 'p-hidden';
+  }
+  ngOnDestroy() {
+    this.initialized = false;
+  }
+  static ɵfac = function ButtonDirective_Factory(t) {
+    return new (t || ButtonDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_3__.DOCUMENT));
+  };
+  static ɵdir = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({
+    type: ButtonDirective,
+    selectors: [["", "pButton", ""]],
+    hostAttrs: [1, "p-element"],
+    inputs: {
+      iconPos: "iconPos",
+      loadingIcon: "loadingIcon",
+      label: "label",
+      icon: "icon",
+      loading: "loading"
+    }
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](ButtonDirective, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+    args: [{
+      selector: '[pButton]',
+      host: {
+        class: 'p-element'
+      }
+    }]
+  }], function () {
+    return [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef
+    }, {
+      type: Document,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+        args: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.DOCUMENT]
+      }]
+    }];
+  }, {
+    iconPos: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    loadingIcon: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    label: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    icon: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    loading: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }]
+  });
+})();
+/**
+ * Button is an extension to standard button element with icons and theming.
+ * @group Components
+ */
+class Button {
+  /**
+   * Type of the button.
+   * @group Props
+   */
+  type = 'button';
+  /**
+   * Position of the icon.
+   * @group Props
+   */
+  iconPos = 'left';
+  /**
+   * Name of the icon.
+   * @group Props
+   */
+  icon;
+  /**
+   * Value of the badge.
+   * @group Props
+   */
+  badge;
+  /**
+   * Uses to pass attributes to the label's DOM element.
+   * @group Props
+   */
+  label;
+  /**
+   * When present, it specifies that the component should be disabled.
+   * @group Props
+   */
+  disabled;
+  /**
+   * Whether the button is in loading state.
+   * @group Props
+   */
+  loading = false;
+  /**
+   * Icon to display in loading state.
+   * @group Props
+   */
+  loadingIcon;
+  /**
+   * Add a shadow to indicate elevation.
+   * @group Props
+   */
+  raised = false;
+  /**
+   * Add a circular border radius to the button.
+   * @group Props
+   */
+  rounded = false;
+  /**
+   * Add a textual class to the button without a background initially.
+   * @group Props
+   */
+  text = false;
+  /**
+   * Add a plain textual class to the button without a background initially.
+   * @group Props
+   */
+  plain = false;
+  /**
+   * Defines the style of the button.
+   * @group Props
+   */
+  severity;
+  /**
+   * Add a border class without a background initially.
+   * @group Props
+   */
+  outlined = false;
+  /**
+   *  Add a link style to the button.
+   * @group Props
+   */
+  link = false;
+  /**
+   * Defines the size of the button.
+   * @group Props
+   */
+  size;
+  /**
+   * Inline style of the element.
+   * @group Props
+   */
+  style;
+  /**
+   * Class of the element.
+   * @group Props
+   */
+  styleClass;
+  /**
+   * Style class of the badge.
+   * @group Props
+   */
+  badgeClass;
+  /**
+   * Used to define a string that autocomplete attribute the current element.
+   * @group Props
+   */
+  ariaLabel;
+  /**
+   * Callback to execute when button is clicked.
+   * This event is intended to be used with the <p-button> component. Using a regular <button> element, use (click).
+   * @param {MouseEvent} event - Mouse event.
+   * @group Emits
+   */
+  onClick = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  /**
+   * Callback to execute when button is focused.
+   * This event is intended to be used with the <p-button> component. Using a regular <button> element, use (focus).
+   * @param {FocusEvent} event - Focus event.
+   * @group Emits
+   */
+  onFocus = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  /**
+   * Callback to execute when button loses focus.
+   * This event is intended to be used with the <p-button> component. Using a regular <button> element, use (blur).
+   * @param {FocusEvent} event - Focus event.
+   * @group Emits
+   */
+  onBlur = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  contentTemplate;
+  loadingIconTemplate;
+  iconTemplate;
+  templates;
+  spinnerIconClass() {
+    return Object.entries(this.iconClass()).filter(([, value]) => !!value).reduce((acc, [key]) => acc + ` ${key}`, 'p-button-loading-icon');
+  }
+  iconClass() {
+    return {
+      'p-button-icon': true,
+      'p-button-icon-left': this.iconPos === 'left' && this.label,
+      'p-button-icon-right': this.iconPos === 'right' && this.label,
+      'p-button-icon-top': this.iconPos === 'top' && this.label,
+      'p-button-icon-bottom': this.iconPos === 'bottom' && this.label
+    };
+  }
+  buttonClass() {
+    return {
+      'p-button p-component': true,
+      'p-button-icon-only': (this.icon || this.iconTemplate || this.loadingIcon || this.loadingIconTemplate) && !this.label,
+      'p-button-vertical': (this.iconPos === 'top' || this.iconPos === 'bottom') && this.label,
+      'p-disabled': this.disabled || this.loading,
+      'p-button-loading': this.loading,
+      'p-button-loading-label-only': this.loading && !this.icon && this.label && !this.loadingIcon && this.iconPos === 'left',
+      'p-button-link': this.link,
+      [`p-button-${this.severity}`]: this.severity,
+      'p-button-raised': this.raised,
+      'p-button-rounded': this.rounded,
+      'p-button-text': this.text,
+      'p-button-outlined': this.outlined,
+      'p-button-sm': this.size === 'small',
+      'p-button-lg': this.size === 'large',
+      'p-button-plain': this.plain
+    };
+  }
+  ngAfterContentInit() {
+    this.templates?.forEach(item => {
+      switch (item.getType()) {
+        case 'content':
+          this.contentTemplate = item.template;
+          break;
+        case 'icon':
+          this.iconTemplate = item.template;
+          break;
+        case 'loadingicon':
+          this.loadingIconTemplate = item.template;
+          break;
+        default:
+          this.contentTemplate = item.template;
+          break;
+      }
+    });
+  }
+  badgeStyleClass() {
+    return {
+      'p-badge p-component': true,
+      'p-badge-no-gutter': this.badge && String(this.badge).length === 1
+    };
+  }
+  static ɵfac = function Button_Factory(t) {
+    return new (t || Button)();
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
+    type: Button,
+    selectors: [["p-button"]],
+    contentQueries: function Button_ContentQueries(rf, ctx, dirIndex) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵcontentQuery"](dirIndex, primeng_api__WEBPACK_IMPORTED_MODULE_4__.PrimeTemplate, 4);
+      }
+      if (rf & 2) {
+        let _t;
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.templates = _t);
+      }
+    },
+    hostAttrs: [1, "p-element"],
+    hostVars: 2,
+    hostBindings: function Button_HostBindings(rf, ctx) {
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("p-disabled", ctx.disabled);
+      }
+    },
+    inputs: {
+      type: "type",
+      iconPos: "iconPos",
+      icon: "icon",
+      badge: "badge",
+      label: "label",
+      disabled: "disabled",
+      loading: "loading",
+      loadingIcon: "loadingIcon",
+      raised: "raised",
+      rounded: "rounded",
+      text: "text",
+      plain: "plain",
+      severity: "severity",
+      outlined: "outlined",
+      link: "link",
+      size: "size",
+      style: "style",
+      styleClass: "styleClass",
+      badgeClass: "badgeClass",
+      ariaLabel: "ariaLabel"
+    },
+    outputs: {
+      onClick: "onClick",
+      onFocus: "onFocus",
+      onBlur: "onBlur"
+    },
+    ngContentSelectors: _c0,
+    decls: 7,
+    vars: 14,
+    consts: [["pRipple", "", 3, "ngStyle", "disabled", "ngClass", "click", "focus", "blur"], [4, "ngTemplateOutlet"], [4, "ngIf"], ["class", "p-button-label", 4, "ngIf"], [3, "ngClass", "class", 4, "ngIf"], ["class", "p-button-loading-icon", 3, "ngClass", 4, "ngIf"], [3, "class", "ngClass", 4, "ngIf"], [3, "styleClass", "spin", 4, "ngIf"], [3, "ngClass"], [3, "styleClass", "spin"], [1, "p-button-loading-icon", 3, "ngClass"], [3, "ngClass", 4, "ngIf"], [3, "ngIf"], [1, "p-button-label"]],
+    template: function Button_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojectionDef"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "button", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Button_Template_button_click_0_listener($event) {
+          return ctx.onClick.emit($event);
+        })("focus", function Button_Template_button_focus_0_listener($event) {
+          return ctx.onFocus.emit($event);
+        })("blur", function Button_Template_button_blur_0_listener($event) {
+          return ctx.onBlur.emit($event);
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojection"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Button_ng_container_2_Template, 1, 0, "ng-container", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, Button_ng_container_3_Template, 3, 2, "ng-container", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, Button_ng_container_4_Template, 3, 2, "ng-container", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](5, Button_span_5_Template, 2, 3, "span", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](6, Button_span_6_Template, 2, 5, "span", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx.styleClass);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngStyle", ctx.style)("disabled", ctx.disabled || ctx.loading)("ngClass", ctx.buttonClass());
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("type", ctx.type)("aria-label", ctx.ariaLabel)("data-pc-name", "button")("data-pc-section", "root");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx.contentTemplate);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.loading);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx.loading);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx.contentTemplate && ctx.label);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx.contentTemplate && ctx.badge);
+      }
+    },
+    dependencies: function () {
+      return [_angular_common__WEBPACK_IMPORTED_MODULE_3__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgTemplateOutlet, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgStyle, primeng_ripple__WEBPACK_IMPORTED_MODULE_5__.Ripple, primeng_icons_spinner__WEBPACK_IMPORTED_MODULE_6__.SpinnerIcon];
+    },
+    encapsulation: 2,
+    changeDetection: 0
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](Button, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+    args: [{
+      selector: 'p-button',
+      template: `
+        <button
+            [attr.type]="type"
+            [attr.aria-label]="ariaLabel"
+            [class]="styleClass"
+            [ngStyle]="style"
+            [disabled]="disabled || loading"
+            [ngClass]="buttonClass()"
+            (click)="onClick.emit($event)"
+            (focus)="onFocus.emit($event)"
+            (blur)="onBlur.emit($event)"
+            pRipple
+            [attr.data-pc-name]="'button'"
+            [attr.data-pc-section]="'root'"
+        >
+            <ng-content></ng-content>
+            <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+            <ng-container *ngIf="loading">
+                <ng-container *ngIf="!loadingIconTemplate">
+                    <span *ngIf="loadingIcon" [class]="'p-button-loading-icon pi-spin ' + loadingIcon" [ngClass]="iconClass()" [attr.aria-hidden]="true" [attr.data-pc-section]="'loadingicon'"></span>
+                    <SpinnerIcon *ngIf="!loadingIcon" [styleClass]="spinnerIconClass()" [spin]="true" [attr.aria-hidden]="true" [attr.data-pc-section]="'loadingicon'" />
+                </ng-container>
+                <span *ngIf="loadingIconTemplate" class="p-button-loading-icon" [ngClass]="iconClass()" [attr.aria-hidden]="true" [attr.data-pc-section]="'loadingicon'">
+                    <ng-template *ngTemplateOutlet="loadingIconTemplate"></ng-template>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="!loading">
+                <span *ngIf="icon && !iconTemplate" [class]="icon" [ngClass]="iconClass()" [attr.data-pc-section]="'icon'"></span>
+                <span *ngIf="!icon && iconTemplate" [ngClass]="iconClass()" [attr.data-pc-section]="'icon'">
+                    <ng-template [ngIf]="!icon" *ngTemplateOutlet="iconTemplate"></ng-template>
+                </span>
+            </ng-container>
+            <span class="p-button-label" [attr.aria-hidden]="icon && !label" *ngIf="!contentTemplate && label" [attr.data-pc-section]="'label'">{{ label }}</span>
+            <span [ngClass]="badgeStyleClass()" [class]="badgeClass" *ngIf="!contentTemplate && badge" [attr.data-pc-section]="'badge'">{{ badge }}</span>
+        </button>
+    `,
+      changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectionStrategy.OnPush,
+      encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewEncapsulation.None,
+      host: {
+        class: 'p-element',
+        '[class.p-disabled]': 'disabled' || 0
+      }
+    }]
+  }], null, {
+    type: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    iconPos: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    icon: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    badge: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    label: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    disabled: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    loading: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    loadingIcon: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    raised: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    rounded: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    text: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    plain: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    severity: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    outlined: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    link: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    size: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    style: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    styleClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    badgeClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    ariaLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    onClick: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+    }],
+    onFocus: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+    }],
+    onBlur: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+    }],
+    templates: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ContentChildren,
+      args: [primeng_api__WEBPACK_IMPORTED_MODULE_4__.PrimeTemplate]
+    }]
+  });
+})();
+class ButtonModule {
+  static ɵfac = function ButtonModule_Factory(t) {
+    return new (t || ButtonModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: ButtonModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.CommonModule, primeng_ripple__WEBPACK_IMPORTED_MODULE_5__.RippleModule, primeng_api__WEBPACK_IMPORTED_MODULE_4__.SharedModule, primeng_icons_spinner__WEBPACK_IMPORTED_MODULE_6__.SpinnerIcon, primeng_api__WEBPACK_IMPORTED_MODULE_4__.SharedModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](ButtonModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.CommonModule, primeng_ripple__WEBPACK_IMPORTED_MODULE_5__.RippleModule, primeng_api__WEBPACK_IMPORTED_MODULE_4__.SharedModule, primeng_icons_spinner__WEBPACK_IMPORTED_MODULE_6__.SpinnerIcon],
+      exports: [ButtonDirective, Button, primeng_api__WEBPACK_IMPORTED_MODULE_4__.SharedModule],
+      declarations: [ButtonDirective, Button]
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 4946:
+/*!*******************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-dom.mjs ***!
+  \*******************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ConnectedOverlayScrollHandler: () => (/* binding */ ConnectedOverlayScrollHandler),
+/* harmony export */   DomHandler: () => (/* binding */ DomHandler)
+/* harmony export */ });
+/**
+ * @dynamic is for runtime initializing DomHandler.browser
+ *
+ * If delete below comment, we can see this error message:
+ *  Metadata collected contains an error that will be reported at runtime:
+ *  Only initialized variables and constants can be referenced
+ *  because the value of this variable is needed by the template compiler.
+ */
+// @dynamic
+class DomHandler {
+  static zindex = 1000;
+  static calculatedScrollbarWidth = null;
+  static calculatedScrollbarHeight = null;
+  static browser;
+  static addClass(element, className) {
+    if (element && className) {
+      if (element.classList) element.classList.add(className);else element.className += ' ' + className;
+    }
+  }
+  static addMultipleClasses(element, className) {
+    if (element && className) {
+      if (element.classList) {
+        let styles = className.trim().split(' ');
+        for (let i = 0; i < styles.length; i++) {
+          element.classList.add(styles[i]);
+        }
+      } else {
+        let styles = className.split(' ');
+        for (let i = 0; i < styles.length; i++) {
+          element.className += ' ' + styles[i];
+        }
+      }
+    }
+  }
+  static removeClass(element, className) {
+    if (element && className) {
+      if (element.classList) element.classList.remove(className);else element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    }
+  }
+  static removeMultipleClasses(element, classNames) {
+    if (element && classNames) {
+      [classNames].flat().filter(Boolean).forEach(cNames => cNames.split(' ').forEach(className => this.removeClass(element, className)));
+    }
+  }
+  static hasClass(element, className) {
+    if (element && className) {
+      if (element.classList) return element.classList.contains(className);else return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
+    }
+    return false;
+  }
+  static siblings(element) {
+    return Array.prototype.filter.call(element.parentNode.children, function (child) {
+      return child !== element;
+    });
+  }
+  static find(element, selector) {
+    return Array.from(element.querySelectorAll(selector));
+  }
+  static findSingle(element, selector) {
+    return this.isElement(element) ? element.querySelector(selector) : null;
+  }
+  static index(element) {
+    let children = element.parentNode.childNodes;
+    let num = 0;
+    for (var i = 0; i < children.length; i++) {
+      if (children[i] == element) return num;
+      if (children[i].nodeType == 1) num++;
+    }
+    return -1;
+  }
+  static indexWithinGroup(element, attributeName) {
+    let children = element.parentNode ? element.parentNode.childNodes : [];
+    let num = 0;
+    for (var i = 0; i < children.length; i++) {
+      if (children[i] == element) return num;
+      if (children[i].attributes && children[i].attributes[attributeName] && children[i].nodeType == 1) num++;
+    }
+    return -1;
+  }
+  static appendOverlay(overlay, target, appendTo = 'self') {
+    if (appendTo !== 'self' && overlay && target) {
+      this.appendChild(overlay, target);
+    }
+  }
+  static alignOverlay(overlay, target, appendTo = 'self', calculateMinWidth = true) {
+    if (overlay && target) {
+      if (calculateMinWidth) {
+        overlay.style.minWidth = `${DomHandler.getOuterWidth(target)}px`;
+      }
+      if (appendTo === 'self') {
+        this.relativePosition(overlay, target);
+      } else {
+        this.absolutePosition(overlay, target);
+      }
+    }
+  }
+  static relativePosition(element, target) {
+    const getClosestRelativeElement = el => {
+      if (!el) return;
+      return getComputedStyle(el).getPropertyValue('position') === 'relative' ? el : getClosestRelativeElement(el.parentElement);
+    };
+    const elementDimensions = element.offsetParent ? {
+      width: element.offsetWidth,
+      height: element.offsetHeight
+    } : this.getHiddenElementDimensions(element);
+    const targetHeight = target.offsetHeight;
+    const targetOffset = target.getBoundingClientRect();
+    const windowScrollTop = this.getWindowScrollTop();
+    const windowScrollLeft = this.getWindowScrollLeft();
+    const viewport = this.getViewport();
+    const relativeElement = getClosestRelativeElement(element);
+    const relativeElementOffset = relativeElement?.getBoundingClientRect() || {
+      top: -1 * windowScrollTop,
+      left: -1 * windowScrollLeft
+    };
+    let top, left;
+    if (targetOffset.top + targetHeight + elementDimensions.height > viewport.height) {
+      top = targetOffset.top - relativeElementOffset.top - elementDimensions.height;
+      element.style.transformOrigin = 'bottom';
+      if (targetOffset.top + top < 0) {
+        top = -1 * targetOffset.top;
+      }
+    } else {
+      top = targetHeight + targetOffset.top - relativeElementOffset.top;
+      element.style.transformOrigin = 'top';
+    }
+    const horizontalOverflow = targetOffset.left + elementDimensions.width - viewport.width;
+    const targetLeftOffsetInSpaceOfRelativeElement = targetOffset.left - relativeElementOffset.left;
+    if (elementDimensions.width > viewport.width) {
+      // element wider then viewport and cannot fit on screen (align at left side of viewport)
+      left = (targetOffset.left - relativeElementOffset.left) * -1;
+    } else if (horizontalOverflow > 0) {
+      // element wider then viewport but can be fit on screen (align at right side of viewport)
+      left = targetLeftOffsetInSpaceOfRelativeElement - horizontalOverflow;
+    } else {
+      // element fits on screen (align with target)
+      left = targetOffset.left - relativeElementOffset.left;
+    }
+    element.style.top = top + 'px';
+    element.style.left = left + 'px';
+  }
+  static absolutePosition(element, target) {
+    const elementDimensions = element.offsetParent ? {
+      width: element.offsetWidth,
+      height: element.offsetHeight
+    } : this.getHiddenElementDimensions(element);
+    const elementOuterHeight = elementDimensions.height;
+    const elementOuterWidth = elementDimensions.width;
+    const targetOuterHeight = target.offsetHeight;
+    const targetOuterWidth = target.offsetWidth;
+    const targetOffset = target.getBoundingClientRect();
+    const windowScrollTop = this.getWindowScrollTop();
+    const windowScrollLeft = this.getWindowScrollLeft();
+    const viewport = this.getViewport();
+    let top, left;
+    if (targetOffset.top + targetOuterHeight + elementOuterHeight > viewport.height) {
+      top = targetOffset.top + windowScrollTop - elementOuterHeight;
+      element.style.transformOrigin = 'bottom';
+      if (top < 0) {
+        top = windowScrollTop;
+      }
+    } else {
+      top = targetOuterHeight + targetOffset.top + windowScrollTop;
+      element.style.transformOrigin = 'top';
+    }
+    if (targetOffset.left + elementOuterWidth > viewport.width) left = Math.max(0, targetOffset.left + windowScrollLeft + targetOuterWidth - elementOuterWidth);else left = targetOffset.left + windowScrollLeft;
+    element.style.top = top + 'px';
+    element.style.left = left + 'px';
+  }
+  static getParents(element, parents = []) {
+    return element['parentNode'] === null ? parents : this.getParents(element.parentNode, parents.concat([element.parentNode]));
+  }
+  static getScrollableParents(element) {
+    let scrollableParents = [];
+    if (element) {
+      let parents = this.getParents(element);
+      const overflowRegex = /(auto|scroll)/;
+      const overflowCheck = node => {
+        let styleDeclaration = window['getComputedStyle'](node, null);
+        return overflowRegex.test(styleDeclaration.getPropertyValue('overflow')) || overflowRegex.test(styleDeclaration.getPropertyValue('overflowX')) || overflowRegex.test(styleDeclaration.getPropertyValue('overflowY'));
+      };
+      for (let parent of parents) {
+        let scrollSelectors = parent.nodeType === 1 && parent.dataset['scrollselectors'];
+        if (scrollSelectors) {
+          let selectors = scrollSelectors.split(',');
+          for (let selector of selectors) {
+            let el = this.findSingle(parent, selector);
+            if (el && overflowCheck(el)) {
+              scrollableParents.push(el);
+            }
+          }
+        }
+        if (parent.nodeType !== 9 && overflowCheck(parent)) {
+          scrollableParents.push(parent);
+        }
+      }
+    }
+    return scrollableParents;
+  }
+  static getHiddenElementOuterHeight(element) {
+    element.style.visibility = 'hidden';
+    element.style.display = 'block';
+    let elementHeight = element.offsetHeight;
+    element.style.display = 'none';
+    element.style.visibility = 'visible';
+    return elementHeight;
+  }
+  static getHiddenElementOuterWidth(element) {
+    element.style.visibility = 'hidden';
+    element.style.display = 'block';
+    let elementWidth = element.offsetWidth;
+    element.style.display = 'none';
+    element.style.visibility = 'visible';
+    return elementWidth;
+  }
+  static getHiddenElementDimensions(element) {
+    let dimensions = {};
+    element.style.visibility = 'hidden';
+    element.style.display = 'block';
+    dimensions.width = element.offsetWidth;
+    dimensions.height = element.offsetHeight;
+    element.style.display = 'none';
+    element.style.visibility = 'visible';
+    return dimensions;
+  }
+  static scrollInView(container, item) {
+    let borderTopValue = getComputedStyle(container).getPropertyValue('borderTopWidth');
+    let borderTop = borderTopValue ? parseFloat(borderTopValue) : 0;
+    let paddingTopValue = getComputedStyle(container).getPropertyValue('paddingTop');
+    let paddingTop = paddingTopValue ? parseFloat(paddingTopValue) : 0;
+    let containerRect = container.getBoundingClientRect();
+    let itemRect = item.getBoundingClientRect();
+    let offset = itemRect.top + document.body.scrollTop - (containerRect.top + document.body.scrollTop) - borderTop - paddingTop;
+    let scroll = container.scrollTop;
+    let elementHeight = container.clientHeight;
+    let itemHeight = this.getOuterHeight(item);
+    if (offset < 0) {
+      container.scrollTop = scroll + offset;
+    } else if (offset + itemHeight > elementHeight) {
+      container.scrollTop = scroll + offset - elementHeight + itemHeight;
+    }
+  }
+  static fadeIn(element, duration) {
+    element.style.opacity = 0;
+    let last = +new Date();
+    let opacity = 0;
+    let tick = function () {
+      opacity = +element.style.opacity.replace(',', '.') + (new Date().getTime() - last) / duration;
+      element.style.opacity = opacity;
+      last = +new Date();
+      if (+opacity < 1) {
+        window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
+      }
+    };
+    tick();
+  }
+  static fadeOut(element, ms) {
+    var opacity = 1,
+      interval = 50,
+      duration = ms,
+      gap = interval / duration;
+    let fading = setInterval(() => {
+      opacity = opacity - gap;
+      if (opacity <= 0) {
+        opacity = 0;
+        clearInterval(fading);
+      }
+      element.style.opacity = opacity;
+    }, interval);
+  }
+  static getWindowScrollTop() {
+    let doc = document.documentElement;
+    return (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+  }
+  static getWindowScrollLeft() {
+    let doc = document.documentElement;
+    return (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+  }
+  static matches(element, selector) {
+    var p = Element.prototype;
+    var f = p['matches'] || p.webkitMatchesSelector || p['mozMatchesSelector'] || p['msMatchesSelector'] || function (s) {
+      return [].indexOf.call(document.querySelectorAll(s), this) !== -1;
+    };
+    return f.call(element, selector);
+  }
+  static getOuterWidth(el, margin) {
+    let width = el.offsetWidth;
+    if (margin) {
+      let style = getComputedStyle(el);
+      width += parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+    }
+    return width;
+  }
+  static getHorizontalPadding(el) {
+    let style = getComputedStyle(el);
+    return parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+  }
+  static getHorizontalMargin(el) {
+    let style = getComputedStyle(el);
+    return parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+  }
+  static innerWidth(el) {
+    let width = el.offsetWidth;
+    let style = getComputedStyle(el);
+    width += parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    return width;
+  }
+  static width(el) {
+    let width = el.offsetWidth;
+    let style = getComputedStyle(el);
+    width -= parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    return width;
+  }
+  static getInnerHeight(el) {
+    let height = el.offsetHeight;
+    let style = getComputedStyle(el);
+    height += parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    return height;
+  }
+  static getOuterHeight(el, margin) {
+    let height = el.offsetHeight;
+    if (margin) {
+      let style = getComputedStyle(el);
+      height += parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+    }
+    return height;
+  }
+  static getHeight(el) {
+    let height = el.offsetHeight;
+    let style = getComputedStyle(el);
+    height -= parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+    return height;
+  }
+  static getWidth(el) {
+    let width = el.offsetWidth;
+    let style = getComputedStyle(el);
+    width -= parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+    return width;
+  }
+  static getViewport() {
+    let win = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName('body')[0],
+      w = win.innerWidth || e.clientWidth || g.clientWidth,
+      h = win.innerHeight || e.clientHeight || g.clientHeight;
+    return {
+      width: w,
+      height: h
+    };
+  }
+  static getOffset(el) {
+    var rect = el.getBoundingClientRect();
+    return {
+      top: rect.top + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0),
+      left: rect.left + (window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0)
+    };
+  }
+  static replaceElementWith(element, replacementElement) {
+    let parentNode = element.parentNode;
+    if (!parentNode) throw `Can't replace element`;
+    return parentNode.replaceChild(replacementElement, element);
+  }
+  static getUserAgent() {
+    if (navigator && this.isClient()) {
+      return navigator.userAgent;
+    }
+  }
+  static isIE() {
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+      // IE 10 or older => return version number
+      return true;
+    }
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+      // IE 11 => return version number
+      var rv = ua.indexOf('rv:');
+      return true;
+    }
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+      // Edge (IE 12+) => return version number
+      return true;
+    }
+    // other browser
+    return false;
+  }
+  static isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
+  }
+  static isAndroid() {
+    return /(android)/i.test(navigator.userAgent);
+  }
+  static isTouchDevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  }
+  static appendChild(element, target) {
+    if (this.isElement(target)) target.appendChild(element);else if (target && target.el && target.el.nativeElement) target.el.nativeElement.appendChild(element);else throw 'Cannot append ' + target + ' to ' + element;
+  }
+  static removeChild(element, target) {
+    if (this.isElement(target)) target.removeChild(element);else if (target.el && target.el.nativeElement) target.el.nativeElement.removeChild(element);else throw 'Cannot remove ' + element + ' from ' + target;
+  }
+  static removeElement(element) {
+    if (!('remove' in Element.prototype)) element.parentNode.removeChild(element);else element.remove();
+  }
+  static isElement(obj) {
+    return typeof HTMLElement === 'object' ? obj instanceof HTMLElement : obj && typeof obj === 'object' && obj !== null && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+  }
+  static calculateScrollbarWidth(el) {
+    if (el) {
+      let style = getComputedStyle(el);
+      return el.offsetWidth - el.clientWidth - parseFloat(style.borderLeftWidth) - parseFloat(style.borderRightWidth);
+    } else {
+      if (this.calculatedScrollbarWidth !== null) return this.calculatedScrollbarWidth;
+      let scrollDiv = document.createElement('div');
+      scrollDiv.className = 'p-scrollbar-measure';
+      document.body.appendChild(scrollDiv);
+      let scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+      document.body.removeChild(scrollDiv);
+      this.calculatedScrollbarWidth = scrollbarWidth;
+      return scrollbarWidth;
+    }
+  }
+  static calculateScrollbarHeight() {
+    if (this.calculatedScrollbarHeight !== null) return this.calculatedScrollbarHeight;
+    let scrollDiv = document.createElement('div');
+    scrollDiv.className = 'p-scrollbar-measure';
+    document.body.appendChild(scrollDiv);
+    let scrollbarHeight = scrollDiv.offsetHeight - scrollDiv.clientHeight;
+    document.body.removeChild(scrollDiv);
+    this.calculatedScrollbarWidth = scrollbarHeight;
+    return scrollbarHeight;
+  }
+  static invokeElementMethod(element, methodName, args) {
+    element[methodName].apply(element, args);
+  }
+  static clearSelection() {
+    if (window.getSelection) {
+      if (window.getSelection().empty) {
+        window.getSelection().empty();
+      } else if (window.getSelection().removeAllRanges && window.getSelection().rangeCount > 0 && window.getSelection().getRangeAt(0).getClientRects().length > 0) {
+        window.getSelection().removeAllRanges();
+      }
+    } else if (document['selection'] && document['selection'].empty) {
+      try {
+        document['selection'].empty();
+      } catch (error) {
+        //ignore IE bug
+      }
+    }
+  }
+  static getBrowser() {
+    if (!this.browser) {
+      let matched = this.resolveUserAgent();
+      this.browser = {};
+      if (matched.browser) {
+        this.browser[matched.browser] = true;
+        this.browser['version'] = matched.version;
+      }
+      if (this.browser['chrome']) {
+        this.browser['webkit'] = true;
+      } else if (this.browser['webkit']) {
+        this.browser['safari'] = true;
+      }
+    }
+    return this.browser;
+  }
+  static resolveUserAgent() {
+    let ua = navigator.userAgent.toLowerCase();
+    let match = /(chrome)[ \/]([\w.]+)/.exec(ua) || /(webkit)[ \/]([\w.]+)/.exec(ua) || /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || [];
+    return {
+      browser: match[1] || '',
+      version: match[2] || '0'
+    };
+  }
+  static isInteger(value) {
+    if (Number.isInteger) {
+      return Number.isInteger(value);
+    } else {
+      return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+    }
+  }
+  static isHidden(element) {
+    return !element || element.offsetParent === null;
+  }
+  static isVisible(element) {
+    return element && element.offsetParent != null;
+  }
+  static isExist(element) {
+    return element !== null && typeof element !== 'undefined' && element.nodeName && element.parentNode;
+  }
+  static focus(element, options) {
+    element && document.activeElement !== element && element.focus(options);
+  }
+  static getFocusableElements(element, selector = '') {
+    let focusableElements = this.find(element, `button:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                [href][clientHeight][clientWidth]:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                input:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                select:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                textarea:not([tabindex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                [tabIndex]:not([tabIndex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector},
+                [contenteditable]:not([tabIndex = "-1"]):not([disabled]):not([style*="display:none"]):not([hidden])${selector}`);
+    let visibleFocusableElements = [];
+    for (let focusableElement of focusableElements) {
+      if (getComputedStyle(focusableElement).display != 'none' && getComputedStyle(focusableElement).visibility != 'hidden') visibleFocusableElements.push(focusableElement);
+    }
+    return visibleFocusableElements;
+  }
+  static getFirstFocusableElement(element, selector) {
+    const focusableElements = this.getFocusableElements(element, selector);
+    return focusableElements.length > 0 ? focusableElements[0] : null;
+  }
+  static getLastFocusableElement(element, selector) {
+    const focusableElements = this.getFocusableElements(element, selector);
+    return focusableElements.length > 0 ? focusableElements[focusableElements.length - 1] : null;
+  }
+  static getNextFocusableElement(element, reverse = false) {
+    const focusableElements = DomHandler.getFocusableElements(element);
+    let index = 0;
+    if (focusableElements && focusableElements.length > 0) {
+      const focusedIndex = focusableElements.indexOf(focusableElements[0].ownerDocument.activeElement);
+      if (reverse) {
+        if (focusedIndex == -1 || focusedIndex === 0) {
+          index = focusableElements.length - 1;
+        } else {
+          index = focusedIndex - 1;
+        }
+      } else if (focusedIndex != -1 && focusedIndex !== focusableElements.length - 1) {
+        index = focusedIndex + 1;
+      }
+    }
+    return focusableElements[index];
+  }
+  static generateZIndex() {
+    this.zindex = this.zindex || 999;
+    return ++this.zindex;
+  }
+  static getSelection() {
+    if (window.getSelection) return window.getSelection().toString();else if (document.getSelection) return document.getSelection().toString();else if (document['selection']) return document['selection'].createRange().text;
+    return null;
+  }
+  static getTargetElement(target, el) {
+    if (!target) return null;
+    switch (target) {
+      case 'document':
+        return document;
+      case 'window':
+        return window;
+      case '@next':
+        return el?.nextElementSibling;
+      case '@prev':
+        return el?.previousElementSibling;
+      case '@parent':
+        return el?.parentElement;
+      case '@grandparent':
+        return el?.parentElement.parentElement;
+      default:
+        const type = typeof target;
+        if (type === 'string') {
+          return document.querySelector(target);
+        } else if (type === 'object' && target.hasOwnProperty('nativeElement')) {
+          return this.isExist(target.nativeElement) ? target.nativeElement : undefined;
+        }
+        const isFunction = obj => !!(obj && obj.constructor && obj.call && obj.apply);
+        const element = isFunction(target) ? target() : target;
+        return element && element.nodeType === 9 || this.isExist(element) ? element : null;
+    }
+  }
+  static isClient() {
+    return !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+  }
+  static getAttribute(element, name) {
+    if (element) {
+      const value = element.getAttribute(name);
+      if (!isNaN(value)) {
+        return +value;
+      }
+      if (value === 'true' || value === 'false') {
+        return value === 'true';
+      }
+      return value;
+    }
+    return undefined;
+  }
+  static calculateBodyScrollbarWidth() {
+    return window.innerWidth - document.documentElement.offsetWidth;
+  }
+  static blockBodyScroll(className = 'p-overflow-hidden') {
+    document.body.style.setProperty('--scrollbar-width', this.calculateBodyScrollbarWidth() + 'px');
+    this.addClass(document.body, className);
+  }
+  static unblockBodyScroll(className = 'p-overflow-hidden') {
+    document.body.style.removeProperty('--scrollbar-width');
+    this.removeClass(document.body, className);
+  }
+}
+class ConnectedOverlayScrollHandler {
+  element;
+  listener;
+  scrollableParents;
+  constructor(element, listener = () => {}) {
+    this.element = element;
+    this.listener = listener;
+  }
+  bindScrollListener() {
+    this.scrollableParents = DomHandler.getScrollableParents(this.element);
+    for (let i = 0; i < this.scrollableParents.length; i++) {
+      this.scrollableParents[i].addEventListener('scroll', this.listener);
+    }
+  }
+  unbindScrollListener() {
+    if (this.scrollableParents) {
+      for (let i = 0; i < this.scrollableParents.length; i++) {
+        this.scrollableParents[i].removeEventListener('scroll', this.listener);
+      }
+    }
+  }
+  destroy() {
+    this.unbindScrollListener();
+    this.element = null;
+    this.listener = null;
+    this.scrollableParents = null;
+  }
+}
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 7613:
+/*!***************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-check.mjs ***!
+  \***************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CheckIcon: () => (/* binding */ CheckIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+
+
+
+class CheckIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵCheckIcon_BaseFactory;
+    return function CheckIcon_Factory(t) {
+      return (ɵCheckIcon_BaseFactory || (ɵCheckIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"](CheckIcon)))(t || CheckIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: CheckIcon,
+    selectors: [["CheckIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵStandaloneFeature"]],
+    decls: 2,
+    vars: 5,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["d", "M4.86199 11.5948C4.78717 11.5923 4.71366 11.5745 4.64596 11.5426C4.57826 11.5107 4.51779 11.4652 4.46827 11.4091L0.753985 7.69483C0.683167 7.64891 0.623706 7.58751 0.580092 7.51525C0.536478 7.44299 0.509851 7.36177 0.502221 7.27771C0.49459 7.19366 0.506156 7.10897 0.536046 7.03004C0.565935 6.95111 0.613367 6.88 0.674759 6.82208C0.736151 6.76416 0.8099 6.72095 0.890436 6.69571C0.970973 6.67046 1.05619 6.66385 1.13966 6.67635C1.22313 6.68886 1.30266 6.72017 1.37226 6.76792C1.44186 6.81567 1.4997 6.8786 1.54141 6.95197L4.86199 10.2503L12.6397 2.49483C12.7444 2.42694 12.8689 2.39617 12.9932 2.40745C13.1174 2.41873 13.2343 2.47141 13.3251 2.55705C13.4159 2.64268 13.4753 2.75632 13.4938 2.87973C13.5123 3.00315 13.4888 3.1292 13.4271 3.23768L5.2557 11.4091C5.20618 11.4652 5.14571 11.5107 5.07801 11.5426C5.01031 11.5745 4.9368 11.5923 4.86199 11.5948Z", "fill", "currentColor"]],
+    template: function CheckIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "svg", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](1, "path", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](CheckIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Component,
+    args: [{
+      selector: 'CheckIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <path
+                d="M4.86199 11.5948C4.78717 11.5923 4.71366 11.5745 4.64596 11.5426C4.57826 11.5107 4.51779 11.4652 4.46827 11.4091L0.753985 7.69483C0.683167 7.64891 0.623706 7.58751 0.580092 7.51525C0.536478 7.44299 0.509851 7.36177 0.502221 7.27771C0.49459 7.19366 0.506156 7.10897 0.536046 7.03004C0.565935 6.95111 0.613367 6.88 0.674759 6.82208C0.736151 6.76416 0.8099 6.72095 0.890436 6.69571C0.970973 6.67046 1.05619 6.66385 1.13966 6.67635C1.22313 6.68886 1.30266 6.72017 1.37226 6.76792C1.44186 6.81567 1.4997 6.8786 1.54141 6.95197L4.86199 10.2503L12.6397 2.49483C12.7444 2.42694 12.8689 2.39617 12.9932 2.40745C13.1174 2.41873 13.2343 2.47141 13.3251 2.55705C13.4159 2.64268 13.4753 2.75632 13.4938 2.87973C13.5123 3.00315 13.4888 3.1292 13.4271 3.23768L5.2557 11.4091C5.20618 11.4652 5.14571 11.5107 5.07801 11.5426C5.01031 11.5745 4.9368 11.5923 4.86199 11.5948Z"
+                fill="currentColor"
+            />
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 4733:
+/*!*****************************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-exclamationtriangle.mjs ***!
+  \*****************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ExclamationTriangleIcon: () => (/* binding */ ExclamationTriangleIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+
+class ExclamationTriangleIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  pathId;
+  ngOnInit() {
+    this.pathId = 'url(#' + (0,primeng_utils__WEBPACK_IMPORTED_MODULE_1__.UniqueComponentId)() + ')';
+  }
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵExclamationTriangleIcon_BaseFactory;
+    return function ExclamationTriangleIcon_Factory(t) {
+      return (ɵExclamationTriangleIcon_BaseFactory || (ɵExclamationTriangleIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵgetInheritedFactory"](ExclamationTriangleIcon)))(t || ExclamationTriangleIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({
+    type: ExclamationTriangleIcon,
+    selectors: [["ExclamationTriangleIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵStandaloneFeature"]],
+    decls: 8,
+    vars: 7,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["d", "M13.4018 13.1893H0.598161C0.49329 13.189 0.390283 13.1615 0.299143 13.1097C0.208003 13.0578 0.131826 12.9832 0.0780112 12.8932C0.0268539 12.8015 0 12.6982 0 12.5931C0 12.4881 0.0268539 12.3848 0.0780112 12.293L6.47985 1.08982C6.53679 1.00399 6.61408 0.933574 6.70484 0.884867C6.7956 0.836159 6.897 0.810669 7 0.810669C7.103 0.810669 7.2044 0.836159 7.29516 0.884867C7.38592 0.933574 7.46321 1.00399 7.52015 1.08982L13.922 12.293C13.9731 12.3848 14 12.4881 14 12.5931C14 12.6982 13.9731 12.8015 13.922 12.8932C13.8682 12.9832 13.792 13.0578 13.7009 13.1097C13.6097 13.1615 13.5067 13.189 13.4018 13.1893ZM1.63046 11.989H12.3695L7 2.59425L1.63046 11.989Z", "fill", "currentColor"], ["d", "M6.99996 8.78801C6.84143 8.78594 6.68997 8.72204 6.57787 8.60993C6.46576 8.49782 6.40186 8.34637 6.39979 8.18784V5.38703C6.39979 5.22786 6.46302 5.0752 6.57557 4.96265C6.68813 4.85009 6.84078 4.78686 6.99996 4.78686C7.15914 4.78686 7.31179 4.85009 7.42435 4.96265C7.5369 5.0752 7.60013 5.22786 7.60013 5.38703V8.18784C7.59806 8.34637 7.53416 8.49782 7.42205 8.60993C7.30995 8.72204 7.15849 8.78594 6.99996 8.78801Z", "fill", "currentColor"], ["d", "M6.99996 11.1887C6.84143 11.1866 6.68997 11.1227 6.57787 11.0106C6.46576 10.8985 6.40186 10.7471 6.39979 10.5885V10.1884C6.39979 10.0292 6.46302 9.87658 6.57557 9.76403C6.68813 9.65147 6.84078 9.58824 6.99996 9.58824C7.15914 9.58824 7.31179 9.65147 7.42435 9.76403C7.5369 9.87658 7.60013 10.0292 7.60013 10.1884V10.5885C7.59806 10.7471 7.53416 10.8985 7.42205 11.0106C7.30995 11.1227 7.15849 11.1866 6.99996 11.1887Z", "fill", "currentColor"], [3, "id"], ["width", "14", "height", "14", "fill", "white"]],
+    template: function ExclamationTriangleIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "svg", 0)(1, "g");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](2, "path", 1)(3, "path", 2)(4, "path", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](5, "defs")(6, "clipPath", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](7, "rect", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("clip-path", ctx.pathId);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("id", ctx.pathId);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵsetClassMetadata"](ExclamationTriangleIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Component,
+    args: [{
+      selector: 'ExclamationTriangleIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <g [attr.clip-path]="pathId">
+                <path
+                    d="M13.4018 13.1893H0.598161C0.49329 13.189 0.390283 13.1615 0.299143 13.1097C0.208003 13.0578 0.131826 12.9832 0.0780112 12.8932C0.0268539 12.8015 0 12.6982 0 12.5931C0 12.4881 0.0268539 12.3848 0.0780112 12.293L6.47985 1.08982C6.53679 1.00399 6.61408 0.933574 6.70484 0.884867C6.7956 0.836159 6.897 0.810669 7 0.810669C7.103 0.810669 7.2044 0.836159 7.29516 0.884867C7.38592 0.933574 7.46321 1.00399 7.52015 1.08982L13.922 12.293C13.9731 12.3848 14 12.4881 14 12.5931C14 12.6982 13.9731 12.8015 13.922 12.8932C13.8682 12.9832 13.792 13.0578 13.7009 13.1097C13.6097 13.1615 13.5067 13.189 13.4018 13.1893ZM1.63046 11.989H12.3695L7 2.59425L1.63046 11.989Z"
+                    fill="currentColor"
+                />
+                <path
+                    d="M6.99996 8.78801C6.84143 8.78594 6.68997 8.72204 6.57787 8.60993C6.46576 8.49782 6.40186 8.34637 6.39979 8.18784V5.38703C6.39979 5.22786 6.46302 5.0752 6.57557 4.96265C6.68813 4.85009 6.84078 4.78686 6.99996 4.78686C7.15914 4.78686 7.31179 4.85009 7.42435 4.96265C7.5369 5.0752 7.60013 5.22786 7.60013 5.38703V8.18784C7.59806 8.34637 7.53416 8.49782 7.42205 8.60993C7.30995 8.72204 7.15849 8.78594 6.99996 8.78801Z"
+                    fill="currentColor"
+                />
+                <path
+                    d="M6.99996 11.1887C6.84143 11.1866 6.68997 11.1227 6.57787 11.0106C6.46576 10.8985 6.40186 10.7471 6.39979 10.5885V10.1884C6.39979 10.0292 6.46302 9.87658 6.57557 9.76403C6.68813 9.65147 6.84078 9.58824 6.99996 9.58824C7.15914 9.58824 7.31179 9.65147 7.42435 9.76403C7.5369 9.87658 7.60013 10.0292 7.60013 10.1884V10.5885C7.59806 10.7471 7.53416 10.8985 7.42205 11.0106C7.30995 11.1227 7.15849 11.1866 6.99996 11.1887Z"
+                    fill="currentColor"
+                />
+            </g>
+            <defs>
+                <clipPath [id]="pathId">
+                    <rect width="14" height="14" fill="white" />
+                </clipPath>
+            </defs>
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 1506:
+/*!*************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-eye.mjs ***!
+  \*************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EyeIcon: () => (/* binding */ EyeIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+
+
+
+class EyeIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵEyeIcon_BaseFactory;
+    return function EyeIcon_Factory(t) {
+      return (ɵEyeIcon_BaseFactory || (ɵEyeIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"](EyeIcon)))(t || EyeIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: EyeIcon,
+    selectors: [["EyeIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵStandaloneFeature"]],
+    decls: 2,
+    vars: 5,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["fill-rule", "evenodd", "clip-rule", "evenodd", "d", "M0.0535499 7.25213C0.208567 7.59162 2.40413 12.4 7 12.4C11.5959 12.4 13.7914 7.59162 13.9465 7.25213C13.9487 7.2471 13.9506 7.24304 13.952 7.24001C13.9837 7.16396 14 7.08239 14 7.00001C14 6.91762 13.9837 6.83605 13.952 6.76001C13.9506 6.75697 13.9487 6.75292 13.9465 6.74788C13.7914 6.4084 11.5959 1.60001 7 1.60001C2.40413 1.60001 0.208567 6.40839 0.0535499 6.74788C0.0512519 6.75292 0.0494023 6.75697 0.048 6.76001C0.0163137 6.83605 0 6.91762 0 7.00001C0 7.08239 0.0163137 7.16396 0.048 7.24001C0.0494023 7.24304 0.0512519 7.2471 0.0535499 7.25213ZM7 11.2C3.664 11.2 1.736 7.92001 1.264 7.00001C1.736 6.08001 3.664 2.80001 7 2.80001C10.336 2.80001 12.264 6.08001 12.736 7.00001C12.264 7.92001 10.336 11.2 7 11.2ZM5.55551 9.16182C5.98308 9.44751 6.48576 9.6 7 9.6C7.68891 9.59789 8.349 9.32328 8.83614 8.83614C9.32328 8.349 9.59789 7.68891 9.59999 7C9.59999 6.48576 9.44751 5.98308 9.16182 5.55551C8.87612 5.12794 8.47006 4.7947 7.99497 4.59791C7.51988 4.40112 6.99711 4.34963 6.49276 4.44995C5.98841 4.55027 5.52513 4.7979 5.16152 5.16152C4.7979 5.52513 4.55027 5.98841 4.44995 6.49276C4.34963 6.99711 4.40112 7.51988 4.59791 7.99497C4.7947 8.47006 5.12794 8.87612 5.55551 9.16182ZM6.2222 5.83594C6.45243 5.6821 6.7231 5.6 7 5.6C7.37065 5.6021 7.72553 5.75027 7.98762 6.01237C8.24972 6.27446 8.39789 6.62934 8.4 7C8.4 7.27689 8.31789 7.54756 8.16405 7.77779C8.01022 8.00802 7.79157 8.18746 7.53575 8.29343C7.27994 8.39939 6.99844 8.42711 6.72687 8.37309C6.4553 8.31908 6.20584 8.18574 6.01005 7.98994C5.81425 7.79415 5.68091 7.54469 5.6269 7.27312C5.57288 7.00155 5.6006 6.72006 5.70656 6.46424C5.81253 6.20842 5.99197 5.98977 6.2222 5.83594Z", "fill", "currentColor"]],
+    template: function EyeIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "svg", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](1, "path", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](EyeIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Component,
+    args: [{
+      selector: 'EyeIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M0.0535499 7.25213C0.208567 7.59162 2.40413 12.4 7 12.4C11.5959 12.4 13.7914 7.59162 13.9465 7.25213C13.9487 7.2471 13.9506 7.24304 13.952 7.24001C13.9837 7.16396 14 7.08239 14 7.00001C14 6.91762 13.9837 6.83605 13.952 6.76001C13.9506 6.75697 13.9487 6.75292 13.9465 6.74788C13.7914 6.4084 11.5959 1.60001 7 1.60001C2.40413 1.60001 0.208567 6.40839 0.0535499 6.74788C0.0512519 6.75292 0.0494023 6.75697 0.048 6.76001C0.0163137 6.83605 0 6.91762 0 7.00001C0 7.08239 0.0163137 7.16396 0.048 7.24001C0.0494023 7.24304 0.0512519 7.2471 0.0535499 7.25213ZM7 11.2C3.664 11.2 1.736 7.92001 1.264 7.00001C1.736 6.08001 3.664 2.80001 7 2.80001C10.336 2.80001 12.264 6.08001 12.736 7.00001C12.264 7.92001 10.336 11.2 7 11.2ZM5.55551 9.16182C5.98308 9.44751 6.48576 9.6 7 9.6C7.68891 9.59789 8.349 9.32328 8.83614 8.83614C9.32328 8.349 9.59789 7.68891 9.59999 7C9.59999 6.48576 9.44751 5.98308 9.16182 5.55551C8.87612 5.12794 8.47006 4.7947 7.99497 4.59791C7.51988 4.40112 6.99711 4.34963 6.49276 4.44995C5.98841 4.55027 5.52513 4.7979 5.16152 5.16152C4.7979 5.52513 4.55027 5.98841 4.44995 6.49276C4.34963 6.99711 4.40112 7.51988 4.59791 7.99497C4.7947 8.47006 5.12794 8.87612 5.55551 9.16182ZM6.2222 5.83594C6.45243 5.6821 6.7231 5.6 7 5.6C7.37065 5.6021 7.72553 5.75027 7.98762 6.01237C8.24972 6.27446 8.39789 6.62934 8.4 7C8.4 7.27689 8.31789 7.54756 8.16405 7.77779C8.01022 8.00802 7.79157 8.18746 7.53575 8.29343C7.27994 8.39939 6.99844 8.42711 6.72687 8.37309C6.4553 8.31908 6.20584 8.18574 6.01005 7.98994C5.81425 7.79415 5.68091 7.54469 5.6269 7.27312C5.57288 7.00155 5.6006 6.72006 5.70656 6.46424C5.81253 6.20842 5.99197 5.98977 6.2222 5.83594Z"
+                fill="currentColor"
+            />
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 8238:
+/*!******************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-eyeslash.mjs ***!
+  \******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EyeSlashIcon: () => (/* binding */ EyeSlashIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+
+class EyeSlashIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  pathId;
+  ngOnInit() {
+    this.pathId = 'url(#' + (0,primeng_utils__WEBPACK_IMPORTED_MODULE_1__.UniqueComponentId)() + ')';
+  }
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵEyeSlashIcon_BaseFactory;
+    return function EyeSlashIcon_Factory(t) {
+      return (ɵEyeSlashIcon_BaseFactory || (ɵEyeSlashIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵgetInheritedFactory"](EyeSlashIcon)))(t || EyeSlashIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({
+    type: EyeSlashIcon,
+    selectors: [["EyeSlashIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵStandaloneFeature"]],
+    decls: 6,
+    vars: 7,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["fill-rule", "evenodd", "clip-rule", "evenodd", "d", "M13.9414 6.74792C13.9437 6.75295 13.9455 6.757 13.9469 6.76003C13.982 6.8394 14.0001 6.9252 14.0001 7.01195C14.0001 7.0987 13.982 7.1845 13.9469 7.26386C13.6004 8.00059 13.1711 8.69549 12.6674 9.33515C12.6115 9.4071 12.54 9.46538 12.4582 9.50556C12.3765 9.54574 12.2866 9.56678 12.1955 9.56707C12.0834 9.56671 11.9737 9.53496 11.8788 9.47541C11.7838 9.41586 11.7074 9.3309 11.6583 9.23015C11.6092 9.12941 11.5893 9.01691 11.6008 8.90543C11.6124 8.79394 11.6549 8.68793 11.7237 8.5994C12.1065 8.09726 12.4437 7.56199 12.7313 6.99995C12.2595 6.08027 10.3402 2.8014 6.99732 2.8014C6.63723 2.80218 6.27816 2.83969 5.92569 2.91336C5.77666 2.93304 5.62568 2.89606 5.50263 2.80972C5.37958 2.72337 5.29344 2.59398 5.26125 2.44714C5.22907 2.30031 5.2532 2.14674 5.32885 2.01685C5.40451 1.88696 5.52618 1.79021 5.66978 1.74576C6.10574 1.64961 6.55089 1.60134 6.99732 1.60181C11.5916 1.60181 13.7864 6.40856 13.9414 6.74792ZM2.20333 1.61685C2.35871 1.61411 2.5091 1.67179 2.6228 1.77774L12.2195 11.3744C12.3318 11.4869 12.3949 11.6393 12.3949 11.7983C12.3949 11.9572 12.3318 12.1097 12.2195 12.2221C12.107 12.3345 11.9546 12.3976 11.7956 12.3976C11.6367 12.3976 11.4842 12.3345 11.3718 12.2221L10.5081 11.3584C9.46549 12.0426 8.24432 12.4042 6.99729 12.3981C2.403 12.3981 0.208197 7.59135 0.0532336 7.25198C0.0509364 7.24694 0.0490875 7.2429 0.0476856 7.23986C0.0162332 7.16518 3.05176e-05 7.08497 3.05176e-05 7.00394C3.05176e-05 6.92291 0.0162332 6.8427 0.0476856 6.76802C0.631261 5.47831 1.46902 4.31959 2.51084 3.36119L1.77509 2.62545C1.66914 2.51175 1.61146 2.36136 1.61421 2.20597C1.61695 2.05059 1.6799 1.90233 1.78979 1.79244C1.89968 1.68254 2.04794 1.6196 2.20333 1.61685ZM7.45314 8.35147L5.68574 6.57609V6.5361C5.5872 6.78938 5.56498 7.06597 5.62183 7.33173C5.67868 7.59749 5.8121 7.84078 6.00563 8.03158C6.19567 8.21043 6.43052 8.33458 6.68533 8.39089C6.94014 8.44721 7.20543 8.43359 7.45314 8.35147ZM1.26327 6.99994C1.7351 7.91163 3.64645 11.1985 6.99729 11.1985C7.9267 11.2048 8.8408 10.9618 9.64438 10.4947L8.35682 9.20718C7.86027 9.51441 7.27449 9.64491 6.69448 9.57752C6.11446 9.51014 5.57421 9.24881 5.16131 8.83592C4.74842 8.42303 4.4871 7.88277 4.41971 7.30276C4.35232 6.72274 4.48282 6.13697 4.79005 5.64041L3.35855 4.2089C2.4954 5.00336 1.78523 5.94935 1.26327 6.99994Z", "fill", "currentColor"], [3, "id"], ["width", "14", "height", "14", "fill", "white"]],
+    template: function EyeSlashIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "svg", 0)(1, "g");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](2, "path", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](3, "defs")(4, "clipPath", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](5, "rect", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("clip-path", ctx.pathId);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("id", ctx.pathId);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵsetClassMetadata"](EyeSlashIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Component,
+    args: [{
+      selector: 'EyeSlashIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <g [attr.clip-path]="pathId">
+                <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M13.9414 6.74792C13.9437 6.75295 13.9455 6.757 13.9469 6.76003C13.982 6.8394 14.0001 6.9252 14.0001 7.01195C14.0001 7.0987 13.982 7.1845 13.9469 7.26386C13.6004 8.00059 13.1711 8.69549 12.6674 9.33515C12.6115 9.4071 12.54 9.46538 12.4582 9.50556C12.3765 9.54574 12.2866 9.56678 12.1955 9.56707C12.0834 9.56671 11.9737 9.53496 11.8788 9.47541C11.7838 9.41586 11.7074 9.3309 11.6583 9.23015C11.6092 9.12941 11.5893 9.01691 11.6008 8.90543C11.6124 8.79394 11.6549 8.68793 11.7237 8.5994C12.1065 8.09726 12.4437 7.56199 12.7313 6.99995C12.2595 6.08027 10.3402 2.8014 6.99732 2.8014C6.63723 2.80218 6.27816 2.83969 5.92569 2.91336C5.77666 2.93304 5.62568 2.89606 5.50263 2.80972C5.37958 2.72337 5.29344 2.59398 5.26125 2.44714C5.22907 2.30031 5.2532 2.14674 5.32885 2.01685C5.40451 1.88696 5.52618 1.79021 5.66978 1.74576C6.10574 1.64961 6.55089 1.60134 6.99732 1.60181C11.5916 1.60181 13.7864 6.40856 13.9414 6.74792ZM2.20333 1.61685C2.35871 1.61411 2.5091 1.67179 2.6228 1.77774L12.2195 11.3744C12.3318 11.4869 12.3949 11.6393 12.3949 11.7983C12.3949 11.9572 12.3318 12.1097 12.2195 12.2221C12.107 12.3345 11.9546 12.3976 11.7956 12.3976C11.6367 12.3976 11.4842 12.3345 11.3718 12.2221L10.5081 11.3584C9.46549 12.0426 8.24432 12.4042 6.99729 12.3981C2.403 12.3981 0.208197 7.59135 0.0532336 7.25198C0.0509364 7.24694 0.0490875 7.2429 0.0476856 7.23986C0.0162332 7.16518 3.05176e-05 7.08497 3.05176e-05 7.00394C3.05176e-05 6.92291 0.0162332 6.8427 0.0476856 6.76802C0.631261 5.47831 1.46902 4.31959 2.51084 3.36119L1.77509 2.62545C1.66914 2.51175 1.61146 2.36136 1.61421 2.20597C1.61695 2.05059 1.6799 1.90233 1.78979 1.79244C1.89968 1.68254 2.04794 1.6196 2.20333 1.61685ZM7.45314 8.35147L5.68574 6.57609V6.5361C5.5872 6.78938 5.56498 7.06597 5.62183 7.33173C5.67868 7.59749 5.8121 7.84078 6.00563 8.03158C6.19567 8.21043 6.43052 8.33458 6.68533 8.39089C6.94014 8.44721 7.20543 8.43359 7.45314 8.35147ZM1.26327 6.99994C1.7351 7.91163 3.64645 11.1985 6.99729 11.1985C7.9267 11.2048 8.8408 10.9618 9.64438 10.4947L8.35682 9.20718C7.86027 9.51441 7.27449 9.64491 6.69448 9.57752C6.11446 9.51014 5.57421 9.24881 5.16131 8.83592C4.74842 8.42303 4.4871 7.88277 4.41971 7.30276C4.35232 6.72274 4.48282 6.13697 4.79005 5.64041L3.35855 4.2089C2.4954 5.00336 1.78523 5.94935 1.26327 6.99994Z"
+                    fill="currentColor"
+                />
+            </g>
+            <defs>
+                <clipPath [id]="pathId">
+                    <rect width="14" height="14" fill="white" />
+                </clipPath>
+            </defs>
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 3803:
+/*!********************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-infocircle.mjs ***!
+  \********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InfoCircleIcon: () => (/* binding */ InfoCircleIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+
+class InfoCircleIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  pathId;
+  ngOnInit() {
+    this.pathId = 'url(#' + (0,primeng_utils__WEBPACK_IMPORTED_MODULE_1__.UniqueComponentId)() + ')';
+  }
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵInfoCircleIcon_BaseFactory;
+    return function InfoCircleIcon_Factory(t) {
+      return (ɵInfoCircleIcon_BaseFactory || (ɵInfoCircleIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵgetInheritedFactory"](InfoCircleIcon)))(t || InfoCircleIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({
+    type: InfoCircleIcon,
+    selectors: [["InfoCircleIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵStandaloneFeature"]],
+    decls: 6,
+    vars: 7,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["fill-rule", "evenodd", "clip-rule", "evenodd", "d", "M3.11101 12.8203C4.26215 13.5895 5.61553 14 7 14C8.85652 14 10.637 13.2625 11.9497 11.9497C13.2625 10.637 14 8.85652 14 7C14 5.61553 13.5895 4.26215 12.8203 3.11101C12.0511 1.95987 10.9579 1.06266 9.67879 0.532846C8.3997 0.00303296 6.99224 -0.13559 5.63437 0.134506C4.2765 0.404603 3.02922 1.07129 2.05026 2.05026C1.07129 3.02922 0.404603 4.2765 0.134506 5.63437C-0.13559 6.99224 0.00303296 8.3997 0.532846 9.67879C1.06266 10.9579 1.95987 12.0511 3.11101 12.8203ZM3.75918 2.14976C4.71846 1.50879 5.84628 1.16667 7 1.16667C8.5471 1.16667 10.0308 1.78125 11.1248 2.87521C12.2188 3.96918 12.8333 5.45291 12.8333 7C12.8333 8.15373 12.4912 9.28154 11.8502 10.2408C11.2093 11.2001 10.2982 11.9478 9.23232 12.3893C8.16642 12.8308 6.99353 12.9463 5.86198 12.7212C4.73042 12.4962 3.69102 11.9406 2.87521 11.1248C2.05941 10.309 1.50384 9.26958 1.27876 8.13803C1.05367 7.00647 1.16919 5.83358 1.61071 4.76768C2.05222 3.70178 2.79989 2.79074 3.75918 2.14976ZM7.00002 4.8611C6.84594 4.85908 6.69873 4.79698 6.58977 4.68801C6.48081 4.57905 6.4187 4.43185 6.41669 4.27776V3.88888C6.41669 3.73417 6.47815 3.58579 6.58754 3.4764C6.69694 3.367 6.84531 3.30554 7.00002 3.30554C7.15473 3.30554 7.3031 3.367 7.4125 3.4764C7.52189 3.58579 7.58335 3.73417 7.58335 3.88888V4.27776C7.58134 4.43185 7.51923 4.57905 7.41027 4.68801C7.30131 4.79698 7.1541 4.85908 7.00002 4.8611ZM7.00002 10.6945C6.84594 10.6925 6.69873 10.6304 6.58977 10.5214C6.48081 10.4124 6.4187 10.2652 6.41669 10.1111V6.22225C6.41669 6.06754 6.47815 5.91917 6.58754 5.80977C6.69694 5.70037 6.84531 5.63892 7.00002 5.63892C7.15473 5.63892 7.3031 5.70037 7.4125 5.80977C7.52189 5.91917 7.58335 6.06754 7.58335 6.22225V10.1111C7.58134 10.2652 7.51923 10.4124 7.41027 10.5214C7.30131 10.6304 7.1541 10.6925 7.00002 10.6945Z", "fill", "currentColor"], [3, "id"], ["width", "14", "height", "14", "fill", "white"]],
+    template: function InfoCircleIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "svg", 0)(1, "g");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](2, "path", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](3, "defs")(4, "clipPath", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](5, "rect", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("clip-path", ctx.pathId);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("id", ctx.pathId);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵsetClassMetadata"](InfoCircleIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Component,
+    args: [{
+      selector: 'InfoCircleIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <g [attr.clip-path]="pathId">
+                <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M3.11101 12.8203C4.26215 13.5895 5.61553 14 7 14C8.85652 14 10.637 13.2625 11.9497 11.9497C13.2625 10.637 14 8.85652 14 7C14 5.61553 13.5895 4.26215 12.8203 3.11101C12.0511 1.95987 10.9579 1.06266 9.67879 0.532846C8.3997 0.00303296 6.99224 -0.13559 5.63437 0.134506C4.2765 0.404603 3.02922 1.07129 2.05026 2.05026C1.07129 3.02922 0.404603 4.2765 0.134506 5.63437C-0.13559 6.99224 0.00303296 8.3997 0.532846 9.67879C1.06266 10.9579 1.95987 12.0511 3.11101 12.8203ZM3.75918 2.14976C4.71846 1.50879 5.84628 1.16667 7 1.16667C8.5471 1.16667 10.0308 1.78125 11.1248 2.87521C12.2188 3.96918 12.8333 5.45291 12.8333 7C12.8333 8.15373 12.4912 9.28154 11.8502 10.2408C11.2093 11.2001 10.2982 11.9478 9.23232 12.3893C8.16642 12.8308 6.99353 12.9463 5.86198 12.7212C4.73042 12.4962 3.69102 11.9406 2.87521 11.1248C2.05941 10.309 1.50384 9.26958 1.27876 8.13803C1.05367 7.00647 1.16919 5.83358 1.61071 4.76768C2.05222 3.70178 2.79989 2.79074 3.75918 2.14976ZM7.00002 4.8611C6.84594 4.85908 6.69873 4.79698 6.58977 4.68801C6.48081 4.57905 6.4187 4.43185 6.41669 4.27776V3.88888C6.41669 3.73417 6.47815 3.58579 6.58754 3.4764C6.69694 3.367 6.84531 3.30554 7.00002 3.30554C7.15473 3.30554 7.3031 3.367 7.4125 3.4764C7.52189 3.58579 7.58335 3.73417 7.58335 3.88888V4.27776C7.58134 4.43185 7.51923 4.57905 7.41027 4.68801C7.30131 4.79698 7.1541 4.85908 7.00002 4.8611ZM7.00002 10.6945C6.84594 10.6925 6.69873 10.6304 6.58977 10.5214C6.48081 10.4124 6.4187 10.2652 6.41669 10.1111V6.22225C6.41669 6.06754 6.47815 5.91917 6.58754 5.80977C6.69694 5.70037 6.84531 5.63892 7.00002 5.63892C7.15473 5.63892 7.3031 5.70037 7.4125 5.80977C7.52189 5.91917 7.58335 6.06754 7.58335 6.22225V10.1111C7.58134 10.2652 7.51923 10.4124 7.41027 10.5214C7.30131 10.6304 7.1541 10.6925 7.00002 10.6945Z"
+                    fill="currentColor"
+                />
+            </g>
+            <defs>
+                <clipPath [id]="pathId">
+                    <rect width="14" height="14" fill="white" />
+                </clipPath>
+            </defs>
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 9184:
+/*!*****************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-spinner.mjs ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SpinnerIcon: () => (/* binding */ SpinnerIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+
+class SpinnerIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  pathId;
+  ngOnInit() {
+    this.pathId = 'url(#' + (0,primeng_utils__WEBPACK_IMPORTED_MODULE_1__.UniqueComponentId)() + ')';
+  }
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵSpinnerIcon_BaseFactory;
+    return function SpinnerIcon_Factory(t) {
+      return (ɵSpinnerIcon_BaseFactory || (ɵSpinnerIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵgetInheritedFactory"](SpinnerIcon)))(t || SpinnerIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({
+    type: SpinnerIcon,
+    selectors: [["SpinnerIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵStandaloneFeature"]],
+    decls: 6,
+    vars: 7,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["d", "M6.99701 14C5.85441 13.999 4.72939 13.7186 3.72012 13.1832C2.71084 12.6478 1.84795 11.8737 1.20673 10.9284C0.565504 9.98305 0.165424 8.89526 0.041387 7.75989C-0.0826496 6.62453 0.073125 5.47607 0.495122 4.4147C0.917119 3.35333 1.59252 2.4113 2.46241 1.67077C3.33229 0.930247 4.37024 0.413729 5.4857 0.166275C6.60117 -0.0811796 7.76026 -0.0520535 8.86188 0.251112C9.9635 0.554278 10.9742 1.12227 11.8057 1.90555C11.915 2.01493 11.9764 2.16319 11.9764 2.31778C11.9764 2.47236 11.915 2.62062 11.8057 2.73C11.7521 2.78503 11.688 2.82877 11.6171 2.85864C11.5463 2.8885 11.4702 2.90389 11.3933 2.90389C11.3165 2.90389 11.2404 2.8885 11.1695 2.85864C11.0987 2.82877 11.0346 2.78503 10.9809 2.73C9.9998 1.81273 8.73246 1.26138 7.39226 1.16876C6.05206 1.07615 4.72086 1.44794 3.62279 2.22152C2.52471 2.99511 1.72683 4.12325 1.36345 5.41602C1.00008 6.70879 1.09342 8.08723 1.62775 9.31926C2.16209 10.5513 3.10478 11.5617 4.29713 12.1803C5.48947 12.7989 6.85865 12.988 8.17414 12.7157C9.48963 12.4435 10.6711 11.7264 11.5196 10.6854C12.3681 9.64432 12.8319 8.34282 12.8328 7C12.8328 6.84529 12.8943 6.69692 13.0038 6.58752C13.1132 6.47812 13.2616 6.41667 13.4164 6.41667C13.5712 6.41667 13.7196 6.47812 13.8291 6.58752C13.9385 6.69692 14 6.84529 14 7C14 8.85651 13.2622 10.637 11.9489 11.9497C10.6356 13.2625 8.85432 14 6.99701 14Z", "fill", "currentColor"], [3, "id"], ["width", "14", "height", "14", "fill", "white"]],
+    template: function SpinnerIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "svg", 0)(1, "g");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](2, "path", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](3, "defs")(4, "clipPath", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](5, "rect", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("clip-path", ctx.pathId);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("id", ctx.pathId);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵsetClassMetadata"](SpinnerIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Component,
+    args: [{
+      selector: 'SpinnerIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <g [attr.clip-path]="pathId">
+                <path
+                    d="M6.99701 14C5.85441 13.999 4.72939 13.7186 3.72012 13.1832C2.71084 12.6478 1.84795 11.8737 1.20673 10.9284C0.565504 9.98305 0.165424 8.89526 0.041387 7.75989C-0.0826496 6.62453 0.073125 5.47607 0.495122 4.4147C0.917119 3.35333 1.59252 2.4113 2.46241 1.67077C3.33229 0.930247 4.37024 0.413729 5.4857 0.166275C6.60117 -0.0811796 7.76026 -0.0520535 8.86188 0.251112C9.9635 0.554278 10.9742 1.12227 11.8057 1.90555C11.915 2.01493 11.9764 2.16319 11.9764 2.31778C11.9764 2.47236 11.915 2.62062 11.8057 2.73C11.7521 2.78503 11.688 2.82877 11.6171 2.85864C11.5463 2.8885 11.4702 2.90389 11.3933 2.90389C11.3165 2.90389 11.2404 2.8885 11.1695 2.85864C11.0987 2.82877 11.0346 2.78503 10.9809 2.73C9.9998 1.81273 8.73246 1.26138 7.39226 1.16876C6.05206 1.07615 4.72086 1.44794 3.62279 2.22152C2.52471 2.99511 1.72683 4.12325 1.36345 5.41602C1.00008 6.70879 1.09342 8.08723 1.62775 9.31926C2.16209 10.5513 3.10478 11.5617 4.29713 12.1803C5.48947 12.7989 6.85865 12.988 8.17414 12.7157C9.48963 12.4435 10.6711 11.7264 11.5196 10.6854C12.3681 9.64432 12.8319 8.34282 12.8328 7C12.8328 6.84529 12.8943 6.69692 13.0038 6.58752C13.1132 6.47812 13.2616 6.41667 13.4164 6.41667C13.5712 6.41667 13.7196 6.47812 13.8291 6.58752C13.9385 6.69692 14 6.84529 14 7C14 8.85651 13.2622 10.637 11.9489 11.9497C10.6356 13.2625 8.85432 14 6.99701 14Z"
+                    fill="currentColor"
+                />
+            </g>
+            <defs>
+                <clipPath [id]="pathId">
+                    <rect width="14" height="14" fill="white" />
+                </clipPath>
+            </defs>
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 8993:
+/*!***************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-times.mjs ***!
+  \***************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TimesIcon: () => (/* binding */ TimesIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+
+
+
+class TimesIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵTimesIcon_BaseFactory;
+    return function TimesIcon_Factory(t) {
+      return (ɵTimesIcon_BaseFactory || (ɵTimesIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"](TimesIcon)))(t || TimesIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: TimesIcon,
+    selectors: [["TimesIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵStandaloneFeature"]],
+    decls: 2,
+    vars: 5,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["d", "M8.01186 7.00933L12.27 2.75116C12.341 2.68501 12.398 2.60524 12.4375 2.51661C12.4769 2.42798 12.4982 2.3323 12.4999 2.23529C12.5016 2.13827 12.4838 2.0419 12.4474 1.95194C12.4111 1.86197 12.357 1.78024 12.2884 1.71163C12.2198 1.64302 12.138 1.58893 12.0481 1.55259C11.9581 1.51625 11.8617 1.4984 11.7647 1.50011C11.6677 1.50182 11.572 1.52306 11.4834 1.56255C11.3948 1.60204 11.315 1.65898 11.2488 1.72997L6.99067 5.98814L2.7325 1.72997C2.59553 1.60234 2.41437 1.53286 2.22718 1.53616C2.03999 1.53946 1.8614 1.61529 1.72901 1.74767C1.59663 1.88006 1.5208 2.05865 1.5175 2.24584C1.5142 2.43303 1.58368 2.61419 1.71131 2.75116L5.96948 7.00933L1.71131 11.2675C1.576 11.403 1.5 11.5866 1.5 11.7781C1.5 11.9696 1.576 12.1532 1.71131 12.2887C1.84679 12.424 2.03043 12.5 2.2219 12.5C2.41338 12.5 2.59702 12.424 2.7325 12.2887L6.99067 8.03052L11.2488 12.2887C11.3843 12.424 11.568 12.5 11.7594 12.5C11.9509 12.5 12.1346 12.424 12.27 12.2887C12.4053 12.1532 12.4813 11.9696 12.4813 11.7781C12.4813 11.5866 12.4053 11.403 12.27 11.2675L8.01186 7.00933Z", "fill", "currentColor"]],
+    template: function TimesIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "svg", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](1, "path", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"](TimesIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_1__.Component,
+    args: [{
+      selector: 'TimesIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <path
+                d="M8.01186 7.00933L12.27 2.75116C12.341 2.68501 12.398 2.60524 12.4375 2.51661C12.4769 2.42798 12.4982 2.3323 12.4999 2.23529C12.5016 2.13827 12.4838 2.0419 12.4474 1.95194C12.4111 1.86197 12.357 1.78024 12.2884 1.71163C12.2198 1.64302 12.138 1.58893 12.0481 1.55259C11.9581 1.51625 11.8617 1.4984 11.7647 1.50011C11.6677 1.50182 11.572 1.52306 11.4834 1.56255C11.3948 1.60204 11.315 1.65898 11.2488 1.72997L6.99067 5.98814L2.7325 1.72997C2.59553 1.60234 2.41437 1.53286 2.22718 1.53616C2.03999 1.53946 1.8614 1.61529 1.72901 1.74767C1.59663 1.88006 1.5208 2.05865 1.5175 2.24584C1.5142 2.43303 1.58368 2.61419 1.71131 2.75116L5.96948 7.00933L1.71131 11.2675C1.576 11.403 1.5 11.5866 1.5 11.7781C1.5 11.9696 1.576 12.1532 1.71131 12.2887C1.84679 12.424 2.03043 12.5 2.2219 12.5C2.41338 12.5 2.59702 12.424 2.7325 12.2887L6.99067 8.03052L11.2488 12.2887C11.3843 12.424 11.568 12.5 11.7594 12.5C11.9509 12.5 12.1346 12.424 12.27 12.2887C12.4053 12.1532 12.4813 11.9696 12.4813 11.7781C12.4813 11.5866 12.4053 11.403 12.27 11.2675L8.01186 7.00933Z"
+                fill="currentColor"
+            />
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 7800:
+/*!*********************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-icons-timescircle.mjs ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TimesCircleIcon: () => (/* binding */ TimesCircleIcon)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! primeng/baseicon */ 3128);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+
+class TimesCircleIcon extends primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon {
+  pathId;
+  ngOnInit() {
+    this.pathId = 'url(#' + (0,primeng_utils__WEBPACK_IMPORTED_MODULE_1__.UniqueComponentId)() + ')';
+  }
+  static ɵfac = /* @__PURE__ */function () {
+    let ɵTimesCircleIcon_BaseFactory;
+    return function TimesCircleIcon_Factory(t) {
+      return (ɵTimesCircleIcon_BaseFactory || (ɵTimesCircleIcon_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵgetInheritedFactory"](TimesCircleIcon)))(t || TimesCircleIcon);
+    };
+  }();
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({
+    type: TimesCircleIcon,
+    selectors: [["TimesCircleIcon"]],
+    standalone: true,
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵInheritDefinitionFeature"], _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵStandaloneFeature"]],
+    decls: 6,
+    vars: 7,
+    consts: [["width", "14", "height", "14", "viewBox", "0 0 14 14", "fill", "none", "xmlns", "http://www.w3.org/2000/svg"], ["fill-rule", "evenodd", "clip-rule", "evenodd", "d", "M7 14C5.61553 14 4.26215 13.5895 3.11101 12.8203C1.95987 12.0511 1.06266 10.9579 0.532846 9.67879C0.00303296 8.3997 -0.13559 6.99224 0.134506 5.63437C0.404603 4.2765 1.07129 3.02922 2.05026 2.05026C3.02922 1.07129 4.2765 0.404603 5.63437 0.134506C6.99224 -0.13559 8.3997 0.00303296 9.67879 0.532846C10.9579 1.06266 12.0511 1.95987 12.8203 3.11101C13.5895 4.26215 14 5.61553 14 7C14 8.85652 13.2625 10.637 11.9497 11.9497C10.637 13.2625 8.85652 14 7 14ZM7 1.16667C5.84628 1.16667 4.71846 1.50879 3.75918 2.14976C2.79989 2.79074 2.05222 3.70178 1.61071 4.76768C1.16919 5.83358 1.05367 7.00647 1.27876 8.13803C1.50384 9.26958 2.05941 10.309 2.87521 11.1248C3.69102 11.9406 4.73042 12.4962 5.86198 12.7212C6.99353 12.9463 8.16642 12.8308 9.23232 12.3893C10.2982 11.9478 11.2093 11.2001 11.8502 10.2408C12.4912 9.28154 12.8333 8.15373 12.8333 7C12.8333 5.45291 12.2188 3.96918 11.1248 2.87521C10.0308 1.78125 8.5471 1.16667 7 1.16667ZM4.66662 9.91668C4.58998 9.91704 4.51404 9.90209 4.44325 9.87271C4.37246 9.84333 4.30826 9.8001 4.2544 9.74557C4.14516 9.6362 4.0838 9.48793 4.0838 9.33335C4.0838 9.17876 4.14516 9.0305 4.2544 8.92113L6.17553 7L4.25443 5.07891C4.15139 4.96832 4.09529 4.82207 4.09796 4.67094C4.10063 4.51982 4.16185 4.37563 4.26872 4.26876C4.3756 4.16188 4.51979 4.10066 4.67091 4.09799C4.82204 4.09532 4.96829 4.15142 5.07887 4.25446L6.99997 6.17556L8.92106 4.25446C9.03164 4.15142 9.1779 4.09532 9.32903 4.09799C9.48015 4.10066 9.62434 4.16188 9.73121 4.26876C9.83809 4.37563 9.89931 4.51982 9.90198 4.67094C9.90464 4.82207 9.84855 4.96832 9.74551 5.07891L7.82441 7L9.74554 8.92113C9.85478 9.0305 9.91614 9.17876 9.91614 9.33335C9.91614 9.48793 9.85478 9.6362 9.74554 9.74557C9.69168 9.8001 9.62748 9.84333 9.55669 9.87271C9.4859 9.90209 9.40996 9.91704 9.33332 9.91668C9.25668 9.91704 9.18073 9.90209 9.10995 9.87271C9.03916 9.84333 8.97495 9.8001 8.9211 9.74557L6.99997 7.82444L5.07884 9.74557C5.02499 9.8001 4.96078 9.84333 4.88999 9.87271C4.81921 9.90209 4.74326 9.91704 4.66662 9.91668Z", "fill", "currentColor"], [3, "id"], ["width", "14", "height", "14", "fill", "white"]],
+    template: function TimesCircleIcon_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵnamespaceSVG"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "svg", 0)(1, "g");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](2, "path", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](3, "defs")(4, "clipPath", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](5, "rect", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵclassMap"](ctx.getClassNames());
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("aria-label", ctx.ariaLabel)("aria-hidden", ctx.ariaHidden)("role", ctx.role);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵattribute"]("clip-path", ctx.pathId);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("id", ctx.pathId);
+      }
+    },
+    encapsulation: 2
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵsetClassMetadata"](TimesCircleIcon, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Component,
+    args: [{
+      selector: 'TimesCircleIcon',
+      standalone: true,
+      imports: [primeng_baseicon__WEBPACK_IMPORTED_MODULE_0__.BaseIcon],
+      template: `
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames()">
+            <g [attr.clip-path]="pathId">
+                <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M7 14C5.61553 14 4.26215 13.5895 3.11101 12.8203C1.95987 12.0511 1.06266 10.9579 0.532846 9.67879C0.00303296 8.3997 -0.13559 6.99224 0.134506 5.63437C0.404603 4.2765 1.07129 3.02922 2.05026 2.05026C3.02922 1.07129 4.2765 0.404603 5.63437 0.134506C6.99224 -0.13559 8.3997 0.00303296 9.67879 0.532846C10.9579 1.06266 12.0511 1.95987 12.8203 3.11101C13.5895 4.26215 14 5.61553 14 7C14 8.85652 13.2625 10.637 11.9497 11.9497C10.637 13.2625 8.85652 14 7 14ZM7 1.16667C5.84628 1.16667 4.71846 1.50879 3.75918 2.14976C2.79989 2.79074 2.05222 3.70178 1.61071 4.76768C1.16919 5.83358 1.05367 7.00647 1.27876 8.13803C1.50384 9.26958 2.05941 10.309 2.87521 11.1248C3.69102 11.9406 4.73042 12.4962 5.86198 12.7212C6.99353 12.9463 8.16642 12.8308 9.23232 12.3893C10.2982 11.9478 11.2093 11.2001 11.8502 10.2408C12.4912 9.28154 12.8333 8.15373 12.8333 7C12.8333 5.45291 12.2188 3.96918 11.1248 2.87521C10.0308 1.78125 8.5471 1.16667 7 1.16667ZM4.66662 9.91668C4.58998 9.91704 4.51404 9.90209 4.44325 9.87271C4.37246 9.84333 4.30826 9.8001 4.2544 9.74557C4.14516 9.6362 4.0838 9.48793 4.0838 9.33335C4.0838 9.17876 4.14516 9.0305 4.2544 8.92113L6.17553 7L4.25443 5.07891C4.15139 4.96832 4.09529 4.82207 4.09796 4.67094C4.10063 4.51982 4.16185 4.37563 4.26872 4.26876C4.3756 4.16188 4.51979 4.10066 4.67091 4.09799C4.82204 4.09532 4.96829 4.15142 5.07887 4.25446L6.99997 6.17556L8.92106 4.25446C9.03164 4.15142 9.1779 4.09532 9.32903 4.09799C9.48015 4.10066 9.62434 4.16188 9.73121 4.26876C9.83809 4.37563 9.89931 4.51982 9.90198 4.67094C9.90464 4.82207 9.84855 4.96832 9.74551 5.07891L7.82441 7L9.74554 8.92113C9.85478 9.0305 9.91614 9.17876 9.91614 9.33335C9.91614 9.48793 9.85478 9.6362 9.74554 9.74557C9.69168 9.8001 9.62748 9.84333 9.55669 9.87271C9.4859 9.90209 9.40996 9.91704 9.33332 9.91668C9.25668 9.91704 9.18073 9.90209 9.10995 9.87271C9.03916 9.84333 8.97495 9.8001 8.9211 9.74557L6.99997 7.82444L5.07884 9.74557C5.02499 9.8001 4.96078 9.84333 4.88999 9.87271C4.81921 9.90209 4.74326 9.91704 4.66662 9.91668Z"
+                    fill="currentColor"
+                />
+            </g>
+            <defs>
+                <clipPath [id]="pathId">
+                    <rect width="14" height="14" fill="white" />
+                </clipPath>
+            </defs>
+        </svg>
+    `
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 873:
+/*!*************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-inputtext.mjs ***!
+  \*************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InputText: () => (/* binding */ InputText),
+/* harmony export */   InputTextModule: () => (/* binding */ InputTextModule)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ 6575);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/forms */ 8849);
+
+
+
+
+class InputText {
+  el;
+  ngModel;
+  cd;
+  filled;
+  constructor(el, ngModel, cd) {
+    this.el = el;
+    this.ngModel = ngModel;
+    this.cd = cd;
+  }
+  ngAfterViewInit() {
+    this.updateFilledState();
+    this.cd.detectChanges();
+  }
+  ngDoCheck() {
+    this.updateFilledState();
+  }
+  onInput() {
+    this.updateFilledState();
+  }
+  updateFilledState() {
+    this.filled = this.el.nativeElement.value && this.el.nativeElement.value.length || this.ngModel && this.ngModel.model;
+  }
+  static ɵfac = function InputText_Factory(t) {
+    return new (t || InputText)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_1__.NgModel, 8), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectorRef));
+  };
+  static ɵdir = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({
+    type: InputText,
+    selectors: [["", "pInputText", ""]],
+    hostAttrs: [1, "p-inputtext", "p-component", "p-element"],
+    hostVars: 2,
+    hostBindings: function InputText_HostBindings(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("input", function InputText_input_HostBindingHandler($event) {
+          return ctx.onInput($event);
+        });
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("p-filled", ctx.filled);
+      }
+    }
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](InputText, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+    args: [{
+      selector: '[pInputText]',
+      host: {
+        class: 'p-inputtext p-component p-element',
+        '[class.p-filled]': 'filled'
+      }
+    }]
+  }], function () {
+    return [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef
+    }, {
+      type: _angular_forms__WEBPACK_IMPORTED_MODULE_1__.NgModel,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Optional
+      }]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectorRef
+    }];
+  }, {
+    onInput: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+      args: ['input', ['$event']]
+    }]
+  });
+})();
+class InputTextModule {
+  static ɵfac = function InputTextModule_Factory(t) {
+    return new (t || InputTextModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: InputTextModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_2__.CommonModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](InputTextModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_2__.CommonModule],
+      exports: [InputText],
+      declarations: [InputText]
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 9404:
+/*!************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-messages.mjs ***!
+  \************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Messages: () => (/* binding */ Messages),
+/* harmony export */   MessagesModule: () => (/* binding */ MessagesModule)
+/* harmony export */ });
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/animations */ 2501);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ 6575);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primeng/api */ 8026);
+/* harmony import */ var primeng_icons_check__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primeng/icons/check */ 7613);
+/* harmony import */ var primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! primeng/icons/exclamationtriangle */ 4733);
+/* harmony import */ var primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! primeng/icons/infocircle */ 3803);
+/* harmony import */ var primeng_icons_times__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! primeng/icons/times */ 8993);
+/* harmony import */ var primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! primeng/icons/timescircle */ 7800);
+/* harmony import */ var primeng_ripple__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! primeng/ripple */ 1339);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ 9378);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Messages is used to display alerts inline.
+ * @group Components
+ */
+function Messages_ng_container_1_div_1_span_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "span");
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"]("p-message-icon pi " + msg_r4.icon);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "icon");
+  }
+}
+function Messages_ng_container_1_div_1_span_3_CheckIcon_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "CheckIcon");
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "icon");
+  }
+}
+function Messages_ng_container_1_div_1_span_3_InfoCircleIcon_3_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "InfoCircleIcon");
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "icon");
+  }
+}
+function Messages_ng_container_1_div_1_span_3_TimesCircleIcon_4_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "TimesCircleIcon");
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "icon");
+  }
+}
+function Messages_ng_container_1_div_1_span_3_ExclamationTriangleIcon_5_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "ExclamationTriangleIcon");
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "icon");
+  }
+}
+function Messages_ng_container_1_div_1_span_3_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 10);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Messages_ng_container_1_div_1_span_3_CheckIcon_2_Template, 1, 1, "CheckIcon", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, Messages_ng_container_1_div_1_span_3_InfoCircleIcon_3_Template, 1, 1, "InfoCircleIcon", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, Messages_ng_container_1_div_1_span_3_TimesCircleIcon_4_Template, 1, 1, "TimesCircleIcon", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](5, Messages_ng_container_1_div_1_span_3_ExclamationTriangleIcon_5_Template, 1, 1, "ExclamationTriangleIcon", 11);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.severity === "success");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.severity === "info");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.severity === "error");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.severity === "warn");
+  }
+}
+function Messages_ng_container_1_div_1_ng_container_4_span_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "span", 14);
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2).$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("innerHTML", msg_r4.summary, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsanitizeHtml"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "summary");
+  }
+}
+function Messages_ng_container_1_div_1_ng_container_4_span_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "span", 15);
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2).$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("innerHTML", msg_r4.detail, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsanitizeHtml"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "detail");
+  }
+}
+function Messages_ng_container_1_div_1_ng_container_4_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Messages_ng_container_1_div_1_ng_container_4_span_1_Template, 1, 2, "span", 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Messages_ng_container_1_div_1_ng_container_4_span_2_Template, 1, 2, "span", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.summary);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.detail);
+  }
+}
+function Messages_ng_container_1_div_1_ng_template_5_span_0_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 18);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2).$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "summary");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](msg_r4.summary);
+  }
+}
+function Messages_ng_container_1_div_1_ng_template_5_span_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 19);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2).$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "detail");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](msg_r4.detail);
+  }
+}
+function Messages_ng_container_1_div_1_ng_template_5_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](0, Messages_ng_container_1_div_1_ng_template_5_span_0_Template, 2, 2, "span", 16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Messages_ng_container_1_div_1_ng_template_5_span_1_Template, 2, 2, "span", 17);
+  }
+  if (rf & 2) {
+    const msg_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.summary);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.detail);
+  }
+}
+function Messages_ng_container_1_div_1_button_7_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r30 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "button", 20);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Messages_ng_container_1_div_1_button_7_Template_button_click_0_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r30);
+      const i_r5 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().index;
+      const ctx_r28 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r28.removeMessage(i_r5));
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "TimesIcon", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-label", "Close")("data-pc-section", "closebutton");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("styleClass", "p-message-close-icon");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "closeicon");
+  }
+}
+const _c0 = function (a0, a1) {
+  return {
+    showTransitionParams: a0,
+    hideTransitionParams: a1
+  };
+};
+const _c1 = function (a1) {
+  return {
+    value: "visible",
+    params: a1
+  };
+};
+function Messages_ng_container_1_div_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 4)(1, "div", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Messages_ng_container_1_div_1_span_2_Template, 1, 3, "span", 6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, Messages_ng_container_1_div_1_span_3_Template, 6, 4, "span", 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, Messages_ng_container_1_div_1_ng_container_4_Template, 3, 2, "ng-container", 1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](5, Messages_ng_container_1_div_1_ng_template_5_Template, 2, 2, "ng-template", null, 8, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplateRefExtractor"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](7, Messages_ng_container_1_div_1_button_7_Template, 2, 4, "button", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
+  }
+  if (rf & 2) {
+    const msg_r4 = ctx.$implicit;
+    const _r9 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵreference"](6);
+    const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"]("p-message p-message-" + msg_r4.severity);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("@messageAnimation", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](12, _c1, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](9, _c0, ctx_r3.showTransitionOptions, ctx_r3.hideTransitionOptions)));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "wrapper");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r4.icon);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !msg_r4.icon);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r3.escape)("ngIfElse", _r9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r3.closable);
+  }
+}
+function Messages_ng_container_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Messages_ng_container_1_div_1_Template, 8, 14, "div", 3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx_r0.messages);
+  }
+}
+function Messages_ng_template_2_ng_container_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainer"](0);
+  }
+}
+function Messages_ng_template_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 22)(1, "div", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Messages_ng_template_2_ng_container_2_Template, 1, 0, "ng-container", 23);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
+  }
+  if (rf & 2) {
+    const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", "p-message p-message-" + ctx_r2.severity);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r2.contentTemplate);
+  }
+}
+class Messages {
+  messageService;
+  el;
+  cd;
+  /**
+   * An array of messages to display.
+   * @group Props
+   */
+  set value(messages) {
+    this.messages = messages;
+    this.startMessageLifes(this.messages);
+  }
+  /**
+   * Defines if message box can be closed by the click icon.
+   * @group Props
+   */
+  closable = true;
+  /**
+   * Inline style of the component.
+   * @group Props
+   */
+  style;
+  /**
+   * Style class of the component.
+   * @group Props
+   */
+  styleClass;
+  /**
+   * Whether displaying services messages are enabled.
+   * @group Props
+   */
+  enableService = true;
+  /**
+   * Id to match the key of the message to enable scoping in service based messaging.
+   * @group Props
+   */
+  key;
+  /**
+   * Whether displaying messages would be escaped or not.
+   * @group Props
+   */
+  escape = true;
+  /**
+   * Severity level of the message.
+   * @group Props
+   */
+  severity;
+  /**
+   * Transition options of the show animation.
+   * @group Props
+   */
+  showTransitionOptions = '300ms ease-out';
+  /**
+   * Transition options of the hide animation.
+   * @group Props
+   */
+  hideTransitionOptions = '200ms cubic-bezier(0.86, 0, 0.07, 1)';
+  /**
+   * This function is executed when the value changes.
+   * @param {Message[]} value - messages value.
+   * @group Emits
+   */
+  valueChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  templates;
+  messages;
+  messageSubscription;
+  clearSubscription;
+  timerSubscriptions = [];
+  contentTemplate;
+  constructor(messageService, el, cd) {
+    this.messageService = messageService;
+    this.el = el;
+    this.cd = cd;
+  }
+  ngAfterContentInit() {
+    this.templates?.forEach(item => {
+      switch (item.getType()) {
+        case 'content':
+          this.contentTemplate = item.template;
+          break;
+        default:
+          this.contentTemplate = item.template;
+          break;
+      }
+    });
+    if (this.messageService && this.enableService && !this.contentTemplate) {
+      this.messageSubscription = this.messageService.messageObserver.subscribe(messages => {
+        if (messages) {
+          if (!Array.isArray(messages)) {
+            messages = [messages];
+          }
+          const filteredMessages = messages.filter(m => this.key === m.key);
+          this.messages = this.messages ? [...this.messages, ...filteredMessages] : [...filteredMessages];
+          this.startMessageLifes(filteredMessages);
+          this.cd.markForCheck();
+        }
+      });
+      this.clearSubscription = this.messageService.clearObserver.subscribe(key => {
+        if (key) {
+          if (this.key === key) {
+            this.messages = null;
+          }
+        } else {
+          this.messages = null;
+        }
+        this.cd.markForCheck();
+      });
+    }
+  }
+  hasMessages() {
+    let parentEl = this.el.nativeElement.parentElement;
+    if (parentEl && parentEl.offsetParent) {
+      return this.contentTemplate != null || this.messages && this.messages.length > 0;
+    }
+    return false;
+  }
+  clear() {
+    this.messages = [];
+    this.valueChange.emit(this.messages);
+  }
+  removeMessage(i) {
+    this.messages = this.messages?.filter((msg, index) => index !== i);
+    this.valueChange.emit(this.messages);
+  }
+  get icon() {
+    const severity = this.severity || (this.hasMessages() ? this.messages[0].severity : null);
+    if (this.hasMessages()) {
+      switch (severity) {
+        case 'success':
+          return 'pi-check';
+        case 'info':
+          return 'pi-info-circle';
+        case 'error':
+          return 'pi-times';
+        case 'warn':
+          return 'pi-exclamation-triangle';
+        default:
+          return 'pi-info-circle';
+      }
+    }
+    return null;
+  }
+  ngOnDestroy() {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
+    if (this.clearSubscription) {
+      this.clearSubscription.unsubscribe();
+    }
+    this.timerSubscriptions?.forEach(subscription => subscription.unsubscribe());
+  }
+  startMessageLifes(messages) {
+    messages?.forEach(message => message.life && this.startMessageLife(message));
+  }
+  startMessageLife(message) {
+    const timerSubsctiption = (0,rxjs__WEBPACK_IMPORTED_MODULE_1__.timer)(message.life).subscribe(() => {
+      this.messages = this.messages?.filter(msgEl => msgEl !== message);
+      this.timerSubscriptions = this.timerSubscriptions?.filter(timerEl => timerEl !== timerSubsctiption);
+      this.valueChange.emit(this.messages);
+      this.cd.markForCheck();
+    });
+    this.timerSubscriptions.push(timerSubsctiption);
+  }
+  static ɵfac = function Messages_Factory(t) {
+    return new (t || Messages)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_2__.MessageService, 8), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectorRef));
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
+    type: Messages,
+    selectors: [["p-messages"]],
+    contentQueries: function Messages_ContentQueries(rf, ctx, dirIndex) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵcontentQuery"](dirIndex, primeng_api__WEBPACK_IMPORTED_MODULE_2__.PrimeTemplate, 4);
+      }
+      if (rf & 2) {
+        let _t;
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.templates = _t);
+      }
+    },
+    hostAttrs: [1, "p-element"],
+    inputs: {
+      value: "value",
+      closable: "closable",
+      style: "style",
+      styleClass: "styleClass",
+      enableService: "enableService",
+      key: "key",
+      escape: "escape",
+      severity: "severity",
+      showTransitionOptions: "showTransitionOptions",
+      hideTransitionOptions: "hideTransitionOptions"
+    },
+    outputs: {
+      valueChange: "valueChange"
+    },
+    decls: 4,
+    vars: 8,
+    consts: [["role", "alert", 1, "p-messages", "p-component", 3, "ngStyle"], [4, "ngIf", "ngIfElse"], ["staticMessage", ""], ["role", "alert", 3, "class", 4, "ngFor", "ngForOf"], ["role", "alert"], [1, "p-message-wrapper"], [3, "class", 4, "ngIf"], ["class", "p-message-icon", 4, "ngIf"], ["escapeOut", ""], ["class", "p-message-close p-link", "type", "button", "pRipple", "", 3, "click", 4, "ngIf"], [1, "p-message-icon"], [4, "ngIf"], ["class", "p-message-summary", 3, "innerHTML", 4, "ngIf"], ["class", "p-message-detail", 3, "innerHTML", 4, "ngIf"], [1, "p-message-summary", 3, "innerHTML"], [1, "p-message-detail", 3, "innerHTML"], ["class", "p-message-summary", 4, "ngIf"], ["class", "p-message-detail", 4, "ngIf"], [1, "p-message-summary"], [1, "p-message-detail"], ["type", "button", "pRipple", "", 1, "p-message-close", "p-link", 3, "click"], [3, "styleClass"], ["role", "alert", 3, "ngClass"], [4, "ngTemplateOutlet"]],
+    template: function Messages_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Messages_ng_container_1_Template, 2, 1, "ng-container", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Messages_ng_template_2_Template, 3, 2, "ng-template", null, 2, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplateRefExtractor"]);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+      }
+      if (rf & 2) {
+        const _r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵreference"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx.styleClass);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngStyle", ctx.style);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-atomic", true)("aria-live", "assertive")("data-pc-name", "message");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx.contentTemplate)("ngIfElse", _r1);
+      }
+    },
+    dependencies: function () {
+      return [_angular_common__WEBPACK_IMPORTED_MODULE_3__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgTemplateOutlet, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgStyle, primeng_ripple__WEBPACK_IMPORTED_MODULE_4__.Ripple, primeng_icons_check__WEBPACK_IMPORTED_MODULE_5__.CheckIcon, primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_6__.InfoCircleIcon, primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_7__.TimesCircleIcon, primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_8__.ExclamationTriangleIcon, primeng_icons_times__WEBPACK_IMPORTED_MODULE_9__.TimesIcon];
+    },
+    styles: ["@layer primeng{.p-message-wrapper{display:flex;align-items:center}.p-message-close{display:flex;align-items:center;justify-content:center;flex:none}.p-message-close.p-link{margin-left:auto;overflow:hidden;position:relative}.p-messages .p-message.ng-animating{overflow:hidden}}\n"],
+    encapsulation: 2,
+    data: {
+      animation: [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.trigger)('messageAnimation', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':enter', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        opacity: 0,
+        transform: 'translateY(-25%)'
+      }), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{showTransitionParams}}')]), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':leave', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{hideTransitionParams}}', (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        height: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        opacity: 0
+      }))])])]
+    },
+    changeDetection: 0
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](Messages, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+    args: [{
+      selector: 'p-messages',
+      template: `
+        <div class="p-messages p-component" role="alert" [ngStyle]="style" [class]="styleClass" [attr.aria-atomic]="true" [attr.aria-live]="'assertive'" [attr.data-pc-name]="'message'">
+            <ng-container *ngIf="!contentTemplate; else staticMessage">
+                <div
+                    *ngFor="let msg of messages; let i = index"
+                    [class]="'p-message p-message-' + msg.severity"
+                    role="alert"
+                    [@messageAnimation]="{ value: 'visible', params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions } }"
+                >
+                    <div class="p-message-wrapper" [attr.data-pc-section]="'wrapper'">
+                        <span *ngIf="msg.icon" [class]="'p-message-icon pi ' + msg.icon" [attr.data-pc-section]="'icon'"> </span>
+                        <span class="p-message-icon" *ngIf="!msg.icon">
+                            <ng-container>
+                                <CheckIcon *ngIf="msg.severity === 'success'" [attr.data-pc-section]="'icon'" />
+                                <InfoCircleIcon *ngIf="msg.severity === 'info'" [attr.data-pc-section]="'icon'" />
+                                <TimesCircleIcon *ngIf="msg.severity === 'error'" [attr.data-pc-section]="'icon'" />
+                                <ExclamationTriangleIcon *ngIf="msg.severity === 'warn'" [attr.data-pc-section]="'icon'" />
+                            </ng-container>
+                        </span>
+                        <ng-container *ngIf="!escape; else escapeOut">
+                            <span *ngIf="msg.summary" class="p-message-summary" [innerHTML]="msg.summary" [attr.data-pc-section]="'summary'"></span>
+                            <span *ngIf="msg.detail" class="p-message-detail" [innerHTML]="msg.detail" [attr.data-pc-section]="'detail'"></span>
+                        </ng-container>
+                        <ng-template #escapeOut>
+                            <span *ngIf="msg.summary" class="p-message-summary" [attr.data-pc-section]="'summary'">{{ msg.summary }}</span>
+                            <span *ngIf="msg.detail" class="p-message-detail" [attr.data-pc-section]="'detail'">{{ msg.detail }}</span>
+                        </ng-template>
+                        <button class="p-message-close p-link" (click)="removeMessage(i)" *ngIf="closable" type="button" pRipple [attr.aria-label]="'Close'" [attr.data-pc-section]="'closebutton'">
+                            <TimesIcon [styleClass]="'p-message-close-icon'" [attr.data-pc-section]="'closeicon'" />
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #staticMessage>
+                <div [ngClass]="'p-message p-message-' + severity" role="alert">
+                    <div class="p-message-wrapper">
+                        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    `,
+      animations: [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.trigger)('messageAnimation', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':enter', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        opacity: 0,
+        transform: 'translateY(-25%)'
+      }), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{showTransitionParams}}')]), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':leave', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{hideTransitionParams}}', (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        height: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        opacity: 0
+      }))])])],
+      changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectionStrategy.OnPush,
+      encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewEncapsulation.None,
+      host: {
+        class: 'p-element'
+      },
+      styles: ["@layer primeng{.p-message-wrapper{display:flex;align-items:center}.p-message-close{display:flex;align-items:center;justify-content:center;flex:none}.p-message-close.p-link{margin-left:auto;overflow:hidden;position:relative}.p-messages .p-message.ng-animating{overflow:hidden}}\n"]
+    }]
+  }], function () {
+    return [{
+      type: primeng_api__WEBPACK_IMPORTED_MODULE_2__.MessageService,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Optional
+      }]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectorRef
+    }];
+  }, {
+    value: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    closable: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    style: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    styleClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    enableService: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    key: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    escape: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    severity: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    showTransitionOptions: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    hideTransitionOptions: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    valueChange: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+    }],
+    templates: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ContentChildren,
+      args: [primeng_api__WEBPACK_IMPORTED_MODULE_2__.PrimeTemplate]
+    }]
+  });
+})();
+class MessagesModule {
+  static ɵfac = function MessagesModule_Factory(t) {
+    return new (t || MessagesModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: MessagesModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.CommonModule, primeng_ripple__WEBPACK_IMPORTED_MODULE_4__.RippleModule, primeng_icons_check__WEBPACK_IMPORTED_MODULE_5__.CheckIcon, primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_6__.InfoCircleIcon, primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_7__.TimesCircleIcon, primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_8__.ExclamationTriangleIcon, primeng_icons_times__WEBPACK_IMPORTED_MODULE_9__.TimesIcon]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](MessagesModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.CommonModule, primeng_ripple__WEBPACK_IMPORTED_MODULE_4__.RippleModule, primeng_icons_check__WEBPACK_IMPORTED_MODULE_5__.CheckIcon, primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_6__.InfoCircleIcon, primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_7__.TimesCircleIcon, primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_8__.ExclamationTriangleIcon, primeng_icons_times__WEBPACK_IMPORTED_MODULE_9__.TimesIcon],
+      exports: [Messages],
+      declarations: [Messages]
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 3219:
+/*!************************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-password.mjs ***!
+  \************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MapperPipe: () => (/* binding */ MapperPipe),
+/* harmony export */   Password: () => (/* binding */ Password),
+/* harmony export */   PasswordDirective: () => (/* binding */ PasswordDirective),
+/* harmony export */   PasswordModule: () => (/* binding */ PasswordModule),
+/* harmony export */   Password_VALUE_ACCESSOR: () => (/* binding */ Password_VALUE_ACCESSOR)
+/* harmony export */ });
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/animations */ 2501);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ 6575);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/forms */ 8849);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primeng/api */ 8026);
+/* harmony import */ var primeng_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primeng/dom */ 4946);
+/* harmony import */ var primeng_icons_eye__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! primeng/icons/eye */ 1506);
+/* harmony import */ var primeng_icons_eyeslash__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! primeng/icons/eyeslash */ 8238);
+/* harmony import */ var primeng_icons_times__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! primeng/icons/times */ 8993);
+/* harmony import */ var primeng_inputtext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! primeng/inputtext */ 873);
+/* harmony import */ var primeng_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! primeng/utils */ 5861);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Password directive.
+ * @group Components
+ */
+const _c0 = ["input"];
+function Password_ng_container_6_TimesIcon_1_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r7 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "TimesIcon", 8);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Password_ng_container_6_TimesIcon_1_Template_TimesIcon_click_0_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r7);
+      const ctx_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r6.clear());
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("styleClass", "p-password-clear-icon");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "clearIcon");
+  }
+}
+function Password_ng_container_6_3_ng_template_0_Template(rf, ctx) {}
+function Password_ng_container_6_3_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](0, Password_ng_container_6_3_ng_template_0_Template, 0, 0, "ng-template");
+  }
+}
+function Password_ng_container_6_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r10 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Password_ng_container_6_TimesIcon_1_Template, 1, 2, "TimesIcon", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "span", 6);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Password_ng_container_6_Template_span_click_2_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r10);
+      const ctx_r9 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r9.clear());
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, Password_ng_container_6_3_Template, 1, 0, null, 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r1.clearIconTemplate);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "clearIcon");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r1.clearIconTemplate);
+  }
+}
+function Password_ng_container_7_ng_container_1_EyeSlashIcon_1_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r16 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "EyeSlashIcon", 10);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Password_ng_container_7_ng_container_1_EyeSlashIcon_1_Template_EyeSlashIcon_click_0_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r16);
+      const ctx_r15 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r15.onMaskToggle());
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "hideIcon");
+  }
+}
+function Password_ng_container_7_ng_container_1_span_2_1_ng_template_0_Template(rf, ctx) {}
+function Password_ng_container_7_ng_container_1_span_2_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](0, Password_ng_container_7_ng_container_1_span_2_1_ng_template_0_Template, 0, 0, "ng-template");
+  }
+}
+function Password_ng_container_7_ng_container_1_span_2_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r20 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 10);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Password_ng_container_7_ng_container_1_span_2_Template_span_click_0_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r20);
+      const ctx_r19 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r19.onMaskToggle());
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Password_ng_container_7_ng_container_1_span_2_1_Template, 1, 0, null, 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r14 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r14.hideIconTemplate);
+  }
+}
+function Password_ng_container_7_ng_container_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Password_ng_container_7_ng_container_1_EyeSlashIcon_1_Template, 1, 1, "EyeSlashIcon", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Password_ng_container_7_ng_container_1_span_2_Template, 2, 1, "span", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r11 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r11.hideIconTemplate);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r11.hideIconTemplate);
+  }
+}
+function Password_ng_container_7_ng_container_2_EyeIcon_1_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r24 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "EyeIcon", 10);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Password_ng_container_7_ng_container_2_EyeIcon_1_Template_EyeIcon_click_0_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r24);
+      const ctx_r23 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r23.onMaskToggle());
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "showIcon");
+  }
+}
+function Password_ng_container_7_ng_container_2_span_2_1_ng_template_0_Template(rf, ctx) {}
+function Password_ng_container_7_ng_container_2_span_2_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](0, Password_ng_container_7_ng_container_2_span_2_1_ng_template_0_Template, 0, 0, "ng-template");
+  }
+}
+function Password_ng_container_7_ng_container_2_span_2_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r28 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 10);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Password_ng_container_7_ng_container_2_span_2_Template_span_click_0_listener() {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r28);
+      const ctx_r27 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r27.onMaskToggle());
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Password_ng_container_7_ng_container_2_span_2_1_Template, 1, 0, null, 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r22 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r22.showIconTemplate);
+  }
+}
+function Password_ng_container_7_ng_container_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Password_ng_container_7_ng_container_2_EyeIcon_1_Template, 1, 1, "EyeIcon", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Password_ng_container_7_ng_container_2_span_2_Template, 2, 1, "span", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r12.showIconTemplate);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r12.showIconTemplate);
+  }
+}
+function Password_ng_container_7_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Password_ng_container_7_ng_container_1_Template, 3, 2, "ng-container", 3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Password_ng_container_7_ng_container_2_Template, 3, 2, "ng-container", 3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r2.unmasked);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r2.unmasked);
+  }
+}
+function Password_div_8_ng_container_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainer"](0);
+  }
+}
+function Password_div_8_ng_container_3_ng_container_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainer"](0);
+  }
+}
+function Password_div_8_ng_container_3_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, Password_div_8_ng_container_3_ng_container_1_Template, 1, 0, "ng-container", 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r31 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r31.contentTemplate);
+  }
+}
+const _c1 = function (a0) {
+  return {
+    width: a0
+  };
+};
+function Password_div_8_ng_template_4_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 15);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "div", 0);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](2, "mapper");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "div", 16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r33 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "meter");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind2"](2, 6, ctx_r33.meter, ctx_r33.strengthClass))("ngStyle", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](9, _c1, ctx_r33.meter ? ctx_r33.meter.width : ""));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "meterLabel");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "info");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx_r33.infoText);
+  }
+}
+function Password_div_8_ng_container_6_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainer"](0);
+  }
+}
+const _c2 = function (a0, a1) {
+  return {
+    showTransitionParams: a0,
+    hideTransitionParams: a1
+  };
+};
+const _c3 = function (a1) {
+  return {
+    value: "visible",
+    params: a1
+  };
+};
+function Password_div_8_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r37 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 11, 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function Password_div_8_Template_div_click_0_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r37);
+      const ctx_r36 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r36.onOverlayClick($event));
+    })("@overlayAnimation.start", function Password_div_8_Template_div_animation_overlayAnimation_start_0_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r37);
+      const ctx_r38 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r38.onAnimationStart($event));
+    })("@overlayAnimation.done", function Password_div_8_Template_div_animation_overlayAnimation_done_0_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r37);
+      const ctx_r39 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r39.onAnimationEnd($event));
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, Password_div_8_ng_container_2_Template, 1, 0, "ng-container", 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, Password_div_8_ng_container_3_Template, 2, 1, "ng-container", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, Password_div_8_ng_template_4_Template, 5, 11, "ng-template", null, 14, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplateRefExtractor"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](6, Password_div_8_ng_container_6_Template, 1, 0, "ng-container", 7);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const _r32 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵreference"](5);
+    const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", "p-password-panel p-component")("@overlayAnimation", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](10, _c3, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](7, _c2, ctx_r3.showTransitionOptions, ctx_r3.hideTransitionOptions)));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-section", "panel");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r3.headerTemplate);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r3.contentTemplate)("ngIfElse", _r32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngTemplateOutlet", ctx_r3.footerTemplate);
+  }
+}
+class PasswordDirective {
+  document;
+  platformId;
+  renderer;
+  el;
+  zone;
+  /**
+   * Text to prompt password entry. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  promptLabel = 'Enter a password';
+  /**
+   * Text for a weak password. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  weakLabel = 'Weak';
+  /**
+   * Text for a medium password. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  mediumLabel = 'Medium';
+  /**
+   * Text for a strong password. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  strongLabel = 'Strong';
+  /**
+   * Whether to show the strength indicator or not.
+   * @group Props
+   */
+  feedback = true;
+  /**
+   * Sets the visibility of the password field.
+   * @group Props
+   */
+  set showPassword(show) {
+    this.el.nativeElement.type = show ? 'text' : 'password';
+  }
+  panel;
+  meter;
+  info;
+  filled;
+  scrollHandler;
+  documentResizeListener;
+  constructor(document, platformId, renderer, el, zone) {
+    this.document = document;
+    this.platformId = platformId;
+    this.renderer = renderer;
+    this.el = el;
+    this.zone = zone;
+  }
+  ngDoCheck() {
+    this.updateFilledState();
+  }
+  onInput(e) {
+    this.updateFilledState();
+  }
+  updateFilledState() {
+    this.filled = this.el.nativeElement.value && this.el.nativeElement.value.length;
+  }
+  createPanel() {
+    if ((0,_angular_common__WEBPACK_IMPORTED_MODULE_1__.isPlatformBrowser)(this.platformId)) {
+      this.panel = this.renderer.createElement('div');
+      this.renderer.addClass(this.panel, 'p-password-panel');
+      this.renderer.addClass(this.panel, 'p-component');
+      this.renderer.addClass(this.panel, 'p-password-panel-overlay');
+      this.renderer.addClass(this.panel, 'p-connected-overlay');
+      this.meter = this.renderer.createElement('div');
+      this.renderer.addClass(this.meter, 'p-password-meter');
+      this.renderer.appendChild(this.panel, this.meter);
+      this.info = this.renderer.createElement('div');
+      this.renderer.addClass(this.info, 'p-password-info');
+      this.renderer.setProperty(this.info, 'textContent', this.promptLabel);
+      this.renderer.appendChild(this.panel, this.info);
+      this.renderer.setStyle(this.panel, 'minWidth', `${this.el.nativeElement.offsetWidth}px`);
+      this.renderer.appendChild(document.body, this.panel);
+    }
+  }
+  showOverlay() {
+    if (this.feedback) {
+      if (!this.panel) {
+        this.createPanel();
+      }
+      this.renderer.setStyle(this.panel, 'zIndex', String(++primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.zindex));
+      this.renderer.setStyle(this.panel, 'display', 'block');
+      this.zone.runOutsideAngular(() => {
+        setTimeout(() => {
+          primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.addClass(this.panel, 'p-connected-overlay-visible');
+          this.bindScrollListener();
+          this.bindDocumentResizeListener();
+        }, 1);
+      });
+      primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.absolutePosition(this.panel, this.el.nativeElement);
+    }
+  }
+  hideOverlay() {
+    if (this.feedback && this.panel) {
+      primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.addClass(this.panel, 'p-connected-overlay-hidden');
+      primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.removeClass(this.panel, 'p-connected-overlay-visible');
+      this.unbindScrollListener();
+      this.unbindDocumentResizeListener();
+      this.zone.runOutsideAngular(() => {
+        setTimeout(() => {
+          this.ngOnDestroy();
+        }, 150);
+      });
+    }
+  }
+  onFocus() {
+    this.showOverlay();
+  }
+  onBlur() {
+    this.hideOverlay();
+  }
+  onKeyup(e) {
+    if (this.feedback) {
+      let value = e.target.value,
+        label = null,
+        meterPos = null;
+      if (value.length === 0) {
+        label = this.promptLabel;
+        meterPos = '0px 0px';
+      } else {
+        var score = this.testStrength(value);
+        if (score < 30) {
+          label = this.weakLabel;
+          meterPos = '0px -10px';
+        } else if (score >= 30 && score < 80) {
+          label = this.mediumLabel;
+          meterPos = '0px -20px';
+        } else if (score >= 80) {
+          label = this.strongLabel;
+          meterPos = '0px -30px';
+        }
+      }
+      if (!this.panel || !primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.hasClass(this.panel, 'p-connected-overlay-visible')) {
+        this.showOverlay();
+      }
+      this.renderer.setStyle(this.meter, 'backgroundPosition', meterPos);
+      this.info.textContent = label;
+    }
+  }
+  testStrength(str) {
+    let grade = 0;
+    let val;
+    val = str.match('[0-9]');
+    grade += this.normalize(val ? val.length : 1 / 4, 1) * 25;
+    val = str.match('[a-zA-Z]');
+    grade += this.normalize(val ? val.length : 1 / 2, 3) * 10;
+    val = str.match('[!@#$%^&*?_~.,;=]');
+    grade += this.normalize(val ? val.length : 1 / 6, 1) * 35;
+    val = str.match('[A-Z]');
+    grade += this.normalize(val ? val.length : 1 / 6, 1) * 30;
+    grade *= str.length / 8;
+    return grade > 100 ? 100 : grade;
+  }
+  normalize(x, y) {
+    let diff = x - y;
+    if (diff <= 0) return x / y;else return 1 + 0.5 * (x / (x + y / 4));
+  }
+  get disabled() {
+    return this.el.nativeElement.disabled;
+  }
+  bindScrollListener() {
+    if (!this.scrollHandler) {
+      this.scrollHandler = new primeng_dom__WEBPACK_IMPORTED_MODULE_2__.ConnectedOverlayScrollHandler(this.el.nativeElement, () => {
+        if (primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.hasClass(this.panel, 'p-connected-overlay-visible')) {
+          this.hideOverlay();
+        }
+      });
+    }
+    this.scrollHandler.bindScrollListener();
+  }
+  unbindScrollListener() {
+    if (this.scrollHandler) {
+      this.scrollHandler.unbindScrollListener();
+    }
+  }
+  bindDocumentResizeListener() {
+    if ((0,_angular_common__WEBPACK_IMPORTED_MODULE_1__.isPlatformBrowser)(this.platformId)) {
+      if (!this.documentResizeListener) {
+        const window = this.document.defaultView;
+        this.documentResizeListener = this.renderer.listen(window, 'resize', this.onWindowResize.bind(this));
+      }
+    }
+  }
+  unbindDocumentResizeListener() {
+    if (this.documentResizeListener) {
+      this.documentResizeListener();
+      this.documentResizeListener = null;
+    }
+  }
+  onWindowResize() {
+    if (!primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.isTouchDevice()) {
+      this.hideOverlay();
+    }
+  }
+  ngOnDestroy() {
+    if (this.panel) {
+      if (this.scrollHandler) {
+        this.scrollHandler.destroy();
+        this.scrollHandler = null;
+      }
+      this.unbindDocumentResizeListener();
+      this.renderer.removeChild(this.document.body, this.panel);
+      this.panel = null;
+      this.meter = null;
+      this.info = null;
+    }
+  }
+  static ɵfac = function PasswordDirective_Factory(t) {
+    return new (t || PasswordDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.PLATFORM_ID), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.Renderer2), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.NgZone));
+  };
+  static ɵdir = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({
+    type: PasswordDirective,
+    selectors: [["", "pPassword", ""]],
+    hostAttrs: [1, "p-inputtext", "p-component", "p-element"],
+    hostVars: 2,
+    hostBindings: function PasswordDirective_HostBindings(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("input", function PasswordDirective_input_HostBindingHandler($event) {
+          return ctx.onInput($event);
+        })("focus", function PasswordDirective_focus_HostBindingHandler() {
+          return ctx.onFocus();
+        })("blur", function PasswordDirective_blur_HostBindingHandler() {
+          return ctx.onBlur();
+        })("keyup", function PasswordDirective_keyup_HostBindingHandler($event) {
+          return ctx.onKeyup($event);
+        });
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("p-filled", ctx.filled);
+      }
+    },
+    inputs: {
+      promptLabel: "promptLabel",
+      weakLabel: "weakLabel",
+      mediumLabel: "mediumLabel",
+      strongLabel: "strongLabel",
+      feedback: "feedback",
+      showPassword: "showPassword"
+    }
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](PasswordDirective, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+    args: [{
+      selector: '[pPassword]',
+      host: {
+        class: 'p-inputtext p-component p-element',
+        '[class.p-filled]': 'filled'
+      }
+    }]
+  }], function () {
+    return [{
+      type: Document,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+        args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT]
+      }]
+    }, {
+      type: undefined,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+        args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__.PLATFORM_ID]
+      }]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Renderer2
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgZone
+    }];
+  }, {
+    promptLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    weakLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    mediumLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    strongLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    feedback: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    showPassword: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    onInput: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+      args: ['input', ['$event']]
+    }],
+    onFocus: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+      args: ['focus']
+    }],
+    onBlur: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+      args: ['blur']
+    }],
+    onKeyup: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+      args: ['keyup', ['$event']]
+    }]
+  });
+})();
+class MapperPipe {
+  transform(value, mapper, ...args) {
+    return mapper(value, ...args);
+  }
+  static ɵfac = function MapperPipe_Factory(t) {
+    return new (t || MapperPipe)();
+  };
+  static ɵpipe = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefinePipe"]({
+    name: "mapper",
+    type: MapperPipe,
+    pure: true
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](MapperPipe, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Pipe,
+    args: [{
+      name: 'mapper',
+      pure: true
+    }]
+  }], null, null);
+})();
+const Password_VALUE_ACCESSOR = {
+  provide: _angular_forms__WEBPACK_IMPORTED_MODULE_3__.NG_VALUE_ACCESSOR,
+  useExisting: (0,_angular_core__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(() => Password),
+  multi: true
+};
+/**
+ * Password displays strength indicator for password fields.
+ * @group Components
+ */
+class Password {
+  document;
+  platformId;
+  renderer;
+  cd;
+  config;
+  el;
+  overlayService;
+  /**
+   * Defines a string that labels the input for accessibility.
+   * @group Props
+   */
+  ariaLabel;
+  /**
+   * Specifies one or more IDs in the DOM that labels the input field.
+   * @group Props
+   */
+  ariaLabelledBy;
+  /**
+   * Label of the input for accessibility.
+   * @group Props
+   */
+  label;
+  /**
+   * Indicates whether the component is disabled or not.
+   * @group Props
+   */
+  disabled;
+  /**
+   * Text to prompt password entry. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  promptLabel;
+  /**
+   * Regex value for medium regex.
+   * @group Props
+   */
+  mediumRegex = '^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})';
+  /**
+   * Regex value for strong regex.
+   * @group Props
+   */
+  strongRegex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})';
+  /**
+   * Text for a weak password. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  weakLabel;
+  /**
+   * Text for a medium password. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  mediumLabel;
+  /**
+   * specifies the maximum number of characters allowed in the input element.
+   * @group Props
+   */
+  maxLength;
+  /**
+   * Text for a strong password. Defaults to PrimeNG I18N API configuration.
+   * @group Props
+   */
+  strongLabel;
+  /**
+   * Identifier of the accessible input element.
+   * @group Props
+   */
+  inputId;
+  /**
+   * Whether to show the strength indicator or not.
+   * @group Props
+   */
+  feedback = true;
+  /**
+   * Id of the element or "body" for document where the overlay should be appended to.
+   * @group Props
+   */
+  appendTo;
+  /**
+   * Whether to show an icon to display the password as plain text.
+   * @group Props
+   */
+  toggleMask;
+  /**
+   * Style class of the input field.
+   * @group Props
+   */
+  inputStyleClass;
+  /**
+   * Style class of the element.
+   * @group Props
+   */
+  styleClass;
+  /**
+   * Inline style of the component.
+   * @group Props
+   */
+  style;
+  /**
+   * Inline style of the input field.
+   * @group Props
+   */
+  inputStyle;
+  /**
+   * Transition options of the show animation.
+   * @group Props
+   */
+  showTransitionOptions = '.12s cubic-bezier(0, 0, 0.2, 1)';
+  /**
+   * Transition options of the hide animation.
+   * @group Props
+   */
+  hideTransitionOptions = '.1s linear';
+  /**
+   * Specify automated assistance in filling out password by browser.
+   * @group Props
+   */
+  autocomplete;
+  /**
+   * Advisory information to display on input.
+   * @group Props
+   */
+  placeholder;
+  /**
+   * When enabled, a clear icon is displayed to clear the value.
+   * @group Props
+   */
+  showClear = false;
+  /**
+   * Callback to invoke when the component receives focus.
+   * @param {Event} event - Browser event.
+   * @group Emits
+   */
+  onFocus = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  /**
+   * Callback to invoke when the component loses focus.
+   * @param {Event} event - Browser event.
+   * @group Emits
+   */
+  onBlur = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  /**
+   * Callback to invoke when clear button is clicked.
+   * @group Emits
+   */
+  onClear = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  input;
+  contentTemplate;
+  footerTemplate;
+  headerTemplate;
+  clearIconTemplate;
+  hideIconTemplate;
+  showIconTemplate;
+  templates;
+  overlayVisible = false;
+  meter;
+  infoText;
+  focused = false;
+  unmasked = false;
+  mediumCheckRegExp;
+  strongCheckRegExp;
+  resizeListener;
+  scrollHandler;
+  overlay;
+  value = null;
+  onModelChange = () => {};
+  onModelTouched = () => {};
+  translationSubscription;
+  constructor(document, platformId, renderer, cd, config, el, overlayService) {
+    this.document = document;
+    this.platformId = platformId;
+    this.renderer = renderer;
+    this.cd = cd;
+    this.config = config;
+    this.el = el;
+    this.overlayService = overlayService;
+  }
+  ngAfterContentInit() {
+    this.templates.forEach(item => {
+      switch (item.getType()) {
+        case 'content':
+          this.contentTemplate = item.template;
+          break;
+        case 'header':
+          this.headerTemplate = item.template;
+          break;
+        case 'footer':
+          this.footerTemplate = item.template;
+          break;
+        case 'clearicon':
+          this.clearIconTemplate = item.template;
+          break;
+        case 'hideicon':
+          this.hideIconTemplate = item.template;
+          break;
+        case 'showicon':
+          this.showIconTemplate = item.template;
+          break;
+        default:
+          this.contentTemplate = item.template;
+          break;
+      }
+    });
+  }
+  ngOnInit() {
+    this.infoText = this.promptText();
+    this.mediumCheckRegExp = new RegExp(this.mediumRegex);
+    this.strongCheckRegExp = new RegExp(this.strongRegex);
+    this.translationSubscription = this.config.translationObserver.subscribe(() => {
+      this.updateUI(this.value || '');
+    });
+  }
+  onAnimationStart(event) {
+    switch (event.toState) {
+      case 'visible':
+        this.overlay = event.element;
+        primeng_utils__WEBPACK_IMPORTED_MODULE_4__.ZIndexUtils.set('overlay', this.overlay, this.config.zIndex.overlay);
+        this.appendContainer();
+        this.alignOverlay();
+        this.bindScrollListener();
+        this.bindResizeListener();
+        break;
+      case 'void':
+        this.unbindScrollListener();
+        this.unbindResizeListener();
+        this.overlay = null;
+        break;
+    }
+  }
+  onAnimationEnd(event) {
+    switch (event.toState) {
+      case 'void':
+        primeng_utils__WEBPACK_IMPORTED_MODULE_4__.ZIndexUtils.clear(event.element);
+        break;
+    }
+  }
+  appendContainer() {
+    if (this.appendTo) {
+      if (this.appendTo === 'body') this.renderer.appendChild(this.document.body, this.overlay);else this.document.getElementById(this.appendTo).appendChild(this.overlay);
+    }
+  }
+  alignOverlay() {
+    if (this.appendTo) {
+      this.overlay.style.minWidth = primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.getOuterWidth(this.input.nativeElement) + 'px';
+      primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.absolutePosition(this.overlay, this.input.nativeElement);
+    } else {
+      primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.relativePosition(this.overlay, this.input.nativeElement);
+    }
+  }
+  onInput(event) {
+    this.value = event.target.value;
+    this.onModelChange(this.value);
+  }
+  onInputFocus(event) {
+    this.focused = true;
+    if (this.feedback) {
+      this.overlayVisible = true;
+    }
+    this.onFocus.emit(event);
+  }
+  onInputBlur(event) {
+    this.focused = false;
+    if (this.feedback) {
+      this.overlayVisible = false;
+    }
+    this.onModelTouched();
+    this.onBlur.emit(event);
+  }
+  onKeyUp(event) {
+    if (this.feedback) {
+      let value = event.target.value;
+      this.updateUI(value);
+      if (event.code === 'Escape') {
+        this.overlayVisible && (this.overlayVisible = false);
+        return;
+      }
+      if (!this.overlayVisible) {
+        this.overlayVisible = true;
+      }
+    }
+  }
+  updateUI(value) {
+    let label = null;
+    let meter = null;
+    switch (this.testStrength(value)) {
+      case 1:
+        label = this.weakText();
+        meter = {
+          strength: 'weak',
+          width: '33.33%'
+        };
+        break;
+      case 2:
+        label = this.mediumText();
+        meter = {
+          strength: 'medium',
+          width: '66.66%'
+        };
+        break;
+      case 3:
+        label = this.strongText();
+        meter = {
+          strength: 'strong',
+          width: '100%'
+        };
+        break;
+      default:
+        label = this.promptText();
+        meter = null;
+        break;
+    }
+    this.meter = meter;
+    this.infoText = label;
+  }
+  onMaskToggle() {
+    this.unmasked = !this.unmasked;
+  }
+  onOverlayClick(event) {
+    this.overlayService.add({
+      originalEvent: event,
+      target: this.el.nativeElement
+    });
+  }
+  testStrength(str) {
+    let level = 0;
+    if (this.strongCheckRegExp.test(str)) level = 3;else if (this.mediumCheckRegExp.test(str)) level = 2;else if (str.length) level = 1;
+    return level;
+  }
+  writeValue(value) {
+    if (value === undefined) this.value = null;else this.value = value;
+    if (this.feedback) this.updateUI(this.value || '');
+    this.cd.markForCheck();
+  }
+  registerOnChange(fn) {
+    this.onModelChange = fn;
+  }
+  registerOnTouched(fn) {
+    this.onModelTouched = fn;
+  }
+  setDisabledState(val) {
+    this.disabled = val;
+    this.cd.markForCheck();
+  }
+  bindScrollListener() {
+    if ((0,_angular_common__WEBPACK_IMPORTED_MODULE_1__.isPlatformBrowser)(this.platformId)) {
+      if (!this.scrollHandler) {
+        this.scrollHandler = new primeng_dom__WEBPACK_IMPORTED_MODULE_2__.ConnectedOverlayScrollHandler(this.input.nativeElement, () => {
+          if (this.overlayVisible) {
+            this.overlayVisible = false;
+          }
+        });
+      }
+      this.scrollHandler.bindScrollListener();
+    }
+  }
+  bindResizeListener() {
+    if ((0,_angular_common__WEBPACK_IMPORTED_MODULE_1__.isPlatformBrowser)(this.platformId)) {
+      if (!this.resizeListener) {
+        const window = this.document.defaultView;
+        this.resizeListener = this.renderer.listen(window, 'resize', () => {
+          if (this.overlayVisible && !primeng_dom__WEBPACK_IMPORTED_MODULE_2__.DomHandler.isTouchDevice()) {
+            this.overlayVisible = false;
+          }
+        });
+      }
+    }
+  }
+  unbindScrollListener() {
+    if (this.scrollHandler) {
+      this.scrollHandler.unbindScrollListener();
+    }
+  }
+  unbindResizeListener() {
+    if (this.resizeListener) {
+      this.resizeListener();
+      this.resizeListener = null;
+    }
+  }
+  containerClass(toggleMask) {
+    return {
+      'p-password p-component p-inputwrapper': true,
+      'p-input-icon-right': toggleMask
+    };
+  }
+  inputFieldClass(disabled) {
+    return {
+      'p-password-input': true,
+      'p-disabled': disabled
+    };
+  }
+  strengthClass(meter) {
+    return `p-password-strength ${meter ? meter.strength : ''}`;
+  }
+  filled() {
+    return this.value != null && this.value.toString().length > 0;
+  }
+  promptText() {
+    return this.promptLabel || this.getTranslation(primeng_api__WEBPACK_IMPORTED_MODULE_5__.TranslationKeys.PASSWORD_PROMPT);
+  }
+  weakText() {
+    return this.weakLabel || this.getTranslation(primeng_api__WEBPACK_IMPORTED_MODULE_5__.TranslationKeys.WEAK);
+  }
+  mediumText() {
+    return this.mediumLabel || this.getTranslation(primeng_api__WEBPACK_IMPORTED_MODULE_5__.TranslationKeys.MEDIUM);
+  }
+  strongText() {
+    return this.strongLabel || this.getTranslation(primeng_api__WEBPACK_IMPORTED_MODULE_5__.TranslationKeys.STRONG);
+  }
+  restoreAppend() {
+    if (this.overlay && this.appendTo) {
+      if (this.appendTo === 'body') this.renderer.removeChild(this.document.body, this.overlay);else this.document.getElementById(this.appendTo).removeChild(this.overlay);
+    }
+  }
+  inputType(unmasked) {
+    return unmasked ? 'text' : 'password';
+  }
+  getTranslation(option) {
+    return this.config.getTranslation(option);
+  }
+  clear() {
+    this.value = null;
+    this.onModelChange(this.value);
+    this.writeValue(this.value);
+    this.onClear.emit();
+  }
+  ngOnDestroy() {
+    if (this.overlay) {
+      primeng_utils__WEBPACK_IMPORTED_MODULE_4__.ZIndexUtils.clear(this.overlay);
+      this.overlay = null;
+    }
+    this.restoreAppend();
+    this.unbindResizeListener();
+    if (this.scrollHandler) {
+      this.scrollHandler.destroy();
+      this.scrollHandler = null;
+    }
+    if (this.translationSubscription) {
+      this.translationSubscription.unsubscribe();
+    }
+  }
+  static ɵfac = function Password_Factory(t) {
+    return new (t || Password)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.PLATFORM_ID), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.Renderer2), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectorRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_5__.PrimeNGConfig), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_5__.OverlayService));
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
+    type: Password,
+    selectors: [["p-password"]],
+    contentQueries: function Password_ContentQueries(rf, ctx, dirIndex) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵcontentQuery"](dirIndex, primeng_api__WEBPACK_IMPORTED_MODULE_5__.PrimeTemplate, 4);
+      }
+      if (rf & 2) {
+        let _t;
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.templates = _t);
+      }
+    },
+    viewQuery: function Password_Query(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c0, 5);
+      }
+      if (rf & 2) {
+        let _t;
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.input = _t.first);
+      }
+    },
+    hostAttrs: [1, "p-element", "p-inputwrapper"],
+    hostVars: 8,
+    hostBindings: function Password_HostBindings(rf, ctx) {
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("p-inputwrapper-filled", ctx.filled())("p-inputwrapper-focus", ctx.focused)("p-password-clearable", ctx.showClear)("p-password-mask", ctx.toggleMask);
+      }
+    },
+    inputs: {
+      ariaLabel: "ariaLabel",
+      ariaLabelledBy: "ariaLabelledBy",
+      label: "label",
+      disabled: "disabled",
+      promptLabel: "promptLabel",
+      mediumRegex: "mediumRegex",
+      strongRegex: "strongRegex",
+      weakLabel: "weakLabel",
+      mediumLabel: "mediumLabel",
+      maxLength: "maxLength",
+      strongLabel: "strongLabel",
+      inputId: "inputId",
+      feedback: "feedback",
+      appendTo: "appendTo",
+      toggleMask: "toggleMask",
+      inputStyleClass: "inputStyleClass",
+      styleClass: "styleClass",
+      style: "style",
+      inputStyle: "inputStyle",
+      showTransitionOptions: "showTransitionOptions",
+      hideTransitionOptions: "hideTransitionOptions",
+      autocomplete: "autocomplete",
+      placeholder: "placeholder",
+      showClear: "showClear"
+    },
+    outputs: {
+      onFocus: "onFocus",
+      onBlur: "onBlur",
+      onClear: "onClear"
+    },
+    features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵProvidersFeature"]([Password_VALUE_ACCESSOR])],
+    decls: 9,
+    vars: 32,
+    consts: [[3, "ngClass", "ngStyle"], ["pInputText", "", 3, "ngClass", "ngStyle", "value", "input", "focus", "blur", "keyup"], ["input", ""], [4, "ngIf"], [3, "ngClass", "click", 4, "ngIf"], [3, "styleClass", "click", 4, "ngIf"], [1, "p-password-clear-icon", 3, "click"], [4, "ngTemplateOutlet"], [3, "styleClass", "click"], [3, "click", 4, "ngIf"], [3, "click"], [3, "ngClass", "click"], ["overlay", ""], [4, "ngIf", "ngIfElse"], ["content", ""], [1, "p-password-meter"], ["className", "p-password-info"]],
+    template: function Password_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](1, "mapper");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "input", 1, 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("input", function Password_Template_input_input_2_listener($event) {
+          return ctx.onInput($event);
+        })("focus", function Password_Template_input_focus_2_listener($event) {
+          return ctx.onInputFocus($event);
+        })("blur", function Password_Template_input_blur_2_listener($event) {
+          return ctx.onInputBlur($event);
+        })("keyup", function Password_Template_input_keyup_2_listener($event) {
+          return ctx.onKeyUp($event);
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](4, "mapper");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](5, "mapper");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](6, Password_ng_container_6_Template, 4, 3, "ng-container", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](7, Password_ng_container_7_Template, 3, 2, "ng-container", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](8, Password_div_8_Template, 7, 12, "div", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx.styleClass);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind2"](1, 23, ctx.toggleMask, ctx.containerClass))("ngStyle", ctx.style);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("data-pc-name", "password")("data-pc-section", "root");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx.inputStyleClass);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind2"](4, 26, ctx.disabled, ctx.inputFieldClass))("ngStyle", ctx.inputStyle)("value", ctx.value);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("label", ctx.label)("aria-label", ctx.ariaLabel)("aria-labelledBy", ctx.ariaLabelledBy)("id", ctx.inputId)("type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind2"](5, 29, ctx.unmasked, ctx.inputType))("placeholder", ctx.placeholder)("autocomplete", ctx.autocomplete)("maxlength", ctx.maxLength)("data-pc-section", "input");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.showClear && ctx.value != null);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.toggleMask);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.overlayVisible);
+      }
+    },
+    dependencies: function () {
+      return [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_1__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_1__.NgTemplateOutlet, _angular_common__WEBPACK_IMPORTED_MODULE_1__.NgStyle, primeng_inputtext__WEBPACK_IMPORTED_MODULE_6__.InputText, primeng_icons_times__WEBPACK_IMPORTED_MODULE_7__.TimesIcon, primeng_icons_eyeslash__WEBPACK_IMPORTED_MODULE_8__.EyeSlashIcon, primeng_icons_eye__WEBPACK_IMPORTED_MODULE_9__.EyeIcon, MapperPipe];
+    },
+    styles: ["@layer primeng{.p-password{position:relative;display:inline-flex}.p-password-panel{position:absolute;top:0;left:0}.p-password .p-password-panel{min-width:100%}.p-password-meter{height:10px}.p-password-strength{height:100%;width:0%;transition:width 1s ease-in-out}.p-fluid .p-password{display:flex}.p-password-input::-ms-reveal,.p-password-input::-ms-clear{display:none}.p-password-clear-icon{position:absolute;top:50%;margin-top:-.5rem;cursor:pointer}.p-password-clearable.p-password-mask .p-password-clear-icon{margin-top:unset}.p-password-clearable{position:relative}}\n"],
+    encapsulation: 2,
+    data: {
+      animation: [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.trigger)('overlayAnimation', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':enter', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        opacity: 0,
+        transform: 'scaleY(0.8)'
+      }), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{showTransitionParams}}')]), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':leave', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{hideTransitionParams}}', (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        opacity: 0
+      }))])])]
+    },
+    changeDetection: 0
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](Password, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+    args: [{
+      selector: 'p-password',
+      template: `
+        <div [ngClass]="toggleMask | mapper : containerClass" [ngStyle]="style" [class]="styleClass" [attr.data-pc-name]="'password'" [attr.data-pc-section]="'root'">
+            <input
+                #input
+                [attr.label]="label"
+                [attr.aria-label]="ariaLabel"
+                [attr.aria-labelledBy]="ariaLabelledBy"
+                [attr.id]="inputId"
+                pInputText
+                [ngClass]="disabled | mapper : inputFieldClass"
+                [ngStyle]="inputStyle"
+                [class]="inputStyleClass"
+                [attr.type]="unmasked | mapper : inputType"
+                [attr.placeholder]="placeholder"
+                [attr.autocomplete]="autocomplete"
+                [value]="value"
+                (input)="onInput($event)"
+                (focus)="onInputFocus($event)"
+                (blur)="onInputBlur($event)"
+                (keyup)="onKeyUp($event)"
+                [attr.maxlength]="maxLength"
+                [attr.data-pc-section]="'input'"
+            />
+            <ng-container *ngIf="showClear && value != null">
+                <TimesIcon *ngIf="!clearIconTemplate" [styleClass]="'p-password-clear-icon'" (click)="clear()" [attr.data-pc-section]="'clearIcon'" />
+                <span (click)="clear()" class="p-password-clear-icon" [attr.data-pc-section]="'clearIcon'">
+                    <ng-template *ngTemplateOutlet="clearIconTemplate"></ng-template>
+                </span>
+            </ng-container>
+
+            <ng-container *ngIf="toggleMask">
+                <ng-container *ngIf="unmasked">
+                    <EyeSlashIcon *ngIf="!hideIconTemplate" (click)="onMaskToggle()" [attr.data-pc-section]="'hideIcon'" />
+                    <span *ngIf="hideIconTemplate" (click)="onMaskToggle()">
+                        <ng-template *ngTemplateOutlet="hideIconTemplate"></ng-template>
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="!unmasked">
+                    <EyeIcon *ngIf="!showIconTemplate" (click)="onMaskToggle()" [attr.data-pc-section]="'showIcon'" />
+                    <span *ngIf="showIconTemplate" (click)="onMaskToggle()">
+                        <ng-template *ngTemplateOutlet="showIconTemplate"></ng-template>
+                    </span>
+                </ng-container>
+            </ng-container>
+
+            <div
+                #overlay
+                *ngIf="overlayVisible"
+                [ngClass]="'p-password-panel p-component'"
+                (click)="onOverlayClick($event)"
+                [@overlayAnimation]="{ value: 'visible', params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions } }"
+                (@overlayAnimation.start)="onAnimationStart($event)"
+                (@overlayAnimation.done)="onAnimationEnd($event)"
+                [attr.data-pc-section]="'panel'"
+            >
+                <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+                <ng-container *ngIf="contentTemplate; else content">
+                    <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+                </ng-container>
+                <ng-template #content>
+                    <div class="p-password-meter" [attr.data-pc-section]="'meter'">
+                        <div [ngClass]="meter | mapper : strengthClass" [ngStyle]="{ width: meter ? meter.width : '' }" [attr.data-pc-section]="'meterLabel'"></div>
+                    </div>
+                    <div className="p-password-info" [attr.data-pc-section]="'info'">{{ infoText }}</div>
+                </ng-template>
+                <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+            </div>
+        </div>
+    `,
+      animations: [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.trigger)('overlayAnimation', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':enter', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        opacity: 0,
+        transform: 'scaleY(0.8)'
+      }), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{showTransitionParams}}')]), (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.transition)(':leave', [(0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.animate)('{{hideTransitionParams}}', (0,_angular_animations__WEBPACK_IMPORTED_MODULE_10__.style)({
+        opacity: 0
+      }))])])],
+      host: {
+        class: 'p-element p-inputwrapper',
+        '[class.p-inputwrapper-filled]': 'filled()',
+        '[class.p-inputwrapper-focus]': 'focused',
+        '[class.p-password-clearable]': 'showClear',
+        '[class.p-password-mask]': 'toggleMask'
+      },
+      providers: [Password_VALUE_ACCESSOR],
+      changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectionStrategy.OnPush,
+      encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewEncapsulation.None,
+      styles: ["@layer primeng{.p-password{position:relative;display:inline-flex}.p-password-panel{position:absolute;top:0;left:0}.p-password .p-password-panel{min-width:100%}.p-password-meter{height:10px}.p-password-strength{height:100%;width:0%;transition:width 1s ease-in-out}.p-fluid .p-password{display:flex}.p-password-input::-ms-reveal,.p-password-input::-ms-clear{display:none}.p-password-clear-icon{position:absolute;top:50%;margin-top:-.5rem;cursor:pointer}.p-password-clearable.p-password-mask .p-password-clear-icon{margin-top:unset}.p-password-clearable{position:relative}}\n"]
+    }]
+  }], function () {
+    return [{
+      type: Document,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+        args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT]
+      }]
+    }, {
+      type: undefined,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+        args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__.PLATFORM_ID]
+      }]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Renderer2
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectorRef
+    }, {
+      type: primeng_api__WEBPACK_IMPORTED_MODULE_5__.PrimeNGConfig
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef
+    }, {
+      type: primeng_api__WEBPACK_IMPORTED_MODULE_5__.OverlayService
+    }];
+  }, {
+    ariaLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    ariaLabelledBy: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    label: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    disabled: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    promptLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    mediumRegex: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    strongRegex: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    weakLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    mediumLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    maxLength: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    strongLabel: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    inputId: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    feedback: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    appendTo: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    toggleMask: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    inputStyleClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    styleClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    style: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    inputStyle: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    showTransitionOptions: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    hideTransitionOptions: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    autocomplete: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    placeholder: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    showClear: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    onFocus: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+    }],
+    onBlur: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+    }],
+    onClear: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+    }],
+    input: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewChild,
+      args: ['input']
+    }],
+    templates: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ContentChildren,
+      args: [primeng_api__WEBPACK_IMPORTED_MODULE_5__.PrimeTemplate]
+    }]
+  });
+})();
+class PasswordModule {
+  static ɵfac = function PasswordModule_Factory(t) {
+    return new (t || PasswordModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: PasswordModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule, primeng_inputtext__WEBPACK_IMPORTED_MODULE_6__.InputTextModule, primeng_icons_times__WEBPACK_IMPORTED_MODULE_7__.TimesIcon, primeng_icons_eyeslash__WEBPACK_IMPORTED_MODULE_8__.EyeSlashIcon, primeng_icons_eye__WEBPACK_IMPORTED_MODULE_9__.EyeIcon, primeng_api__WEBPACK_IMPORTED_MODULE_5__.SharedModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](PasswordModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule, primeng_inputtext__WEBPACK_IMPORTED_MODULE_6__.InputTextModule, primeng_icons_times__WEBPACK_IMPORTED_MODULE_7__.TimesIcon, primeng_icons_eyeslash__WEBPACK_IMPORTED_MODULE_8__.EyeSlashIcon, primeng_icons_eye__WEBPACK_IMPORTED_MODULE_9__.EyeIcon],
+      exports: [PasswordDirective, Password, primeng_api__WEBPACK_IMPORTED_MODULE_5__.SharedModule],
+      declarations: [PasswordDirective, Password, MapperPipe]
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 1339:
+/*!**********************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-ripple.mjs ***!
+  \**********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ripple: () => (/* binding */ Ripple),
+/* harmony export */   RippleModule: () => (/* binding */ RippleModule)
+/* harmony export */ });
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/common */ 6575);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! primeng/dom */ 4946);
+/* harmony import */ var primeng_api__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! primeng/api */ 8026);
+
+
+
+
+
+
+/**
+ * Ripple directive adds ripple effect to the host element.
+ * @group Components
+ */
+class Ripple {
+  document;
+  platformId;
+  renderer;
+  el;
+  zone;
+  config;
+  constructor(document, platformId, renderer, el, zone, config) {
+    this.document = document;
+    this.platformId = platformId;
+    this.renderer = renderer;
+    this.el = el;
+    this.zone = zone;
+    this.config = config;
+  }
+  animationListener;
+  mouseDownListener;
+  timeout;
+  ngAfterViewInit() {
+    if ((0,_angular_common__WEBPACK_IMPORTED_MODULE_0__.isPlatformBrowser)(this.platformId)) {
+      if (this.config && this.config.ripple) {
+        this.zone.runOutsideAngular(() => {
+          this.create();
+          this.mouseDownListener = this.renderer.listen(this.el.nativeElement, 'mousedown', this.onMouseDown.bind(this));
+        });
+      }
+    }
+  }
+  onMouseDown(event) {
+    let ink = this.getInk();
+    if (!ink || this.document.defaultView?.getComputedStyle(ink, null).display === 'none') {
+      return;
+    }
+    primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.removeClass(ink, 'p-ink-active');
+    if (!primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.getHeight(ink) && !primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.getWidth(ink)) {
+      let d = Math.max(primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.getOuterWidth(this.el.nativeElement), primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.getOuterHeight(this.el.nativeElement));
+      ink.style.height = d + 'px';
+      ink.style.width = d + 'px';
+    }
+    let offset = primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.getOffset(this.el.nativeElement);
+    let x = event.pageX - offset.left + this.document.body.scrollTop - primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.getWidth(ink) / 2;
+    let y = event.pageY - offset.top + this.document.body.scrollLeft - primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.getHeight(ink) / 2;
+    this.renderer.setStyle(ink, 'top', y + 'px');
+    this.renderer.setStyle(ink, 'left', x + 'px');
+    primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.addClass(ink, 'p-ink-active');
+    this.timeout = setTimeout(() => {
+      let ink = this.getInk();
+      if (ink) {
+        primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.removeClass(ink, 'p-ink-active');
+      }
+    }, 401);
+  }
+  getInk() {
+    const children = this.el.nativeElement.children;
+    for (let i = 0; i < children.length; i++) {
+      if (typeof children[i].className === 'string' && children[i].className.indexOf('p-ink') !== -1) {
+        return children[i];
+      }
+    }
+    return null;
+  }
+  resetInk() {
+    let ink = this.getInk();
+    if (ink) {
+      primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.removeClass(ink, 'p-ink-active');
+    }
+  }
+  onAnimationEnd(event) {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+    primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.removeClass(event.currentTarget, 'p-ink-active');
+  }
+  create() {
+    let ink = this.renderer.createElement('span');
+    this.renderer.addClass(ink, 'p-ink');
+    this.renderer.appendChild(this.el.nativeElement, ink);
+    this.renderer.setAttribute(ink, 'aria-hidden', 'true');
+    this.renderer.setAttribute(ink, 'role', 'presentation');
+    if (!this.animationListener) {
+      this.animationListener = this.renderer.listen(ink, 'animationend', this.onAnimationEnd.bind(this));
+    }
+  }
+  remove() {
+    let ink = this.getInk();
+    if (ink) {
+      this.mouseDownListener && this.mouseDownListener();
+      this.animationListener && this.animationListener();
+      this.mouseDownListener = null;
+      this.animationListener = null;
+      primeng_dom__WEBPACK_IMPORTED_MODULE_1__.DomHandler.removeElement(ink);
+    }
+  }
+  ngOnDestroy() {
+    if (this.config && this.config.ripple) {
+      this.remove();
+    }
+  }
+  static ɵfac = function Ripple_Factory(t) {
+    return new (t || Ripple)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_0__.DOCUMENT), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_2__.PLATFORM_ID), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_2__.Renderer2), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_2__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_2__.NgZone), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](primeng_api__WEBPACK_IMPORTED_MODULE_3__.PrimeNGConfig, 8));
+  };
+  static ɵdir = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineDirective"]({
+    type: Ripple,
+    selectors: [["", "pRipple", ""]],
+    hostAttrs: [1, "p-ripple", "p-element"]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵsetClassMetadata"](Ripple, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Directive,
+    args: [{
+      selector: '[pRipple]',
+      host: {
+        class: 'p-ripple p-element'
+      }
+    }]
+  }], function () {
+    return [{
+      type: Document,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Inject,
+        args: [_angular_common__WEBPACK_IMPORTED_MODULE_0__.DOCUMENT]
+      }]
+    }, {
+      type: undefined,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Inject,
+        args: [_angular_core__WEBPACK_IMPORTED_MODULE_2__.PLATFORM_ID]
+      }]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Renderer2
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.ElementRef
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.NgZone
+    }, {
+      type: primeng_api__WEBPACK_IMPORTED_MODULE_3__.PrimeNGConfig,
+      decorators: [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.Optional
+      }]
+    }];
+  }, null);
+})();
+class RippleModule {
+  static ɵfac = function RippleModule_Factory(t) {
+    return new (t || RippleModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineNgModule"]({
+    type: RippleModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_0__.CommonModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵsetClassMetadata"](RippleModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_2__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_0__.CommonModule],
+      exports: [Ripple],
+      declarations: [Ripple]
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 5861:
+/*!*********************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-utils.mjs ***!
+  \*********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ObjectUtils: () => (/* binding */ ObjectUtils),
+/* harmony export */   UniqueComponentId: () => (/* binding */ UniqueComponentId),
+/* harmony export */   ZIndexUtils: () => (/* binding */ zindexutils)
+/* harmony export */ });
+class ObjectUtils {
+  static equals(obj1, obj2, field) {
+    if (field) return this.resolveFieldData(obj1, field) === this.resolveFieldData(obj2, field);else return this.equalsByValue(obj1, obj2);
+  }
+  static equalsByValue(obj1, obj2) {
+    if (obj1 === obj2) return true;
+    if (obj1 && obj2 && typeof obj1 == 'object' && typeof obj2 == 'object') {
+      var arrA = Array.isArray(obj1),
+        arrB = Array.isArray(obj2),
+        i,
+        length,
+        key;
+      if (arrA && arrB) {
+        length = obj1.length;
+        if (length != obj2.length) return false;
+        for (i = length; i-- !== 0;) if (!this.equalsByValue(obj1[i], obj2[i])) return false;
+        return true;
+      }
+      if (arrA != arrB) return false;
+      var dateA = this.isDate(obj1),
+        dateB = this.isDate(obj2);
+      if (dateA != dateB) return false;
+      if (dateA && dateB) return obj1.getTime() == obj2.getTime();
+      var regexpA = obj1 instanceof RegExp,
+        regexpB = obj2 instanceof RegExp;
+      if (regexpA != regexpB) return false;
+      if (regexpA && regexpB) return obj1.toString() == obj2.toString();
+      var keys = Object.keys(obj1);
+      length = keys.length;
+      if (length !== Object.keys(obj2).length) return false;
+      for (i = length; i-- !== 0;) if (!Object.prototype.hasOwnProperty.call(obj2, keys[i])) return false;
+      for (i = length; i-- !== 0;) {
+        key = keys[i];
+        if (!this.equalsByValue(obj1[key], obj2[key])) return false;
+      }
+      return true;
+    }
+    return obj1 !== obj1 && obj2 !== obj2;
+  }
+  static resolveFieldData(data, field) {
+    if (data && field) {
+      if (this.isFunction(field)) {
+        return field(data);
+      } else if (field.indexOf('.') == -1) {
+        return data[field];
+      } else {
+        let fields = field.split('.');
+        let value = data;
+        for (let i = 0, len = fields.length; i < len; ++i) {
+          if (value == null) {
+            return null;
+          }
+          value = value[fields[i]];
+        }
+        return value;
+      }
+    } else {
+      return null;
+    }
+  }
+  static isFunction(obj) {
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+  }
+  static reorderArray(value, from, to) {
+    let target;
+    if (value && from !== to) {
+      if (to >= value.length) {
+        to %= value.length;
+        from %= value.length;
+      }
+      value.splice(to, 0, value.splice(from, 1)[0]);
+    }
+  }
+  static insertIntoOrderedArray(item, index, arr, sourceArr) {
+    if (arr.length > 0) {
+      let injected = false;
+      for (let i = 0; i < arr.length; i++) {
+        let currentItemIndex = this.findIndexInList(arr[i], sourceArr);
+        if (currentItemIndex > index) {
+          arr.splice(i, 0, item);
+          injected = true;
+          break;
+        }
+      }
+      if (!injected) {
+        arr.push(item);
+      }
+    } else {
+      arr.push(item);
+    }
+  }
+  static findIndexInList(item, list) {
+    let index = -1;
+    if (list) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i] == item) {
+          index = i;
+          break;
+        }
+      }
+    }
+    return index;
+  }
+  static contains(value, list) {
+    if (value != null && list && list.length) {
+      for (let val of list) {
+        if (this.equals(value, val)) return true;
+      }
+    }
+    return false;
+  }
+  static removeAccents(str) {
+    if (str && str.search(/[\xC0-\xFF]/g) > -1) {
+      str = str.replace(/[\xC0-\xC5]/g, 'A').replace(/[\xC6]/g, 'AE').replace(/[\xC7]/g, 'C').replace(/[\xC8-\xCB]/g, 'E').replace(/[\xCC-\xCF]/g, 'I').replace(/[\xD0]/g, 'D').replace(/[\xD1]/g, 'N').replace(/[\xD2-\xD6\xD8]/g, 'O').replace(/[\xD9-\xDC]/g, 'U').replace(/[\xDD]/g, 'Y').replace(/[\xDE]/g, 'P').replace(/[\xE0-\xE5]/g, 'a').replace(/[\xE6]/g, 'ae').replace(/[\xE7]/g, 'c').replace(/[\xE8-\xEB]/g, 'e').replace(/[\xEC-\xEF]/g, 'i').replace(/[\xF1]/g, 'n').replace(/[\xF2-\xF6\xF8]/g, 'o').replace(/[\xF9-\xFC]/g, 'u').replace(/[\xFE]/g, 'p').replace(/[\xFD\xFF]/g, 'y');
+    }
+    return str;
+  }
+  static isDate(input) {
+    return Object.prototype.toString.call(input) === '[object Date]';
+  }
+  static isEmpty(value) {
+    return value === null || value === undefined || value === '' || Array.isArray(value) && value.length === 0 || !this.isDate(value) && typeof value === 'object' && Object.keys(value).length === 0;
+  }
+  static isNotEmpty(value) {
+    return !this.isEmpty(value);
+  }
+  static compare(value1, value2, locale, order = 1) {
+    let result = -1;
+    const emptyValue1 = this.isEmpty(value1);
+    const emptyValue2 = this.isEmpty(value2);
+    if (emptyValue1 && emptyValue2) result = 0;else if (emptyValue1) result = order;else if (emptyValue2) result = -order;else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2, locale, {
+      numeric: true
+    });else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+    return result;
+  }
+  static sort(value1, value2, order = 1, locale, nullSortOrder = 1) {
+    const result = ObjectUtils.compare(value1, value2, locale, order);
+    // nullSortOrder == 1 means Excel like sort nulls at bottom
+    const finalSortOrder = nullSortOrder === 1 ? order : nullSortOrder;
+    return finalSortOrder * result;
+  }
+  static merge(obj1, obj2) {
+    if (obj1 == undefined && obj2 == undefined) {
+      return undefined;
+    } else if ((obj1 == undefined || typeof obj1 === 'object') && (obj2 == undefined || typeof obj2 === 'object')) {
+      return {
+        ...(obj1 || {}),
+        ...(obj2 || {})
+      };
+    } else if ((obj1 == undefined || typeof obj1 === 'string') && (obj2 == undefined || typeof obj2 === 'string')) {
+      return [obj1 || '', obj2 || ''].join(' ');
+    }
+    return obj2 || obj1;
+  }
+  static isPrintableCharacter(char = '') {
+    return this.isNotEmpty(char) && char.length === 1 && char.match(/\S| /);
+  }
+  static getItemValue(obj, ...params) {
+    return this.isFunction(obj) ? obj(...params) : obj;
+  }
+  static findLastIndex(arr, callback) {
+    let index = -1;
+    if (this.isNotEmpty(arr)) {
+      try {
+        index = arr.findLastIndex(callback);
+      } catch {
+        index = arr.lastIndexOf([...arr].reverse().find(callback));
+      }
+    }
+    return index;
+  }
+  static findLast(arr, callback) {
+    let item;
+    if (this.isNotEmpty(arr)) {
+      try {
+        item = arr.findLast(callback);
+      } catch {
+        item = [...arr].reverse().find(callback);
+      }
+    }
+    return item;
+  }
+}
+var lastId = 0;
+function UniqueComponentId(prefix = 'pn_id_') {
+  lastId++;
+  return `${prefix}${lastId}`;
+}
+function ZIndexUtils() {
+  let zIndexes = [];
+  const generateZIndex = (key, baseZIndex) => {
+    let lastZIndex = zIndexes.length > 0 ? zIndexes[zIndexes.length - 1] : {
+      key,
+      value: baseZIndex
+    };
+    let newZIndex = lastZIndex.value + (lastZIndex.key === key ? 0 : baseZIndex) + 2;
+    zIndexes.push({
+      key,
+      value: newZIndex
+    });
+    return newZIndex;
+  };
+  const revertZIndex = zIndex => {
+    zIndexes = zIndexes.filter(obj => obj.value !== zIndex);
+  };
+  const getCurrentZIndex = () => {
+    return zIndexes.length > 0 ? zIndexes[zIndexes.length - 1].value : 0;
+  };
+  const getZIndex = el => {
+    return el ? parseInt(el.style.zIndex, 10) || 0 : 0;
+  };
+  return {
+    get: getZIndex,
+    set: (key, el, baseZIndex) => {
+      if (el) {
+        el.style.zIndex = String(generateZIndex(key, baseZIndex));
+      }
+    },
+    clear: el => {
+      if (el) {
+        revertZIndex(getZIndex(el));
+        el.style.zIndex = '';
+      }
+    },
+    getCurrent: () => getCurrentZIndex()
+  };
+}
+var zindexutils = ZIndexUtils();
 
 /**
  * Generated bundle index. Do not edit.

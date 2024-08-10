@@ -2,7 +2,6 @@ package ctoutweb.lalamiam.security.filter;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.security.authentication.UserPrincipalAuthenticationToken;
 import ctoutweb.lalamiam.security.jwt.JwtDecode;

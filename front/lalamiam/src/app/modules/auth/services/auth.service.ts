@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { LoginDto } from "../models/login-dto.model";
-import { catchError, Observable, of, tap } from "rxjs";
+import { catchError, map, Observable, of, tap } from "rxjs";
 import { LoginResponseDto } from "../models/login.response.model.dto";
 import { environment } from "src/environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { RegisterDto } from "../models/register-dto.model";
 import { RegisterResponseDto } from "../models/register.response.model.dto";
+import { Captcha } from "../models/captcha.model";
+import { CaptchaDto } from "../models/captcha.dto.model";
 
 @Injectable({
   providedIn:"root"
@@ -41,6 +43,13 @@ export class AuthService {
     });
   }
 
+  public captcha(): Observable<Captcha> {
+    const path = this._apiEndPoint+ "/captcha";
+    return this._http.get<CaptchaDto>(path).pipe(
+      map(dto=>this.toCaptchaModel(dto))
+    )
+  }
+
   public logout(): Observable<string> {
     //const user = JSON.parse(localStorage.getItem('user'));
 
@@ -56,5 +65,9 @@ export class AuthService {
     return this._http.get(path,{
       responseType: 'text' as const
     });
+  }
+
+  private toCaptchaModel(dto: CaptchaDto): Captcha {
+    return new Captcha(dto.imageBase64, dto.imageMimeType, dto.question, dto.response);
   }
 }

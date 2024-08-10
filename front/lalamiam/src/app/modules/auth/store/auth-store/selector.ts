@@ -6,3 +6,5 @@ export const selector = (state:AppState) => state.authState;
 export const isErrorVisibleSelector = createSelector(selector, (state) => state.isErrorVisible);
 export const isLoadingSelector = createSelector(selector, (state)=>state.isLoading)
 export const errorMessageSelector = createSelector(selector, (state) => state.error);
+export const captchaSelector = createSelector(selector, (state) => state.captcha);
+export const captchaQuestionSelector = createSelector(selector, (state) => state.captcha?.question)

@@ -83,15 +83,16 @@ public class CookieCsrfTokenRepository implements CustomCsrfTokenRepository {
       LOGGER.debug(String.format("Cookie secure: %s", this.isCookieSecure));
       LOGGER.debug(String.format("Cookie path: %s", this.cookiePath));
       response.addHeader("Set-Cookie", getCookie(token));
-      response.addHeader(X_CSRF_TOKEN, token.getToken());
+      response.addHeader(FORM_CSRF_TOKEN, token.getToken());
 
 //      String cookieHeader = isCookieSecure ?
 //              String.format("%s=%s; HttpOnly; Secure; Path=%s; SameSite=%S; Domain=%s", cookie.getName(), cookie.getValue(), cookiePath, cookieSameSite,cookieDomain) :
 //              String.format("%s=%s; HttpOnly; Path=%s; SameSite=%S; Domain=%s", cookie.getName(), cookie.getValue(), cookiePath, cookieSameSite, cookieDomain);
 
+//
 //      Cookie cookie = new Cookie("_csrf", token.getToken());
 //      cookie.setHttpOnly(isCookieHttpOnly);
-//      cookie.setSecure(isCookieSecure);
+//      cookie.setSecure(false);
 //      cookie.setPath(cookiePath);
 //      cookie.setMaxAge(3600);
 //      response.addCookie(cookie);

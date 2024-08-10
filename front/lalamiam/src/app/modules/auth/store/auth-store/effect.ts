@@ -33,7 +33,7 @@ export class AuthEffect {
         catchError((error)=>from([
           UserIdentAction.clearUserIden(),
           // Generation Message d'erreur
-          FlashMessageAction.createMessage({message: error.error.error, isError: true})
+          FlashMessageAction.createMessage({message: error.error, isError: true})
         ])
         )
       )
@@ -53,7 +53,7 @@ export class AuthEffect {
           catchError(error=> {
             return of(
               // Generation Message d'erreur
-              FlashMessageAction.createMessage({message: error.error.error, isError: true})
+              FlashMessageAction.createMessage({message: error.error, isError: true})
             )
           }
         )
@@ -111,5 +111,23 @@ export class AuthEffect {
         )
       )
     )
+  )
+
+  captcha$ = createEffect(()=>
+    this._action$.pipe(
+      ofType(AuthAction.captcha),
+      mergeMap(()=>
+        this._authService.captcha().pipe(
+          map((captcha)=>AuthAction.captchaSuccess({captcha})),
+          catchError(error=> {
+            return of(
+              // Generation Message d'erreur
+              FlashMessageAction.createMessage({message: error.error.error, isError: true})
+            )
+          })
+        )
+      )
+    )
+
   )
 }

@@ -1,7 +1,10 @@
 import { createAction, props } from "@ngrx/store";
+import { Captcha } from "../../models/captcha.model";
 
 export const login = createAction('[Auth] Login client', props<{email: string, password: string}>());
 export const csrf = createAction('[Auth] csrf');
+export const captcha = createAction('[Auth] get captcha')
+export const captchaSuccess = createAction('[Auth] captcha success', props<{captcha: Captcha}>());
 
 export const logout = createAction('[Auth] Logout');
 export const logoutSuccess = createAction('[Auth] Logout success', props<{message: string}>());

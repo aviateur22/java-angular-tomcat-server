@@ -13,6 +13,10 @@ import { reducers as authReducer } from './store/auth-store/reducer';
 import { AuthEffect } from './store/auth-store/effect';
 import { AuthService } from './services/auth.service';
 
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { MessagesModule } from 'primeng/messages';
+import { ButtonModule } from 'primeng/button';
 
 
 @NgModule({
@@ -28,7 +32,11 @@ import { AuthService } from './services/auth.service';
     StoreModule.forFeature('authState', authReducer),
     EffectsModule.forFeature([
       AuthEffect
-    ])
+    ]),
+    InputTextModule,
+    PasswordModule,
+    MessagesModule,
+    ButtonModule
   ],
   providers: [AuthService]
 })

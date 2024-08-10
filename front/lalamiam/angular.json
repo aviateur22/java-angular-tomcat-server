@@ -25,7 +25,6 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/css/reset.css",
               "src/styles.css"
             ],
             "scripts": []

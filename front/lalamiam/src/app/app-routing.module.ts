@@ -3,10 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { UserPageComponent } from './pages/user-page/user-page.component';
+import { environment } from 'src/environments/environment';
 
 const routes: Routes = [
   {
-    path: "lalamiam",
+    path: environment.webapp_path,
     children: [
       { path: "", component: HomePageComponent, title: "Accueil"},
       { path: "users-page", component: UserPageComponent, title: "Page users"},

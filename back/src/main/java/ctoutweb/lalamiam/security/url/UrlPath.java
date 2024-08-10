@@ -35,6 +35,7 @@ public class UrlPath {
     "CONTAINS_WORD", List.of(
             "/register",
             "/login",
+            "/captcha",
             "/csrf"
     )
   );

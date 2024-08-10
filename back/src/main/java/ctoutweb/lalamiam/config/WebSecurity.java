@@ -88,7 +88,11 @@ public class WebSecurity {
     CorsConfiguration corsForWebAppPath = new CorsConfiguration();
     corsForWebAppPath.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
     corsForWebAppPath.setAllowedMethods(Arrays.asList("GET"));
-    corsForWebAppPath.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+    corsForWebAppPath.setAllowedHeaders(Arrays.asList(
+            "Content-Type",
+            "Authorization",
+            "Form-Csrf-Token")
+    );
     source.registerCorsConfiguration("/", corsForWebAppPath);
     source.registerCorsConfiguration("/api/users", corsForWebAppPath);
     source.registerCorsConfiguration("/api/version", corsForWebAppPath);
@@ -97,14 +101,16 @@ public class WebSecurity {
     CorsConfiguration corsAuthPath = new CorsConfiguration();
     corsAuthPath.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
     corsAuthPath.setAllowedMethods(Arrays.asList("POST", "GET"));
-    corsAuthPath.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+    corsAuthPath.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization","Form-Csrf-Token"));
+    corsAuthPath.setAllowCredentials(true);
     source.registerCorsConfiguration("/api/auth/**", corsAuthPath);
 
     // Other
     CorsConfiguration corsOtherPath = new CorsConfiguration();
     corsOtherPath.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
     corsOtherPath.setAllowedMethods(Arrays.asList("GET, POST"));
-    corsOtherPath.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+    corsOtherPath.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Form-Csrf-Token"));
+    corsOtherPath.setAllowCredentials(true);
     source.registerCorsConfiguration("/api/client/**", corsOtherPath);
     source.registerCorsConfiguration("/api/admin/**", corsOtherPath);
 

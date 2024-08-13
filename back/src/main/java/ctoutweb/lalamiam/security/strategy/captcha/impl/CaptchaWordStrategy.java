@@ -2,7 +2,7 @@ package ctoutweb.lalamiam.security.strategy.captcha.impl;
 
 import ctoutweb.lalamiam.factory.CaptchaFactory;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
-import ctoutweb.lalamiam.model.captcha.GenerateTestData;
+import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.service.ImageService;
 import ctoutweb.lalamiam.util.TextUtility;
@@ -27,7 +27,7 @@ public class CaptchaWordStrategy extends CaptchaEnigme implements CaptchaStrateg
   @Override
   public CaptchaData generateCaptcha() {
 
-    GenerateTestData testData = getWordTestData();
+    GenerateEnigmeData testData = getWordTestData();
 
     BufferedImage image = imageService.createImageFromText(
             testData.getEnigme(),
@@ -45,7 +45,7 @@ public class CaptchaWordStrategy extends CaptchaEnigme implements CaptchaStrateg
    * Generation des données pour un test de recopie de mot
    * @return
    */
-  private GenerateTestData getWordTestData() {
+  private GenerateEnigmeData getWordTestData() {
     final String question = "Recopiez le mot";
     final int RANDOM_TEXT_LENGTH = 9;
     String wordEnigme = TextUtility.generateText(RANDOM_TEXT_LENGTH);

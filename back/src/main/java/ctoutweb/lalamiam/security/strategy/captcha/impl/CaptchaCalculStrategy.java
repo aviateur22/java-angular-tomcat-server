@@ -3,7 +3,7 @@ package ctoutweb.lalamiam.security.strategy.captcha.impl;
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.factory.CaptchaFactory;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
-import ctoutweb.lalamiam.model.captcha.GenerateTestData;
+import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.service.ImageService;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class CaptchaCalculStrategy extends CaptchaEnigme implements CaptchaStrat
   @Override
   public CaptchaData generateCaptcha() {
 
-    GenerateTestData testData = getCalculateTestData();
+    GenerateEnigmeData testData = getCalculateTestData();
 
     BufferedImage image = imageService.createImageFromText(
             testData.getEnigme(),
@@ -45,7 +45,7 @@ public class CaptchaCalculStrategy extends CaptchaEnigme implements CaptchaStrat
    * Generation des données pour un test de calcul
    * @return GenerateTestData
    */
-  private GenerateTestData getCalculateTestData() {
+  private GenerateEnigmeData getCalculateTestData() {
     String question = "Calculer le bon résultat";
     Random random = new Random();
     final int RANDOM_NUMBER_1 = random.nextInt(10);

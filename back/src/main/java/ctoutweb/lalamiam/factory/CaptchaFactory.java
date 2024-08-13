@@ -2,8 +2,8 @@ package ctoutweb.lalamiam.factory;
 
 import ctoutweb.lalamiam.dto.CaptchaDto;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
-import ctoutweb.lalamiam.model.captcha.GenerateTestData;
-import ctoutweb.lalamiam.model.captcha.TestData;
+import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
+import ctoutweb.lalamiam.model.captcha.EnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaType;
 import ctoutweb.lalamiam.security.strategy.captcha.impl.CaptchaCalculStrategy;
@@ -40,7 +40,7 @@ public class CaptchaFactory {
 
   }
 
-  public static CaptchaData getCaptcha(String imageBase64, String imageMimeType, LocalDateTime validityTime, GenerateTestData testData) {
+  public static CaptchaData getCaptcha(String imageBase64, String imageMimeType, LocalDateTime validityTime, GenerateEnigmeData testData) {
     return new CaptchaData(
             imageBase64,
             imageMimeType,
@@ -58,8 +58,8 @@ public class CaptchaFactory {
    * @param response
    * @return
    */
-  public static GenerateTestData getDataTest(String question, String enigme, String response) {
-    return new TestData(question, enigme, response);
+  public static GenerateEnigmeData getDataTest(String question, String enigme, String response) {
+    return new EnigmeData(question, enigme, response);
   }
 
   /**
@@ -69,8 +69,8 @@ public class CaptchaFactory {
    * @param response
    * @return
    */
-  public static GenerateTestData getDataTest(String question, Path fileEnigme, String response) {
-    return new TestData(question, fileEnigme, response);
+  public static GenerateEnigmeData getDataTest(String question, Path fileEnigme, String response) {
+    return new EnigmeData(question, fileEnigme, response);
   }
 
   public static CaptchaDto getCaptchaDto (CaptchaData captchaData){

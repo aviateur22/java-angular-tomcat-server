@@ -1,19 +1,40 @@
-<p>Login Page</p>
+<div class="flex flex-column align-items-center w-full">
+  <form class="form--border flex flex-column align-items-center p-4 w-full m-w-500" [formGroup]="loginDataFormGroup" (submit)="login()" >
+    <p class="text-base pt-6 pb-4 font-semibold">Page de connexion</p>
+    <p-divider class="p-2 w-full"></p-divider>
 
-<form [formGroup]="loginDataFormGroup" (submit)="login()" >
-  <div>
-    <label for="email">votre email</label>
-    <input id="email" formControlName="email" type="email" placeholder="votre email...">
-  </div>
+    <!--Email-->
+    <div class="flex flex-column w-full pt-4">
+      <label class="pb-1" for="email">Votre email</label>
+      <input style="border-color: var(--first_color)" type="email" pInputText id="email" formControlName="email" placeholder="votre email.">
 
-  <div>
-    <label for="password">votre mot de passe</label>
-    <input id="password" formControlName="password" type="password" placeholder="mot de passe...">
-  </div>
+       <!--Message erreur-->
+       <div *ngIf="loginDataFormGroup.get('email')?.touched && loginDataFormGroup.get('email')?.errors?.['required']">
+        <p-message class="p-message" severity="error" [text]="errorMessages.get('emailMissing')" ></p-message>
+      </div>
+    </div>
 
-  <input type="submit" value="connexion">
-  <div class="button__container">
-    <p> Pas encore inscrit ? </p> <a [routerLink]="'/lalamiam/register'">inscription</a>
+    <!-- Mote de passe-->
+    <div class="flex flex-column w-full pt-4">
+      <label class="pb-1" for="password">votre mot de passe</label>
+      <p-password
+        id="password"
+        [feedback]="false"
+        [toggleMask]="true"
+        formControlName="password"
+        placeholder="mot de passe...">
+      </p-password>
 
-  </div>
-</form>
+      <!--Message erreur-->
+      <div *ngIf="loginDataFormGroup.get('password')?.touched && loginDataFormGroup.get('password')?.errors?.['required']">
+        <p-message class="p-message" severity="error" [text]="errorMessages.get('passwordMissing')" ></p-message>
+      </div>
+    </div>
+
+    <p-button class="pt-4" type="submit" label="connexion"></p-button>
+    <div class="flex flex-column w-full pt-4">
+      <p> Pas encore inscrit ? </p> <a [routerLink]="'/lalamiam/register'">inscription</a>
+
+    </div>
+  </form>
+</div>

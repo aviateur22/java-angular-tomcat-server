@@ -8,7 +8,7 @@ import { map, tap } from "rxjs";
 export class UserEffect {
 
   constructor(private _action$: Actions){
-    console.log('AppInitEffects instantiated'); // Log for instantiation
+
   }
 
   init$ = createEffect(()=>

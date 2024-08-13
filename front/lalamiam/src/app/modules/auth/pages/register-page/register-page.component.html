@@ -1,43 +1,115 @@
-<p>Creation compte</p>
-<div class="card flex align-items-center justify-content-center flex-wrap gap-3">
-  <form [formGroup]="registerDataFormGroup" (submit)="register()" >
-    <div>
-      <label for="email">votre email</label>
-      <input type="email" pInputText id="email" formControlName="email" placeholder="votre email...">
-      <p-messages severity="error" text="email obligatoire"></p-messages>
+<div class="flex flex-column align-items-center">
+
+  <form class="form--border flex flex-column align-items-center p-4 w-full m-w-500" [formGroup]="registerDataFormGroup" (submit)="register()">
+    <p class="text-base pt-6 pb-4 font-semibold">{{formInput.get('title')}}</p>
+    <p-divider class="p-2 w-full"></p-divider>
+
+    <!--Email-->
+    <div class="flex flex-column w-full pt-4">
+      <label class="pb-1" for="email">{{formInput.get('email')}}</label>
+      <input style="border-color: var(--first_color)" type="email" pInputText id="email" formControlName="email" aria-describedby="email-help" placeholder="votre email...">
+      <div>
+        <ul>
+          <li *ngIf="registerDataFormGroup.get('email')?.touched && registerDataFormGroup.get('email')?.errors?.['required']">
+            <p-message class="p-message" severity="error" [text]="errorMessages.get('emailMissing')" ></p-message>
+          </li>
+          <li *ngIf="registerDataFormGroup.get('email')?.touched && registerDataFormGroup.get('email')?.errors?.['email']">
+            <p-message class="p-message" severity="error" [text]="errorMessages.get('emailNotValid')" ></p-message>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <div>
-      <label for="password">votre mot de passe</label>
-      <p-password
+    <!--Nom-->
+    <div class="flex flex-column w-full pt-4">
+      <label class="pb-1" for="name">{{formInput.get('name')}}</label>
+      <input
+        style="border-color: var(--first_color)"
+        type="text"
+        pInputText
+        aria-describedby="name"
+        id="name"
+        formControlName="name"
+        placeholder="nom">
+
+        <!--Message erreur-->
+        <div *ngIf="registerDataFormGroup.get('name')?.touched && registerDataFormGroup.get('name')?.errors?.['required']">
+          <p-message class="p-message" severity="error" [text]="errorMessages.get('nameMissing')" ></p-message>
+        </div>
+    </div>
+
+    <!--mot de pase-->
+    <div class="flex flex-column w-full pt-4">
+      <div class="relative flex flex-column w-full">
+        <label class="pb-1" for="password">{{formInput.get('password')}}</label>
+        <p-password
+        [appShowOnFocus]="passwordTemplate"
         id="password"
+        aria-describedby="password-help"
         [feedback]="false"
         [toggleMask]="true"
         formControlName="password"
         placeholder="mot de passe...">
+        <!--Template indicator-->
+        <ng-template #passwordTemplate>
+          <div class="absolute top-100 left-0 shadow-1 p-2 z-1 bg-white">
+            <p class="mt-2 text-sm font-bold">Contraintes</p>
+            <p-divider class="p-2"></p-divider>
+            <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                <li class="text-sm"><i class="pi pi-caret-right" style="font-size: 1rem; color: var(--first_color)"></i>Au moins 1 caractère en miniscule</li>
+                <li class="text-sm"><i class="pi pi-caret-right" style="font-size: 1rem; color: var(--first_color)"></i>Au moins 1 caractère en majiscule </li>
+                <li class="text-sm"><i class="pi pi-caret-right" style="font-size: 1rem; color: var(--first_color)"></i>Au moins 1 chiffre</li>
+                <li class="text-sm"><i class="pi pi-caret-right" style="font-size: 1rem; color: var(--first_color)"></i>Minimum 8 caractères</li>
+            </ul>
+          </div>
+        </ng-template>
       </p-password>
+      </div>
+
+      <!--Message erreur-->
+      <div  *ngIf="registerDataFormGroup.get('password')?.touched && registerDataFormGroup.get('password')?.errors?.['required']">
+        <p-message class="p-message" severity="error" [text]="errorMessages.get('passwordMissing')" ></p-message>
+      </div>
     </div>
 
-    <div>
-      <label for="name">votre nom</label>
-      <input
-        type="text"
-        pInputText
-        id="name"
-        formControlName="name"
-        placeholder="nom">
+     <!-- confirmation mot de pase-->
+    <div class="flex flex-column w-full pt-4">
+      <label class="pb-1" for="password">{{formInput.get('confirmPassword')}}</label>
+      <p-password
+        id="confirmPassword"
+        aria-describedby="confirm-password-help"
+        [feedback]="false"
+        [toggleMask]="true"
+        formControlName="confirmPassword"
+        placeholder="mot de passe">
+      </p-password>
+      <div>
+        <ul>
+          <li *ngIf="registerDataFormGroup.get('confirmPassword')?.touched && registerDataFormGroup.get('confirmPassword')?.errors?.['required']">
+            <p-message class="p-message" severity="error" [text]="errorMessages.get('confirmPasswordMissing')" ></p-message>
+          </li>
+          <li *ngIf="registerDataFormGroup.get('confirmPassword')?.touched && registerDataFormGroup.errors?.['passwordMismatch']">
+            <p-message class="p-message" severity="error" [text]="errorMessages.get('confirmPasswordNotMatch')" ></p-message>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!--captcha-->
-
-    <div *ngIf="(captcha$ | async) as captcha">
-      <p>{{captcha.question}}</p>
-      <input id="captchaResponse" type="text" formControlName="captchaResponse">
-      <img [src]="'data:' + captcha.mimeType + ';base64,' + captcha.image">
+    <div class="flex flex-column w-full m-4 p-4 shadow-1" *ngIf="(captcha$ | async) as captcha">
+      <p class="mb-2">{{captcha.question}}</p>
+      <div class="flex flex-column align-items-center mb-2">
+        <img [src]="'data:' + captcha.mimeType + ';base64,' + captcha.image">
+      </div>
+      <input pInputText style="border-color: var(--first_color)" id="captchaResponse" type="text" formControlName="captchaResponse">
+       <!--Message erreur-->
+       <div   *ngIf="registerDataFormGroup.get('captchaResponse')?.touched && registerDataFormGroup.get('captchaResponse')?.errors?.['required']">
+        <p-message class="p-message" severity="error" [text]="errorMessages.get('captchaResponseMissing')" ></p-message>
+      </div>
     </div>
 
 
-    <p-button type="submit" label="creation"></p-button>
+    <p-button class="pt-4" type="submit" label="creation"></p-button>
   </form>
 
 </div>

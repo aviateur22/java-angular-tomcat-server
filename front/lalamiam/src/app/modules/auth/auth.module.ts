@@ -16,13 +16,17 @@ import { AuthService } from './services/auth.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
+import { ShowOnFocusDirective } from './directives/show-on-focus.directive';
 
 
 @NgModule({
   declarations: [
     LoginPageComponent,
-    RegisterPageComponent
+    RegisterPageComponent,
+    ShowOnFocusDirective
   ],
   imports: [
     CommonModule,
@@ -36,7 +40,9 @@ import { ButtonModule } from 'primeng/button';
     InputTextModule,
     PasswordModule,
     MessagesModule,
-    ButtonModule
+    ButtonModule,
+    MessageModule,
+    DividerModule
   ],
   providers: [AuthService]
 })

@@ -1,13 +1,11 @@
 package ctoutweb.lalamiam.util;
 
-import ctoutweb.lalamiam.model.captcha.GenerateTestData;
+import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.impl.CaptchaImageStrategy;
 import ctoutweb.lalamiam.service.ImageService;
-import ctoutweb.lalamiam.service.impl.CaptchaServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,8 +36,8 @@ public class CaptchaServiceTest {
     CaptchaImageStrategy captchaService = new CaptchaImageStrategy(passwordEncoder, imageService);
     when(passwordEncoder.encode(any(String.class))).thenReturn("test123");
 
-    GenerateTestData generateTestData = captchaService.getImageTestData();
+    GenerateEnigmeData generateTestData = captchaService.getImageTestData();
 
-    Assertions.assertEquals("test123", generateTestData.getFileEnigme());
+    Assertions.assertEquals("test123", generateTestData.getResponse());
   }
 }

@@ -76789,6 +76789,174 @@ class ButtonModule {
 
 /***/ }),
 
+/***/ 920:
+/*!***********************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-divider.mjs ***!
+  \***********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Divider: () => (/* binding */ Divider),
+/* harmony export */   DividerModule: () => (/* binding */ DividerModule)
+/* harmony export */ });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ 6575);
+
+
+
+
+
+/**
+ * Divider is used to separate contents.
+ * @group Components
+ */
+const _c0 = ["*"];
+class Divider {
+  /**
+   * Inline style of the component.
+   * @group Props
+   */
+  style;
+  /**
+   * Style class of the component.
+   * @group Props
+   */
+  styleClass;
+  /**
+   * Specifies the orientation.
+   * @group Props
+   */
+  layout = 'horizontal';
+  /**
+   * Border style type.
+   * @group Props
+   */
+  type = 'solid';
+  /**
+   * Alignment of the content.
+   * @group Props
+   */
+  align;
+  containerClass() {
+    return {
+      'p-divider p-component': true,
+      'p-divider-horizontal': this.layout === 'horizontal',
+      'p-divider-vertical': this.layout === 'vertical',
+      'p-divider-solid': this.type === 'solid',
+      'p-divider-dashed': this.type === 'dashed',
+      'p-divider-dotted': this.type === 'dotted',
+      'p-divider-left': this.layout === 'horizontal' && (!this.align || this.align === 'left'),
+      'p-divider-center': this.layout === 'horizontal' && this.align === 'center' || this.layout === 'vertical' && (!this.align || this.align === 'center'),
+      'p-divider-right': this.layout === 'horizontal' && this.align === 'right',
+      'p-divider-top': this.layout === 'vertical' && this.align === 'top',
+      'p-divider-bottom': this.layout === 'vertical' && this.align === 'bottom'
+    };
+  }
+  static ɵfac = function Divider_Factory(t) {
+    return new (t || Divider)();
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
+    type: Divider,
+    selectors: [["p-divider"]],
+    hostAttrs: [1, "p-element"],
+    inputs: {
+      style: "style",
+      styleClass: "styleClass",
+      layout: "layout",
+      type: "type",
+      align: "align"
+    },
+    ngContentSelectors: _c0,
+    decls: 3,
+    vars: 6,
+    consts: [["role", "separator", 3, "ngClass", "ngStyle"], [1, "p-divider-content"]],
+    template: function Divider_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojectionDef"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0)(1, "div", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojection"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx.styleClass);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", ctx.containerClass())("ngStyle", ctx.style);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-orientation", ctx.layout)("data-pc-name", "divider");
+      }
+    },
+    dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_1__.NgStyle],
+    styles: ["@layer primeng{.p-divider-horizontal{display:flex;width:100%;position:relative;align-items:center}.p-divider-horizontal:before{position:absolute;display:block;top:50%;left:0;width:100%;content:\"\"}.p-divider-horizontal.p-divider-left{justify-content:flex-start}.p-divider-horizontal.p-divider-right{justify-content:flex-end}.p-divider-horizontal.p-divider-center{justify-content:center}.p-divider-content{z-index:1}.p-divider-vertical{min-height:100%;margin:0 1rem;display:flex;position:relative;justify-content:center}.p-divider-vertical:before{position:absolute;display:block;top:0;left:50%;height:100%;content:\"\"}.p-divider-vertical.p-divider-top{align-items:flex-start}.p-divider-vertical.p-divider-center{align-items:center}.p-divider-vertical.p-divider-bottom{align-items:flex-end}.p-divider-solid.p-divider-horizontal:before{border-top-style:solid}.p-divider-solid.p-divider-vertical:before{border-left-style:solid}.p-divider-dashed.p-divider-horizontal:before{border-top-style:dashed}.p-divider-dashed.p-divider-vertical:before{border-left-style:dashed}.p-divider-dotted.p-divider-horizontal:before{border-top-style:dotted}.p-divider-dotted.p-divider-horizontal:before{border-left-style:dotted}}\n"],
+    encapsulation: 2,
+    changeDetection: 0
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](Divider, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+    args: [{
+      selector: 'p-divider',
+      template: `
+        <div [ngClass]="containerClass()" [class]="styleClass" [ngStyle]="style" role="separator" [attr.aria-orientation]="layout" [attr.data-pc-name]="'divider'">
+            <div class="p-divider-content">
+                <ng-content></ng-content>
+            </div>
+        </div>
+    `,
+      changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectionStrategy.OnPush,
+      encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewEncapsulation.None,
+      host: {
+        class: 'p-element'
+      },
+      styles: ["@layer primeng{.p-divider-horizontal{display:flex;width:100%;position:relative;align-items:center}.p-divider-horizontal:before{position:absolute;display:block;top:50%;left:0;width:100%;content:\"\"}.p-divider-horizontal.p-divider-left{justify-content:flex-start}.p-divider-horizontal.p-divider-right{justify-content:flex-end}.p-divider-horizontal.p-divider-center{justify-content:center}.p-divider-content{z-index:1}.p-divider-vertical{min-height:100%;margin:0 1rem;display:flex;position:relative;justify-content:center}.p-divider-vertical:before{position:absolute;display:block;top:0;left:50%;height:100%;content:\"\"}.p-divider-vertical.p-divider-top{align-items:flex-start}.p-divider-vertical.p-divider-center{align-items:center}.p-divider-vertical.p-divider-bottom{align-items:flex-end}.p-divider-solid.p-divider-horizontal:before{border-top-style:solid}.p-divider-solid.p-divider-vertical:before{border-left-style:solid}.p-divider-dashed.p-divider-horizontal:before{border-top-style:dashed}.p-divider-dashed.p-divider-vertical:before{border-left-style:dashed}.p-divider-dotted.p-divider-horizontal:before{border-top-style:dotted}.p-divider-dotted.p-divider-horizontal:before{border-left-style:dotted}}\n"]
+    }]
+  }], null, {
+    style: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    styleClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    layout: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    type: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    align: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }]
+  });
+})();
+class DividerModule {
+  static ɵfac = function DividerModule_Factory(t) {
+    return new (t || DividerModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: DividerModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](DividerModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule],
+      exports: [Divider],
+      declarations: [Divider]
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
 /***/ 4946:
 /*!*******************************************************!*\
   !*** ./node_modules/primeng/fesm2022/primeng-dom.mjs ***!
@@ -78234,6 +78402,290 @@ class InputTextModule {
       imports: [_angular_common__WEBPACK_IMPORTED_MODULE_2__.CommonModule],
       exports: [InputText],
       declarations: [InputText]
+    }]
+  }], null, null);
+})();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+/***/ }),
+
+/***/ 7736:
+/*!***********************************************************!*\
+  !*** ./node_modules/primeng/fesm2022/primeng-message.mjs ***!
+  \***********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MessageModule: () => (/* binding */ MessageModule),
+/* harmony export */   UIMessage: () => (/* binding */ UIMessage)
+/* harmony export */ });
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ 6575);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var primeng_icons_check__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! primeng/icons/check */ 7613);
+/* harmony import */ var primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! primeng/icons/exclamationtriangle */ 4733);
+/* harmony import */ var primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! primeng/icons/infocircle */ 3803);
+/* harmony import */ var primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! primeng/icons/timescircle */ 7800);
+
+
+
+
+
+
+
+
+
+/**
+ * Message groups a collection of contents in tabs.
+ * @group Components
+ */
+function UIMessage_CheckIcon_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "CheckIcon", 4);
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("styleClass", "p-inline-message-icon");
+  }
+}
+function UIMessage_InfoCircleIcon_2_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "InfoCircleIcon", 4);
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("styleClass", "p-inline-message-icon");
+  }
+}
+function UIMessage_TimesCircleIcon_3_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "TimesCircleIcon", 4);
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("styleClass", "p-inline-message-icon");
+  }
+}
+function UIMessage_ExclamationTriangleIcon_4_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "ExclamationTriangleIcon", 4);
+  }
+  if (rf & 2) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("styleClass", "p-inline-message-icon");
+  }
+}
+function UIMessage_div_5_span_1_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "span", 6);
+  }
+  if (rf & 2) {
+    const ctx_r7 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("innerHTML", ctx_r7.text, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsanitizeHtml"]);
+  }
+}
+function UIMessage_div_5_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, UIMessage_div_5_span_1_Template, 1, 1, "span", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx_r4.escape);
+  }
+}
+function UIMessage_ng_template_6_span_0_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 8);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+  }
+  if (rf & 2) {
+    const ctx_r8 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx_r8.text);
+  }
+}
+function UIMessage_ng_template_6_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](0, UIMessage_ng_template_6_span_0_Template, 2, 1, "span", 7);
+  }
+  if (rf & 2) {
+    const ctx_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx_r6.escape);
+  }
+}
+const _c0 = function (a0, a1, a2, a3, a4) {
+  return {
+    "p-inline-message-info": a0,
+    "p-inline-message-warn": a1,
+    "p-inline-message-error": a2,
+    "p-inline-message-success": a3,
+    "p-inline-message-icon-only": a4
+  };
+};
+class UIMessage {
+  /**
+   * Severity level of the message.
+   * @group Props
+   */
+  severity;
+  /**
+   * Text content.
+   * @group Props
+   */
+  text;
+  /**
+   * Whether displaying messages would be escaped or not.
+   * @group Props
+   */
+  escape = true;
+  /**
+   * Inline style of the component.
+   * @group Props
+   */
+  style;
+  /**
+   * Style class of the component.
+   * @group Props
+   */
+  styleClass;
+  get icon() {
+    if (this.severity && this.severity.trim()) {
+      return this.severity;
+    } else {
+      return 'info';
+    }
+  }
+  static ɵfac = function UIMessage_Factory(t) {
+    return new (t || UIMessage)();
+  };
+  static ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
+    type: UIMessage,
+    selectors: [["p-message"]],
+    hostAttrs: [1, "p-element"],
+    inputs: {
+      severity: "severity",
+      text: "text",
+      escape: "escape",
+      style: "style",
+      styleClass: "styleClass"
+    },
+    decls: 8,
+    vars: 16,
+    consts: [["aria-live", "polite", 1, "p-inline-message", "p-component", "p-inline-message", 3, "ngStyle", "ngClass"], [3, "styleClass", 4, "ngIf"], [4, "ngIf", "ngIfElse"], ["escapeOut", ""], [3, "styleClass"], ["class", "p-inline-message-text", 3, "innerHTML", 4, "ngIf"], [1, "p-inline-message-text", 3, "innerHTML"], ["class", "p-inline-message-text", 4, "ngIf"], [1, "p-inline-message-text"]],
+    template: function UIMessage_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, UIMessage_CheckIcon_1_Template, 1, 1, "CheckIcon", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, UIMessage_InfoCircleIcon_2_Template, 1, 1, "InfoCircleIcon", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, UIMessage_TimesCircleIcon_3_Template, 1, 1, "TimesCircleIcon", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, UIMessage_ExclamationTriangleIcon_4_Template, 1, 1, "ExclamationTriangleIcon", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](5, UIMessage_div_5_Template, 2, 1, "div", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](6, UIMessage_ng_template_6_Template, 1, 1, "ng-template", null, 3, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplateRefExtractor"]);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+      }
+      if (rf & 2) {
+        const _r5 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵreference"](7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassMap"](ctx.styleClass);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngStyle", ctx.style)("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction5"](10, _c0, ctx.severity === "info", ctx.severity === "warn", ctx.severity === "error", ctx.severity === "success", ctx.text == null));
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.icon === "success");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.icon === "info");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.icon === "error");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.icon === "warn");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !ctx.escape)("ngIfElse", _r5);
+      }
+    },
+    dependencies: function () {
+      return [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_1__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_1__.NgStyle, primeng_icons_check__WEBPACK_IMPORTED_MODULE_2__.CheckIcon, primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_3__.InfoCircleIcon, primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_4__.TimesCircleIcon, primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_5__.ExclamationTriangleIcon];
+    },
+    styles: ["@layer primeng{.p-inline-message{display:inline-flex;align-items:center;justify-content:center;vertical-align:top}.p-inline-message-icon-only .p-inline-message-text{visibility:hidden;width:0}.p-fluid .p-inline-message{display:flex}}\n"],
+    encapsulation: 2,
+    changeDetection: 0
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](UIMessage, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+    args: [{
+      selector: 'p-message',
+      template: `
+        <div
+            aria-live="polite"
+            class="p-inline-message p-component p-inline-message"
+            [ngStyle]="style"
+            [class]="styleClass"
+            [ngClass]="{
+                'p-inline-message-info': severity === 'info',
+                'p-inline-message-warn': severity === 'warn',
+                'p-inline-message-error': severity === 'error',
+                'p-inline-message-success': severity === 'success',
+                'p-inline-message-icon-only': this.text == null
+            }"
+        >
+            <CheckIcon *ngIf="icon === 'success'" [styleClass]="'p-inline-message-icon'" />
+            <InfoCircleIcon *ngIf="icon === 'info'" [styleClass]="'p-inline-message-icon'" />
+            <TimesCircleIcon *ngIf="icon === 'error'" [styleClass]="'p-inline-message-icon'" />
+            <ExclamationTriangleIcon *ngIf="icon === 'warn'" [styleClass]="'p-inline-message-icon'" />
+            <div *ngIf="!escape; else escapeOut">
+                <span *ngIf="!escape" class="p-inline-message-text" [innerHTML]="text"></span>
+            </div>
+            <ng-template #escapeOut>
+                <span *ngIf="escape" class="p-inline-message-text">{{ text }}</span>
+            </ng-template>
+        </div>
+    `,
+      changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ChangeDetectionStrategy.OnPush,
+      encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewEncapsulation.None,
+      host: {
+        class: 'p-element'
+      },
+      styles: ["@layer primeng{.p-inline-message{display:inline-flex;align-items:center;justify-content:center;vertical-align:top}.p-inline-message-icon-only .p-inline-message-text{visibility:hidden;width:0}.p-fluid .p-inline-message{display:flex}}\n"]
+    }]
+  }], null, {
+    severity: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    text: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    escape: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    style: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }],
+    styleClass: [{
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+    }]
+  });
+})();
+class MessageModule {
+  static ɵfac = function MessageModule_Factory(t) {
+    return new (t || MessageModule)();
+  };
+  static ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
+    type: MessageModule
+  });
+  static ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
+    imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule, primeng_icons_check__WEBPACK_IMPORTED_MODULE_2__.CheckIcon, primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_3__.InfoCircleIcon, primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_4__.TimesCircleIcon, primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_5__.ExclamationTriangleIcon]
+  });
+}
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](MessageModule, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+    args: [{
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule, primeng_icons_check__WEBPACK_IMPORTED_MODULE_2__.CheckIcon, primeng_icons_infocircle__WEBPACK_IMPORTED_MODULE_3__.InfoCircleIcon, primeng_icons_timescircle__WEBPACK_IMPORTED_MODULE_4__.TimesCircleIcon, primeng_icons_exclamationtriangle__WEBPACK_IMPORTED_MODULE_5__.ExclamationTriangleIcon],
+      exports: [UIMessage],
+      declarations: [UIMessage]
     }]
   }], null, null);
 })();

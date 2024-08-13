@@ -19,6 +19,7 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { UserPageComponent } from './pages/user-page/user-page.component';
 import { FlashMessageComponent } from './components/flash-message/flash-message.component';
+import { ErrorPageComponent } from './pages/error-page/error-page.component';
 import { AuthModule } from './modules/auth/auth.module';
 
 import { InputTextModule } from 'primeng/inputtext';
@@ -30,7 +31,8 @@ import { InputTextModule } from 'primeng/inputtext';
     HomePageComponent,
     NotFoundPageComponent,
     UserPageComponent,
-    FlashMessageComponent
+    FlashMessageComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,

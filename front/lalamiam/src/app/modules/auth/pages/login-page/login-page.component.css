@@ -1,0 +1,10 @@
+:host ::ng-deep .p-password input {
+  border-color: var(--first_color);
+}
+
+@media screen and (min-width: 768px) {
+  .form--border {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 5px;
+  }
+}

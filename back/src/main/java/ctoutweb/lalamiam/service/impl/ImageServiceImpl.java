@@ -28,7 +28,7 @@ public class ImageServiceImpl implements ImageService {
     g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
     // Set the background color and clear the image
-    g2d.setColor(Color.gray);
+    g2d.setColor(Color.lightGray);
     g2d.fillRect(0, 0, width, height);
 
     // Set the font and color for the text

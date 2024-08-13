@@ -20,7 +20,6 @@ export class HandlerHttpInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
     if(request.urlWithParams.includes('/api/')){
-      console.log('form_csrf_token pour api request: ' + localStorage.getItem('form-csrf-token'));
       const token: string| null = localStorage.getItem('token');
       const formToken: string|null = localStorage.getItem('form-csrf-token');
       request = request.clone({
@@ -35,9 +34,6 @@ export class HandlerHttpInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       tap(event=>{
         if(event instanceof HttpResponse) {
-          console.log(`liste des headers:`);
-          console.log(event.headers)
-          console.log(`form-csrf-token: ${event.headers.get('form-csrf-token')}`)
           const csrfToken = event.headers.get('form-csrf-token');
           if (csrfToken) {
             localStorage.setItem('form-csrf-token', csrfToken);
@@ -53,7 +49,7 @@ export class HandlerHttpInterceptor implements HttpInterceptor {
           switch(errorStatus) {
             case 0: {
               console.log('erreur: 0: ', error.status);
-              router.navigate(["error"]);
+              router.navigate([`${webapp_path}error`]);
               break;
             }
             case 401: {

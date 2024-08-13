@@ -3,7 +3,7 @@ package ctoutweb.lalamiam.security.strategy.captcha.impl;
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.factory.CaptchaFactory;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
-import ctoutweb.lalamiam.model.captcha.GenerateTestData;
+import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.service.ImageService;
 import org.springframework.http.HttpStatus;
@@ -39,7 +39,7 @@ public class CaptchaImageStrategy extends CaptchaEnigme implements CaptchaStrate
 
   @Override
   public CaptchaData generateCaptcha() throws URISyntaxException, IOException {
-    GenerateTestData enigmeData = getImageTestData();
+    GenerateEnigmeData enigmeData = getImageTestData();
 
     String imagePath = enigmeData.getFileEnigme().toString();
     File imageFile = new File(enigmeData.getFileEnigme().toUri());
@@ -51,8 +51,8 @@ public class CaptchaImageStrategy extends CaptchaEnigme implements CaptchaStrate
     return CaptchaFactory.getCaptcha(imageBase64Format, imageMimeType, LocalDateTime.now().plusMinutes(15), enigmeData);
   }
 
-  public GenerateTestData getImageTestData() throws IOException, URISyntaxException {
-    String question = "Que représente cette image, réponse en bas de l'image";
+  public GenerateEnigmeData getImageTestData() throws IOException, URISyntaxException {
+    String question = "Que représente cette image ?";
 
     List<Path> imagePaths = new ArrayList<>();
 

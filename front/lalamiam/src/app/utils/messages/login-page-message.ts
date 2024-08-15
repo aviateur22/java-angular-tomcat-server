@@ -12,6 +12,10 @@ export default {
       password: {
         fr: 'Votre mot de passe',
         en: 'Your password'
+      },
+      register: {
+        fr: 'Pas encore de compte chez nous?',
+        en: 'Not yet register?'
       }
     },
     error: {

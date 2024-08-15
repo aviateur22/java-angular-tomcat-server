@@ -6,6 +6,8 @@ import ctoutweb.lalamiam.model.captcha.CaptchaData;
 import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.service.ImageService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@PropertySource({"classpath:application.properties"})
 public class CaptchaImageStrategy extends CaptchaEnigme implements CaptchaStrategy {
+  @Value("${captcha.token}")
+  private String captchaToken;
   private final PasswordEncoder passwordEncoder;
   private final ImageService imageService;
 
@@ -77,11 +82,11 @@ public class CaptchaImageStrategy extends CaptchaEnigme implements CaptchaStrate
 
     String imageName = randomPath.getFileName().toString();
     String imageNameWithoutExtension = imageName.substring(0, imageName.lastIndexOf('.')).toLowerCase();
-    String response = passwordEncoder.encode(imageNameWithoutExtension);
+    String response = imageNameWithoutExtension;
 
     return CaptchaFactory.getDataTest(
             question,
             randomPath,
-            passwordEncoder.encode(String.valueOf(response)));
+            passwordEncoder.encode(this.addCaptchaSecretKeyToCaptchaResponse(captchaToken, String.valueOf(response))));
   }
 }

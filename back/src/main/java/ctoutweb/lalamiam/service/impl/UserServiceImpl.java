@@ -1,6 +1,6 @@
 package ctoutweb.lalamiam.service.impl;
 
-import ctoutweb.lalamiam.model.RegisterDto;
+import ctoutweb.lalamiam.dto.RegisterDto;
 import ctoutweb.lalamiam.repository.UserRepository;
 import ctoutweb.lalamiam.repository.entity.AccountEntity;
 import ctoutweb.lalamiam.repository.entity.RoleUserEntity;

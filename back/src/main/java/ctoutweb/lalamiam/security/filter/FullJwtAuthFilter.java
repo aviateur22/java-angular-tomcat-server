@@ -56,7 +56,7 @@ public class FullJwtAuthFilter extends OncePerRequestFilter {
               .map(jwtToUserPrincipal::convert)
               .map(userPrincipal->new UserPrincipalAuthenticationToken(userPrincipal))
               .ifPresentOrElse(auth-> SecurityContextHolder.getContext().setAuthentication(auth), () -> {
-                throw new AuthException("echec validation JWT", HttpStatus.FORBIDDEN);
+                throw new AuthException("echec validation JWT", HttpStatus.UNAUTHORIZED);
               });
       filterChain.doFilter(request, response);
     }
@@ -66,7 +66,7 @@ public class FullJwtAuthFilter extends OncePerRequestFilter {
       HttpServletUtility.formatResponseMessage( response,"error", ex.getMessage());
     }
     catch (JWTDecodeException ex) {
-      response.setStatus(HttpStatus.BAD_REQUEST.value());
+      response.setStatus(HttpStatus.UNAUTHORIZED.value());
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       HttpServletUtility.formatResponseMessage(response,"error", "Le JWT n'est pas valide");
     }
@@ -74,11 +74,6 @@ public class FullJwtAuthFilter extends OncePerRequestFilter {
       response.setStatus(HttpStatus.UNAUTHORIZED.value());
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       HttpServletUtility.formatResponseMessage(response,"error", "Le JWT à expiré");
-    }
-    catch (Exception ex) {
-      response.setStatus(HttpStatus.BAD_REQUEST.value());
-      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-      HttpServletUtility.formatResponseMessage(response,"error", "Filtre JWT - Erreur interne");
     }
   }
 

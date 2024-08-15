@@ -17,7 +17,7 @@ const routes: Routes = [
     ]
 
   },
-  { path: "", redirectTo: "/lalamiam", pathMatch: "full"},
+  { path: "", redirectTo: environment.webapp_path, pathMatch: "full"},
   { path: "**", redirectTo:"not-found-page", title: '404'}
 ];
 

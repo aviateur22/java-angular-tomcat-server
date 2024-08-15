@@ -10,7 +10,7 @@ export const initialMessageState: MessageModel = {
 
 export const reducers = createReducer(
   initialMessageState,
-  on(MessageAction.createMessage, (state, {message})=>({...state, message})),
-  on(MessageAction.clearMessage,(state)=>({...state, message: ''}))
+  on(MessageAction.createMessage, (state, {message, isError})=>({...state, message, isError })),
+  on(MessageAction.clearMessage,(state)=>({...state, message: '', isError: false}))
 )
 

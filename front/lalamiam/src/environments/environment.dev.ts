@@ -8,5 +8,5 @@ export const environment: EnvironmentRef = {
   name: 'dev',
   language: 'fr',
   api_base: 'http://localhost:8080/api',
-  webapp_path: 'lalamiam'
+  webapp_path: 'webapp'
 };

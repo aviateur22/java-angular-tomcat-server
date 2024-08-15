@@ -1,3 +1,4 @@
-<div *ngIf="(message$ | async) as message">
-  <p>{{message}}</p>
+<div class="h-1rem absolute flex justify-content-center w-12" *ngIf="(message$ | async) as message">
+  <p-message class="p-message " [severity]="(isErrorMessage$ | async) ? 'error' : 'success'" [text]="message" ></p-message>
 </div>
+

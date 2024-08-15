@@ -7,13 +7,15 @@ import { AppState } from 'src/store/app.state';
 import { Observable } from 'rxjs';
 import { Message } from 'primeng/api';
 
-import { RegisterDto } from './../../models/register-dto.model';
+import { RegisterDto } from '../../models/register.dto';
 import { Captcha } from '../../models/captcha.model';
 import {  captchaSelector } from '../../store/auth-store/selector';
 import { passwordValidator } from '../../validators/password.validator';
 import { environment } from 'src/environments/environment';
 import appMessage from 'src/app/utils/messages/register-page-message';
 import { MessageUtil } from 'src/app/utils/messages/message-utils';
+import { CaptchaClientResponseDto } from '../../models/captcha-client-response.dto';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register-page',
@@ -39,7 +41,7 @@ export class RegisterPageComponent {
    */
   captcha$: Observable<Captcha|null>;
 
-  constructor(private _fb: FormBuilder, private _store: Store<AppState>){
+  constructor(private _fb: FormBuilder, private _store: Store<AppState>, private _authService: AuthService){
     this.captcha$ = _store.pipe(select(captchaSelector));
   }
 
@@ -58,7 +60,7 @@ export class RegisterPageComponent {
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
       name : ['', Validators.required],
-      captchaResponse: ['', Validators.required]
+      captchaClientResponse: ['', Validators.required]
     }, {
       validators: passwordValidator()
     })
@@ -74,34 +76,30 @@ export class RegisterPageComponent {
 
   initializeFormMessages() {
 
-
-  /**
-   * chargement des infos du formulaire
-   */
-  this.formInput = MessageUtil.loadMessageInMap(appMessage.registerPage.information, environment.language)
+    /**
+     * chargement des infos du formulaire
+     */
+    this.formInput = MessageUtil.loadMessageInMap(appMessage.registerPage.information, environment.language)
 
     /**
      * Chargement des messages d'erreur
      */
     this.errorMessages = MessageUtil.loadMessageInMap(appMessage.registerPage.error, environment.language);
-
   }
 
   register() {
     if (!this.registerDataFormGroup.valid) {
       return this.registerDataFormGroup.markAllAsTouched();
     }
-    const registerData = new RegisterDto(
-      this.registerDataFormGroup.get('email')?.value,
-      this.registerDataFormGroup.get('password')?.value,
-      this.registerDataFormGroup.get('name')?.value
-    );
 
-    this._store.dispatch(AuthAction.register({
-      email: registerData.email,
-      password: registerData.password,
-      name: registerData.name
-    }));
+    const email: string = this.registerDataFormGroup.get('email')?.value;
+    const password : string = this.registerDataFormGroup.get('password')?.value;
+    const name: string = this.registerDataFormGroup.get('name')?.value;
+    const captchaClientResponse: string = this.registerDataFormGroup.get('captchaClientResponse')?.value
+
+    const registerData: RegisterDto = this._authService.getRegisterDto(email, password, name, captchaClientResponse);
+
+    this._store.dispatch(AuthAction.register(registerData));
 
   }
 

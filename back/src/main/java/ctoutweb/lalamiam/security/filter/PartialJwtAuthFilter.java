@@ -45,7 +45,7 @@ public class PartialJwtAuthFilter extends OncePerRequestFilter {
       JwtHelper.extractJwtFromHeaders(request)
               .map(token->jwtDecode.decode(token))
               .map(decodeJwt-> JwtHelper.validateJwt(urlPath, decodeJwt))
-              .orElseThrow(() -> new AuthException("echec validation JWT", HttpStatus.FORBIDDEN));
+              .orElseThrow(() -> new AuthException("echec validation JWT", HttpStatus.UNAUTHORIZED));
 
 
       filterChain.doFilter(request, response);
@@ -56,7 +56,7 @@ public class PartialJwtAuthFilter extends OncePerRequestFilter {
       HttpServletUtility.formatResponseMessage( response,"error", ex.getMessage());
     }
     catch (JWTDecodeException ex) {
-      response.setStatus(HttpStatus.BAD_REQUEST.value());
+      response.setStatus(HttpStatus.UNAUTHORIZED.value());
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       HttpServletUtility.formatResponseMessage(response,"error", "Le JWT n'est pas valide");
     }
@@ -66,7 +66,7 @@ public class PartialJwtAuthFilter extends OncePerRequestFilter {
       HttpServletUtility.formatResponseMessage(response,"error", "Le JWT à expiré");
     }
     catch (Exception ex) {
-      response.setStatus(HttpStatus.BAD_REQUEST.value());
+      response.setStatus(HttpStatus.UNAUTHORIZED.value());
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
   }

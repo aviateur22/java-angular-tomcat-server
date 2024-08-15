@@ -50,6 +50,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>4.4.0</version>
@@ -100,7 +106,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <packagingExcludes>WEB-INF/lib/tomcat-*.jar</packagingExcludes>
-                    <warName>lalamiam-app</warName>
+                    <warName>${war.name}</warName>
                 </configuration>
             </plugin>
         </plugins>

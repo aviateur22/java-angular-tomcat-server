@@ -12,7 +12,6 @@ public class PropertiesUtility {
           return null;
       }
 
-      // Load a properties file from class path, inside static method
       Properties properties = new Properties();
       properties.load(input);
 

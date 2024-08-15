@@ -1,0 +1,22 @@
+{
+  "annotationMessage": {
+    "emailMissing": {
+      "fr" : "Email manquant",
+      "en": "Email missing"
+    },
+    "passwordMissing": {
+      "fr" : "Mot de passe manquant",
+      "en": "Password missing"
+    }
+  },
+  "apiResponseMessage": {
+    "success": {
+      "fr" : "Email manquant",
+      "en": "Email missing"
+    },
+    "failed": {
+      "fr" : "Email manquant",
+      "en": "Email missing"
+    }
+  }
+}

@@ -22,6 +22,15 @@ export class LoginPageComponent {
   isLoading$: Observable<boolean>;
 
   /**
+   * Path pour afficher la web_app
+   */
+  webappPath: string = environment.webapp_path;
+
+  /**
+   * Link page inscription
+   */
+  registerLink!: string;
+  /**
    * Erreurs formulaire
    */
   errorMessages: Map<string, string> = new Map();
@@ -37,10 +46,16 @@ export class LoginPageComponent {
   }
 
   ngOnInit() {
+    this.registerLink =  `/${this.webappPath}/register`
+
+    this._store.dispatch(AuthAction.csrf());
     this.initializeLoginData();
     this.initializeFormMessages();
   }
 
+  /**
+   * Initialisation FormBuilder
+   */
   initializeLoginData() {
     this.loginDataFormGroup = this._fb.group({
       // Email
@@ -51,34 +66,39 @@ export class LoginPageComponent {
     })
   }
 
+  /**
+   * Chargement des données du Formulaire
+   */
   initializeFormMessages() {
     /**
      * chargement des infos du formulaire
      */
     this.formInput = MessageUtil.loadMessageInMap(loginPageMessage.loginPage.information, environment.language)
 
-      /**
-       * Chargement des messages d'erreur
-       */
-      this.errorMessages = MessageUtil.loadMessageInMap(loginPageMessage.loginPage.error, environment.language);
+    /**
+     * Chargement des messages d'erreur
+     */
+    this.errorMessages = MessageUtil.loadMessageInMap(loginPageMessage.loginPage.error, environment.language);
 
     }
 
+  /**
+   * Login
+   * @returns
+   */
   login() {
 
     if (!this.loginDataFormGroup.valid) {
       return this.loginDataFormGroup.markAllAsTouched();
     }
+
     const logindata = new LoginDto(
       this.loginDataFormGroup.get('email')?.value,
       this.loginDataFormGroup.get('password')?.value
     );
-    console.log(logindata);
+
     this._store.dispatch(AuthAction.login(logindata));
-    console.log("res.email, res.jwt");
-    // this._authService.login(logindata).subscribe(res=>{
-    //   console.log(res.email, res.jwt);
-    // });
+
   }
 
 }

@@ -1,16 +1,30 @@
-.navbar {
-  color: red;
+nav{
+  height: var(--nav_height);
 }
 
-.navbar-links {
-  display: flex;
-}
-
-.small {
-  width: 25px;
-  height: auto;
-}
-
-li{
+.link {
+  text-decoration: none;
+  color: black;
   padding: 10px;
+  line-height: 2;
+
+}
+
+.right {
+  margin-left: auto; /* Pushes the element to the right */
+}
+
+.active {
+  font-weight: 900;
+  position: relative;
+}
+
+.active::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  left: 0px;
+  bottom: 0px;
 }

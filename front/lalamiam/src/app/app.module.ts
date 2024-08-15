@@ -23,6 +23,13 @@ import { ErrorPageComponent } from './pages/error-page/error-page.component';
 import { AuthModule } from './modules/auth/auth.module';
 
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
   declarations: [
@@ -48,9 +55,17 @@ import { InputTextModule } from 'primeng/inputtext';
       replacer: (_key, value) => (typeof value === "bigint" ? value.toString() : value)
     }
   }),
-  InputTextModule
+  InputTextModule,
+  MessageModule,
+  TabMenuModule,
+  ButtonModule,
+  ConfirmDialogModule,
+  CardModule,
+  DividerModule
+
   ],
   providers: [
+    ConfirmationService,
     {provide: HTTP_INTERCEPTORS, useClass:HandlerHttpInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

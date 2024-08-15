@@ -35,6 +35,7 @@
                 <angular.configuration>development</angular.configuration>
                 <angular.base.href>/</angular.base.href>
                 <database.schema>sc_project</database.schema>
+                <war.name>lalamiam-app</war.name>
                 <jwt.validity.hour>72</jwt.validity.hour>
                 <jwt.issuer>ctoutweb</jwt.issuer>
                 <zone.id>Europe/Paris</zone.id>
@@ -53,6 +54,7 @@
                 <angular.configuration>tomcat</angular.configuration>
                 <angular.base.href>/lalamiam-app/</angular.base.href>
                 <database.schema>sc_project</database.schema>
+                <war.name>lalamiam-app</war.name>
                 <jwt.validity.hour>72</jwt.validity.hour>
                 <jwt.issuer>ctoutweb</jwt.issuer>
                 <zone.id>Europe/Paris</zone.id>
@@ -67,11 +69,32 @@
             </properties>
         </profile>
         <profile>
+            <id>tomcat-root</id>
+            <properties>
+                <angular.configuration>tomcat-root</angular.configuration>
+                <angular.base.href>/</angular.base.href>
+                <database.schema>sc_project</database.schema>
+                <war.name>ROOT</war.name>
+                <jwt.validity.hour>72</jwt.validity.hour>
+                <jwt.issuer>ctoutweb</jwt.issuer>
+                <zone.id>Europe/Paris</zone.id>
+                <log.level>DEBUG</log.level>
+                <context.path></context.path>
+                <cookie.path>/</cookie.path>
+                <cookie.domain>customDomain</cookie.domain>
+                <cookie.path>/</cookie.path>
+                <cookie.secure>false</cookie.secure>
+                <cookie.samesite>Lax</cookie.samesite>
+                <cookie.is.httponly>true</cookie.is.httponly>
+            </properties>
+        </profile>
+        <profile>
             <id>heroku</id>
             <properties>
                 <angular.configuration>production</angular.configuration>
                 <angular.base.href>/</angular.base.href>
                 <database.schema>sc_project</database.schema>
+                <war.name>lalamiam-app</war.name>
                 <jwt.validity.hour>12</jwt.validity.hour>
                 <jwt.issuer>ctoutweb</jwt.issuer>
                 <zone.id>Europe/Paris</zone.id>

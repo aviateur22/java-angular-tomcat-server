@@ -1,3 +1,6 @@
+.main {
+  min-height: calc(100vh - var(--nav_height));
+}
 :host ::ng-deep .p-password input {
   border-color: var(--first_color);
 }

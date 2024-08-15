@@ -4,7 +4,7 @@ import * as AuthAction from "./action";
 import * as UserIdentAction from "src/store/user-ident-store/action";
 import * as FlashMessageAction from 'src/store/flash-message-store/action';
 
-import { catchError, delay, from, map, mergeMap, Observable, of, pipe, switchMap, tap } from "rxjs";
+import { catchError, from, map, mergeMap, of, switchMap } from "rxjs";
 import { AuthService } from "../../services/auth.service";
 
 @Injectable()
@@ -33,7 +33,7 @@ export class AuthEffect {
         catchError((error)=>from([
           UserIdentAction.clearUserIden(),
           // Generation Message d'erreur
-          FlashMessageAction.createMessage({message: error.error, isError: true})
+          FlashMessageAction.createMessage({message: error.error.error, isError: true})
         ])
         )
       )
@@ -46,14 +46,11 @@ export class AuthEffect {
       ofType(AuthAction.register),
       mergeMap((data)=>
         this._authService.register(data).pipe(
-          switchMap((registerResponse)=>[
-            // Generation Message Register
-            FlashMessageAction.createMessage({message: registerResponse.message, isError: false})
-          ]),
+          map((registerResponse)=>FlashMessageAction.createMessage({message: registerResponse.message, isError: false})),
           catchError(error=> {
             return of(
               // Generation Message d'erreur
-              FlashMessageAction.createMessage({message: error.error, isError: true})
+              FlashMessageAction.createMessage({message: error.error.error, isError: true})
             )
           }
         )
@@ -118,7 +115,11 @@ export class AuthEffect {
       ofType(AuthAction.captcha),
       mergeMap(()=>
         this._authService.captcha().pipe(
-          map((captcha)=>AuthAction.captchaSuccess({captcha})),
+          map((captcha)=>{
+            const captchaString = JSON.stringify(captcha);
+            localStorage.setItem('captcha', captchaString)
+            return AuthAction.captchaSuccess({captcha})
+          }),
           catchError(error=> {
             return of(
               // Generation Message d'erreur

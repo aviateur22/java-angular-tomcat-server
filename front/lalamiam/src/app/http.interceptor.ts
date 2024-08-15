@@ -27,7 +27,7 @@ export class HandlerHttpInterceptor implements HttpInterceptor {
         setHeaders: {
           authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Form-Csrf-Token': formToken === null ? '' : formToken
+          'Form-Csrf-Token': formToken === null ? '-' : formToken
         }
       });
     }

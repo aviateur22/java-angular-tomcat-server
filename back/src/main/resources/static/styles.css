@@ -28331,17 +28331,18 @@ body {
   --nav_height: 95px;
 }
 
+/* Max-width 500px */
 .m-w-500 {
   max-width: 500px;
 }
 
-@media screen and (min-width: 768px) {
-  .form--border {
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    border-radius: 5px;
-  }
-
+/* p-message */
+.p-message div {
+  padding: 10px !important;
+  margin-bottom: 0.5rem;
 }
+
+
 
 
 /*# sourceMappingURL=styles.css.map*/

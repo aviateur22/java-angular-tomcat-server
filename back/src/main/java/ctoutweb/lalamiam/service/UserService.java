@@ -1,6 +1,6 @@
 package ctoutweb.lalamiam.service;
 
-import ctoutweb.lalamiam.model.RegisterDto;
+import ctoutweb.lalamiam.dto.RegisterDto;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 
 public interface UserService {

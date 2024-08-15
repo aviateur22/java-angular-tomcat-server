@@ -5,8 +5,10 @@ import ctoutweb.lalamiam.model.csrf.CookieCsrfToken;
 import ctoutweb.lalamiam.model.csrf.HeaderCsrfFormToken;
 import ctoutweb.lalamiam.security.csrf.CustomCsrfTokenRepository;
 
+import ctoutweb.lalamiam.util.HttpServletUtility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,46 +32,52 @@ public class CookieCsrfFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-    CookieCsrfToken csrfCookieToken = csrfTokenRepository.loadCookieToken(request);
-    HeaderCsrfFormToken headerCsrfFormToken = csrfTokenRepository.loadFormToken(request);
+    try {
+      CookieCsrfToken csrfCookieToken = csrfTokenRepository.loadCookieToken(request);
+      HeaderCsrfFormToken headerCsrfFormToken = csrfTokenRepository.loadFormToken(request);
 
-    if(csrfCookieToken == null) {
-      csrfCookieToken = csrfTokenRepository.generateTokenCookieType(request);
-      csrfTokenRepository.saveToken(csrfCookieToken, request, response);
-    }
-
-    if (requireCsrfProtectionMatcher.matches(request)) {
-      if (headerCsrfFormToken == null || csrfCookieToken == null) {
-        LOGGER.error(String.format("Token CSRF indisponible pour vérification"));
-
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Token CSRF indisponible pour vérification");
-        ObjectMapper mapper = new ObjectMapper();
-        response.getOutputStream().write(mapper.writeValueAsBytes(errorResponse));
-        return;
+      if(csrfCookieToken == null) {
+        csrfCookieToken = csrfTokenRepository.generateTokenCookieType(request);
+        csrfTokenRepository.saveToken(csrfCookieToken, request, response);
       }
 
-      if(!csrfCookieToken.getToken().equals(headerCsrfFormToken.getToken())) {
-        LOGGER.error(String.format("Données Token %s, %s",csrfCookieToken.getToken(), headerCsrfFormToken.getToken()));
-        LOGGER.error(String.format("Erreur TOKEN CSRF - Path: %s  - CSRF Formulaire Header: %s - CSRF Cookie: %s",
-                request.getRequestURI(),
-                headerCsrfFormToken != null ? headerCsrfFormToken.toString() : null,
-                csrfCookieToken != null ? csrfCookieToken.toString() : null)
-        );
+      if (requireCsrfProtectionMatcher.matches(request)) {
+        if (headerCsrfFormToken == null || csrfCookieToken == null) {
+          LOGGER.error(String.format("Token CSRF indisponible pour vérification"));
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Invalide CSRF");
-        ObjectMapper mapper = new ObjectMapper();
-        response.getOutputStream().write(mapper.writeValueAsBytes(errorResponse));
-        return;
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+          response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+          Map<String, String> errorResponse = new HashMap<>();
+          errorResponse.put("error", "Token CSRF indisponible pour vérification");
+          ObjectMapper mapper = new ObjectMapper();
+          response.getOutputStream().write(mapper.writeValueAsBytes(errorResponse));
+          return;
+        }
+
+        if(!csrfCookieToken.getToken().equals(headerCsrfFormToken.getToken())) {
+          LOGGER.error(String.format("Données Token %s, %s",csrfCookieToken.getToken(), headerCsrfFormToken.getToken()));
+          LOGGER.error(String.format("Erreur TOKEN CSRF - Path: %s  - CSRF Formulaire Header: %s - CSRF Cookie: %s",
+                  request.getRequestURI(),
+                  headerCsrfFormToken != null ? headerCsrfFormToken.toString() : null,
+                  csrfCookieToken != null ? csrfCookieToken.toString() : null)
+          );
+
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+          response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+          Map<String, String> errorResponse = new HashMap<>();
+          errorResponse.put("error", "Invalide CSRF");
+          ObjectMapper mapper = new ObjectMapper();
+          response.getOutputStream().write(mapper.writeValueAsBytes(errorResponse));
+          return;
+        }
       }
+      filterChain.doFilter(request, response);
+    } catch (Exception ex) {
+      LOGGER.error(ex);
+      response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+      response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+      HttpServletUtility.formatResponseMessage( response,"error", ex.getMessage());
     }
-
-    filterChain.doFilter(request, response);
   }
 
   public static final class DefaultRequiresCsrfMatcher implements RequestMatcher {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AppState } from 'src/store/app.state';
 import { messageSelector, isMessageErrorSelector } from 'src/store/flash-message-store/selector';
 

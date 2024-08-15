@@ -2,9 +2,9 @@ package ctoutweb.lalamiam.controller;
 
 import ctoutweb.lalamiam.dto.CaptchaDto;
 import ctoutweb.lalamiam.factory.CaptchaFactory;
-import ctoutweb.lalamiam.model.LoginDto;
-import ctoutweb.lalamiam.model.LoginResponseDto;
-import ctoutweb.lalamiam.model.RegisterDto;
+import ctoutweb.lalamiam.dto.LoginDto;
+import ctoutweb.lalamiam.dto.LoginResponseDto;
+import ctoutweb.lalamiam.dto.RegisterDto;
 import ctoutweb.lalamiam.model.RegisterResponse;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
 import ctoutweb.lalamiam.service.CaptchaService;

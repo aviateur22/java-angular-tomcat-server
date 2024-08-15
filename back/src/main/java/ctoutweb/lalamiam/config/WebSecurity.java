@@ -88,6 +88,7 @@ public class WebSecurity {
     CorsConfiguration corsForWebAppPath = new CorsConfiguration();
     corsForWebAppPath.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
     corsForWebAppPath.setAllowedMethods(Arrays.asList("GET"));
+    corsForWebAppPath.setAllowCredentials(true);
     corsForWebAppPath.setAllowedHeaders(Arrays.asList(
             "Content-Type",
             "Authorization",

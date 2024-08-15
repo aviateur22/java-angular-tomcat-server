@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
 import { LoginDto } from "../models/login-dto.model";
-import { catchError, map, Observable, of, tap } from "rxjs";
-import { LoginResponseDto } from "../models/login.response.model.dto";
+import { map, Observable, of, tap } from "rxjs";
+import { LoginResponseDto } from "../models/login-response.dto";
 import { environment } from "src/environments/environment";
 import { HttpClient } from "@angular/common/http";
-import { RegisterDto } from "../models/register-dto.model";
-import { RegisterResponseDto } from "../models/register.response.model.dto";
+import { RegisterDto } from "../models/register.dto";
+import { RegisterResponseDto } from "../models/register-response.dto";
 import { Captcha } from "../models/captcha.model";
-import { CaptchaDto } from "../models/captcha.dto.model";
+import { CaptchaDto } from "../models/captcha.dto";
+import { CaptchaClientResponseDto } from "../models/captcha-client-response.dto";
 
 @Injectable({
   providedIn:"root"
@@ -61,7 +62,7 @@ export class AuthService {
       const userId = userString.userId;
       path = this._apiEndPoint + "/logout/" + userId;
     }
-
+    console.log(path);
     return this._http.get(path,{
       responseType: 'text' as const
     });
@@ -69,5 +70,37 @@ export class AuthService {
 
   private toCaptchaModel(dto: CaptchaDto): Captcha {
     return new Captcha(dto.imageBase64, dto.imageMimeType, dto.question, dto.response);
+  }
+
+  /**
+   * Renvoi un RegisterDto
+   * @param email
+   * @param password
+   * @param name
+   * @param captchaClientResponse
+   * @returns RegisterDto
+   */
+  public getRegisterDto(email: string, password: string, name: string, captchaClientResponse: string): RegisterDto {
+    const captchaData: string | null = localStorage.getItem('captcha');
+    let captchaResponse: string = '';
+
+
+    if(captchaData != null) {
+      const captchaDataJson = JSON.parse(captchaData);
+      captchaResponse = captchaDataJson.response
+    }
+
+    // Récupération des données du captcha et réponse client
+    const captchaClientResponseDto: CaptchaClientResponseDto = {
+      captchaResponse,
+      clientResponse: captchaClientResponse
+    };
+
+    return  {
+      email,
+      password,
+      name,
+      captchaClientResponseDto
+    }
   }
 }

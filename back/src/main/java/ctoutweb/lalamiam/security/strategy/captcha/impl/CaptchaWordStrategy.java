@@ -6,6 +6,8 @@ import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.service.ImageService;
 import ctoutweb.lalamiam.util.TextUtility;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,10 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 
 @Component
+@PropertySource({"classpath:application.properties"})
 public class CaptchaWordStrategy extends CaptchaEnigme implements CaptchaStrategy {
+  @Value("${captcha.token}")
+  private String captchaToken;
   private final PasswordEncoder passwordEncoder;
   private final ImageService imageService;
 
@@ -50,6 +55,9 @@ public class CaptchaWordStrategy extends CaptchaEnigme implements CaptchaStrateg
     final int RANDOM_TEXT_LENGTH = 9;
     String wordEnigme = TextUtility.generateText(RANDOM_TEXT_LENGTH);
     String wordResponse = wordEnigme;
-    return CaptchaFactory.getDataTest(question, wordEnigme, passwordEncoder.encode(wordResponse));
+    return CaptchaFactory.getDataTest(
+            question,
+            wordEnigme,
+            passwordEncoder.encode(this.addCaptchaSecretKeyToCaptchaResponse(captchaToken, wordResponse)));
   }
 }

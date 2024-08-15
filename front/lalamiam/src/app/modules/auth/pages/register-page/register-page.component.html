@@ -101,9 +101,9 @@
       <div class="flex flex-column align-items-center mb-2">
         <img [src]="'data:' + captcha.mimeType + ';base64,' + captcha.image">
       </div>
-      <input pInputText style="border-color: var(--first_color)" id="captchaResponse" type="text" formControlName="captchaResponse">
+      <input pInputText style="border-color: var(--first_color)" id="captchaClientResponse" type="text" formControlName="captchaClientResponse">
        <!--Message erreur-->
-       <div   *ngIf="registerDataFormGroup.get('captchaResponse')?.touched && registerDataFormGroup.get('captchaResponse')?.errors?.['required']">
+       <div   *ngIf="registerDataFormGroup.get('captchaClientResponse')?.touched && registerDataFormGroup.get('captchaClientResponse')?.errors?.['required']">
         <p-message class="p-message" severity="error" [text]="errorMessages.get('captchaResponseMissing')" ></p-message>
       </div>
     </div>

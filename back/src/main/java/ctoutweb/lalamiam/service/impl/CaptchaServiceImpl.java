@@ -2,19 +2,26 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.factory.CaptchaFactory;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
+import ctoutweb.lalamiam.model.captcha.ClientResponseCaptcha;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaType;
+import ctoutweb.lalamiam.security.strategy.captcha.impl.CaptchaEnigme;
 import ctoutweb.lalamiam.service.CaptchaService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 
 @Service
+@PropertySource({"classpath:application.properties"})
 public class CaptchaServiceImpl implements CaptchaService {
   private final PasswordEncoder passwordEncoder;
+
+  @Value("${captcha.token}")
+  private String captchaToken;
 
   public CaptchaServiceImpl(PasswordEncoder passwordEncoder) {
     this.passwordEncoder = passwordEncoder;
@@ -30,11 +37,11 @@ public class CaptchaServiceImpl implements CaptchaService {
   }
 
   @Override
-  public Boolean validateResponse(String clientResponse, String captchaResponse, LocalDateTime validityTime) {
-    if(LocalDateTime.now().isAfter(validityTime))
-      return false;
+  public Boolean validateResponse(ClientResponseCaptcha clientResponseCaptcha) {
 
-    boolean isResponseValid = passwordEncoder.matches(clientResponse, captchaResponse);
+    // Ajout captcha token
+    String responseClientWithCaptchaToken = CaptchaEnigme.addCaptchaSecretKeyToClientResponse(captchaToken, clientResponseCaptcha.clientResponse());
+    boolean isResponseValid = passwordEncoder.matches(responseClientWithCaptchaToken, clientResponseCaptcha.captchaResponse());
 
     return isResponseValid;
   }

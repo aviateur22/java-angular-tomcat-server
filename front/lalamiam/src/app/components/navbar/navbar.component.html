@@ -1,16 +1,85 @@
-<nav class="navbar">
-  <div class="navbar-logo">
-    <img class="small" src="assets/hamburger.jpg" alt="My App Logo" />
-  </div>
-  <ul class="navbar-links">
-      <li><a routerLink="/lalamiam">Home</a></li>
-      <li><a routerLink="/lalamiam/users-page">users</a></li>
-      <li><a routerLink="/lalamiam/connexion">connexion</a></li>
-  </ul>
+<nav class="p-4">
+    <div class="flex align-items-center justify-content-between w-12">
+      <!--LOGO - APP-->
+      <div class="p-4 navbar-logo cursor-pointer min-w-min">
+        <h2 (click)="displayMenuOverlay()" class="text-3xl font-bold">MY APP</h2>
+        <!--
+          <img class="small" src="assets/hamburger.jpg" alt="My App Logo" />
+        -->
+      </div>
+      <!--Links menu-->
+      <div class="hidden sm:flex w-8">
+        <ul class="p-4 flex justify-content-center w-12">
+          <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="mr-4">
+            <a class="link" [routerLink]=homeLink>Home</a>
+          </li>
+          <li routerLinkActive="active" class="mr-4"><a class="link" [routerLink]=userLink>users</a></li>
+          <ng-container *ngIf="(userEmail$ | async) as user; else elseBlock">
+            <li class="right">
+              <p-button label="Déconnexion" (onClick)="displayLogoutOverlay()"></p-button>
+            </li>
+          </ng-container>
 
-  <div *ngIf="(userEmail$ | async) as user">
-    <button (click)="logout()">
-      deconnexion
-    </button>
-  </div>
+          <ng-template #elseBlock>
+            <li class="right" routerLinkActive="active">
+              <a class="link" [routerLink]=loginLink>
+                <i class="pi pi-user"></i>
+                connexion
+              </a>
+            </li>
+          </ng-template>
+        </ul>
+      </div>
+    </div>
 </nav>
+<p-divider></p-divider>
+
+<!--Menu vertical-->
+<ng-container *ngIf="isMenuVisible">
+  <nav class="inline sm:hidden">
+    <div class="z-1 bg-black-alpha-10 absolute top-0 left-0 bottom-0 w-full flex justify-content-start align-items-start">
+      <div class="shadow-2 sm:w-6 w-12 max-w-full sm:max-w-30rem min-h-full bg-white flex flex-column justify-content-start align-items-start">
+        <div class="flex w-12 p-2 justify-content-end">
+          <p-button (onClick)="displayMenuOverlay()"  icon="pi pi-times" [rounded]="true" [text]="true" severity="danger "></p-button>
+        </div>
+        <ul class="p-4 flex flex-column justify-content-center w-12">
+          <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="mr-4">
+            <a (click)="displayMenuOverlay()" class="link" [routerLink]=homeLink>Home</a>
+          </li>
+          <li (onClick)="displayMenuOverlay()" routerLinkActive="active" class="mr-4">
+            <a (click)="displayMenuOverlay()" class="link" [routerLink]=userLink>users</a>
+          </li>
+          <ng-container *ngIf="(userEmail$ | async) as user; else elseBlock">
+            <li>
+              <p-button label="Déconnexion" (onClick)="displayLogoutOverlay()"></p-button>
+            </li>
+          </ng-container>
+
+          <ng-template #elseBlock>
+            <li (onClick)="displayMenuOverlay()" routerLinkActive="active">
+              <a [routerLink]=loginLink
+              (click)="displayMenuOverlay()">
+                <i class="pi pi-user"></i>
+                connexion
+              </a>
+            </li>
+          </ng-template>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</ng-container>
+
+<!--Confirmation logout-->
+<ng-container *ngIf="isLogoutVisible">
+  <div class="z-1 bg-black-alpha-10 absolute top-0 left-0 bottom-0 w-full flex align-items-center justify-content-center">
+    <div class="shadow-2 sm:w-6 max-w-full sm:max-w-30rem bg-white flex flex-column justify-content-center align-items-center">
+      <p class="p-5">Souhaitez-vous quitter l'application?</p>
+      <div class="p-5 w-12  flex flex-column sm:flex-row align-items-center justify-content-center">
+        <p-button class="w-12 m-1" [style]="{ 'width': '100%' }" label=" Me deconnecter" [outlined]="true"  styleClass="p-button-secondary" (onClick)="logout()" icon="pi pi-check"></p-button>
+        <p-button class="w-12 m-1" label="Non"  [style]="{ 'width': '100%' }" (onClick)="displayLogoutOverlay()"></p-button>
+      </div>
+  </div>
+  </div>
+
+</ng-container>

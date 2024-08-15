@@ -1,40 +1,42 @@
-<div class="flex flex-column align-items-center w-full">
-  <form class="form--border flex flex-column align-items-center p-4 w-full m-w-500" [formGroup]="loginDataFormGroup" (submit)="login()" >
-    <p class="text-base pt-6 pb-4 font-semibold">Page de connexion</p>
-    <p-divider class="p-2 w-full"></p-divider>
+<div class="main flex align-items-center justify-content-center">
+  <div class="flex flex-column align-items-center w-full">
+    <form class="form--border flex flex-column align-items-center p-4 w-full m-w-500" [formGroup]="loginDataFormGroup" (submit)="login()" >
+      <p class="text-base pt-6 pb-4 font-semibold">{{formInput.get('title')}}</p>
+      <p-divider class="p-2 w-full"></p-divider>
 
-    <!--Email-->
-    <div class="flex flex-column w-full pt-4">
-      <label class="pb-1" for="email">Votre email</label>
-      <input style="border-color: var(--first_color)" type="email" pInputText id="email" formControlName="email" placeholder="votre email.">
+      <!--Email-->
+      <div class="flex flex-column w-full pt-4">
+        <label class="pb-1" for="email">{{formInput.get('email')}}</label>
+        <input style="border-color: var(--first_color)" type="email" pInputText id="email" formControlName="email" placeholder="votre email.">
 
-       <!--Message erreur-->
-       <div *ngIf="loginDataFormGroup.get('email')?.touched && loginDataFormGroup.get('email')?.errors?.['required']">
-        <p-message class="p-message" severity="error" [text]="errorMessages.get('emailMissing')" ></p-message>
+         <!--Message erreur-->
+         <div *ngIf="loginDataFormGroup.get('email')?.touched && loginDataFormGroup.get('email')?.errors?.['required']">
+          <p-message class="p-message" severity="error" [text]="errorMessages.get('emailMissing')" ></p-message>
+        </div>
       </div>
-    </div>
 
-    <!-- Mote de passe-->
-    <div class="flex flex-column w-full pt-4">
-      <label class="pb-1" for="password">votre mot de passe</label>
-      <p-password
-        id="password"
-        [feedback]="false"
-        [toggleMask]="true"
-        formControlName="password"
-        placeholder="mot de passe...">
-      </p-password>
+      <!-- Mote de passe-->
+      <div class="flex flex-column w-full pt-4">
+        <label class="pb-1" for="password">{{formInput.get('password')}}</label>
+        <p-password
+          id="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          formControlName="password"
+          placeholder="mot de passe...">
+        </p-password>
 
-      <!--Message erreur-->
-      <div *ngIf="loginDataFormGroup.get('password')?.touched && loginDataFormGroup.get('password')?.errors?.['required']">
-        <p-message class="p-message" severity="error" [text]="errorMessages.get('passwordMissing')" ></p-message>
+        <!--Message erreur-->
+        <div *ngIf="loginDataFormGroup.get('password')?.touched && loginDataFormGroup.get('password')?.errors?.['required']">
+          <p-message class="p-message" severity="error" [text]="errorMessages.get('passwordMissing')" ></p-message>
+        </div>
       </div>
-    </div>
 
-    <p-button class="pt-4" type="submit" label="connexion"></p-button>
-    <div class="flex flex-column w-full pt-4">
-      <p> Pas encore inscrit ? </p> <a [routerLink]="'/lalamiam/register'">inscription</a>
+      <p-button class="pt-4" type="submit" label="connexion"></p-button>
+      <div class="flex flex-column w-full pt-4">
+        <p> {{formInput.get('register')}} </p> <a [routerLink]=registerLink>inscription</a>
 
-    </div>
-  </form>
+      </div>
+    </form>
+  </div>
 </div>

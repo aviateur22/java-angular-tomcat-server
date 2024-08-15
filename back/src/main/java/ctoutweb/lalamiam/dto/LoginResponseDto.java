@@ -1,4 +1,4 @@
-package ctoutweb.lalamiam.model;
+package ctoutweb.lalamiam.dto;
 
 import java.util.List;
 

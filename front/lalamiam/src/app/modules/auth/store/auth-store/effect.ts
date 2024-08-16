@@ -4,13 +4,15 @@ import * as AuthAction from "./action";
 import * as UserIdentAction from "src/store/user-ident-store/action";
 import * as FlashMessageAction from 'src/store/flash-message-store/action';
 
-import { catchError, from, map, mergeMap, of, switchMap } from "rxjs";
+import { catchError, from, map, mergeMap, of, switchMap, tap } from "rxjs";
 import { AuthService } from "../../services/auth.service";
+import { Router } from "@angular/router";
+import frontendLinkUrl from "src/app/utils/frontend-link-url";
 
 @Injectable()
 export class AuthEffect {
 
-  constructor(private _action$: Actions, private _authService: AuthService){}
+  constructor(private _action$: Actions, private _authService: AuthService, private _router: Router){}
 
   login$ = createEffect(()=>
   this._action$.pipe(
@@ -24,11 +26,12 @@ export class AuthEffect {
             email: loginResponse.email,
             jwt: loginResponse.jwt,
             roles: loginResponse.roles
-
           }),
 
           // Generation Message login
-          FlashMessageAction.createMessage({message: loginResponse.message, isError: false})
+          FlashMessageAction.createMessage({message: loginResponse.message, isError: false}),
+
+
         ]),
         catchError((error)=>from([
           UserIdentAction.clearUserIden(),
@@ -64,6 +67,11 @@ export class AuthEffect {
       ofType(AuthAction.logout),
       mergeMap(()=>
         this._authService.logout().pipe(
+          tap(()=>{
+            // Redirect HomeApp
+            console.log('redirection:  ' + frontendLinkUrl.home);
+            this._router.navigate([frontendLinkUrl.home])}
+          ),
           switchMap((resMessage)=> {
             localStorage.removeItem('user');
             return [
@@ -71,7 +79,9 @@ export class AuthEffect {
               UserIdentAction.clearUserIden(),
 
               // Generation Message logout
-              FlashMessageAction.createMessage({message: resMessage, isError: false})
+              FlashMessageAction.createMessage({message: resMessage, isError: false}),
+
+
             ]
           }),
           catchError((error)=>{

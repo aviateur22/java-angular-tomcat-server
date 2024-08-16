@@ -8,5 +8,6 @@ export const environment: EnvironmentRef = {
   name: 'prod',
   language: 'fr',
   api_base: 'https://back-front-app-f51cda367db7.herokuapp.com/api',
-  webapp_path: 'lalamiam'
+  webapp_path: 'lalamiam',
+  main_page_title: 'My APP'
 };

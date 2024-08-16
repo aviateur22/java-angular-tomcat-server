@@ -11,13 +11,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   AppRoutingModule: () => (/* binding */ AppRoutingModule)
 /* harmony export */ });
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/router */ 7947);
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/router */ 7947);
 /* harmony import */ var _pages_home_page_home_page_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pages/home-page/home-page.component */ 4292);
 /* harmony import */ var _pages_not_found_page_not_found_page_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pages/not-found-page/not-found-page.component */ 2081);
 /* harmony import */ var _pages_user_page_user_page_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pages/user-page/user-page.component */ 6885);
 /* harmony import */ var src_environments_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/environments/environment */ 553);
 /* harmony import */ var _pages_error_page_error_page_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pages/error-page/error-page.component */ 3469);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var _utils_page_title__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utils/page-title */ 6538);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/core */ 1699);
+
 
 
 
@@ -31,19 +33,19 @@ const routes = [{
   children: [{
     path: "",
     component: _pages_home_page_home_page_component__WEBPACK_IMPORTED_MODULE_0__.HomePageComponent,
-    title: "Accueil"
+    title: _utils_page_title__WEBPACK_IMPORTED_MODULE_5__["default"].homePageTitle[src_environments_environment__WEBPACK_IMPORTED_MODULE_3__.environment.language]
   }, {
     path: "error",
     component: _pages_error_page_error_page_component__WEBPACK_IMPORTED_MODULE_4__.ErrorPageComponent,
-    title: "Erreur"
+    title: _utils_page_title__WEBPACK_IMPORTED_MODULE_5__["default"].errorPageTitle[src_environments_environment__WEBPACK_IMPORTED_MODULE_3__.environment.language]
   }, {
     path: "users-page",
     component: _pages_user_page_user_page_component__WEBPACK_IMPORTED_MODULE_2__.UserPageComponent,
-    title: "Page users"
+    title: _utils_page_title__WEBPACK_IMPORTED_MODULE_5__["default"].userHomePageTitle[src_environments_environment__WEBPACK_IMPORTED_MODULE_3__.environment.language]
   }, {
     path: "not-found-page",
     component: _pages_not_found_page_not_found_page_component__WEBPACK_IMPORTED_MODULE_1__.NotFoundPageComponent,
-    title: "404"
+    title: _utils_page_title__WEBPACK_IMPORTED_MODULE_5__["default"].notFoundPageTitle[src_environments_environment__WEBPACK_IMPORTED_MODULE_3__.environment.language]
   }]
 }, {
   path: "",
@@ -52,23 +54,23 @@ const routes = [{
 }, {
   path: "**",
   redirectTo: "not-found-page",
-  title: '404'
+  title: _utils_page_title__WEBPACK_IMPORTED_MODULE_5__["default"].notFoundPageTitle[src_environments_environment__WEBPACK_IMPORTED_MODULE_3__.environment.language]
 }];
 class AppRoutingModule {
   static #_ = this.ɵfac = function AppRoutingModule_Factory(t) {
     return new (t || AppRoutingModule)();
   };
-  static #_2 = this.ɵmod = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineNgModule"]({
+  static #_2 = this.ɵmod = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdefineNgModule"]({
     type: AppRoutingModule
   });
-  static #_3 = this.ɵinj = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineInjector"]({
-    imports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule.forRoot(routes), _angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule]
+  static #_3 = this.ɵinj = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdefineInjector"]({
+    imports: [_angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule.forRoot(routes), _angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule]
   });
 }
 (function () {
-  (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵsetNgModuleScope"](AppRoutingModule, {
-    imports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule],
-    exports: [_angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterModule]
+  (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵsetNgModuleScope"](AppRoutingModule, {
+    imports: [_angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule],
+    exports: [_angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterModule]
   });
 })();
 
@@ -1422,6 +1424,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pages_login_page_login_page_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../pages/login-page/login-page.component */ 1614);
 /* harmony import */ var _pages_register_page_register_page_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../pages/register-page/register-page.component */ 775);
 /* harmony import */ var src_environments_environment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/environments/environment */ 553);
+/* harmony import */ var src_app_utils_page_title__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/utils/page-title */ 6538);
+
 
 
 
@@ -1430,11 +1434,11 @@ const authRouting = [{
   children: [{
     path: "connexion",
     component: _pages_login_page_login_page_component__WEBPACK_IMPORTED_MODULE_0__.LoginPageComponent,
-    title: "Connexion"
+    title: src_app_utils_page_title__WEBPACK_IMPORTED_MODULE_3__["default"].loginPageTitle[src_environments_environment__WEBPACK_IMPORTED_MODULE_2__.environment.language]
   }, {
     path: "register",
     component: _pages_register_page_register_page_component__WEBPACK_IMPORTED_MODULE_1__.RegisterPageComponent,
-    title: "Creation compte"
+    title: src_app_utils_page_title__WEBPACK_IMPORTED_MODULE_3__["default"].registerPageTitle[src_environments_environment__WEBPACK_IMPORTED_MODULE_2__.environment.language]
   }]
 }];
 
@@ -1587,18 +1591,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   AuthEffect: () => (/* binding */ AuthEffect)
 /* harmony export */ });
-/* harmony import */ var _ngrx_effects__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ngrx/effects */ 1575);
+/* harmony import */ var _ngrx_effects__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ngrx/effects */ 1575);
 /* harmony import */ var _action__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./action */ 8312);
 /* harmony import */ var src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/store/user-ident-store/action */ 3541);
 /* harmony import */ var src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/store/flash-message-store/action */ 9667);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ 1891);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 2389);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ 6231);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs */ 2607);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs */ 9736);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs */ 4980);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/core */ 1699);
-/* harmony import */ var _services_auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/auth.service */ 3721);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 1891);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ 2389);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs */ 6231);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs */ 2607);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs */ 9736);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs */ 4980);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs */ 3738);
+/* harmony import */ var src_app_utils_frontend_link_url__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/utils/frontend-link-url */ 6868);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @angular/core */ 1699);
+/* harmony import */ var _services_auth_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/auth.service */ 3721);
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/router */ 7947);
+
+
 
 
 
@@ -1608,10 +1617,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class AuthEffect {
-  constructor(_action$, _authService) {
+  constructor(_action$, _authService, _router) {
     this._action$ = _action$;
     this._authService = _authService;
-    this.login$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.login), (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(data => this._authService.login(data).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(loginResponse => [
+    this._router = _router;
+    this.login$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.login), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.switchMap)(data => this._authService.login(data).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_6__.switchMap)(loginResponse => [
     // Creation du UserIdent
     src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.createUserIden({
       userId: loginResponse.id,
@@ -1623,24 +1633,28 @@ class AuthEffect {
     src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
       message: loginResponse.message,
       isError: false
-    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)([src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
+    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.catchError)(error => (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.from)([src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
     // Generation Message d'erreur
     src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
       message: error.error.error,
       isError: true
     })]))))));
-    this.register$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.register), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(data => this._authService.register(data).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_9__.map)(registerResponse => src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
+    this.register$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.register), (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.mergeMap)(data => this._authService.register(data).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_10__.map)(registerResponse => src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
       message: registerResponse.message,
       isError: false
-    })), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => {
-      return (0,rxjs__WEBPACK_IMPORTED_MODULE_10__.of)(
+    })), (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.catchError)(error => {
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.of)(
       // Generation Message d'erreur
       src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
         message: error.error.error,
         isError: true
       }));
     })))));
-    this.logout$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.logout), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(() => this._authService.logout().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(resMessage => {
+    this.logout$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.logout), (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.mergeMap)(() => this._authService.logout().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_12__.tap)(() => {
+      // Redirect HomeApp
+      console.log('redirection:  ' + src_app_utils_frontend_link_url__WEBPACK_IMPORTED_MODULE_3__["default"].home);
+      this._router.navigate([src_app_utils_frontend_link_url__WEBPACK_IMPORTED_MODULE_3__["default"].home]);
+    }), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.switchMap)(resMessage => {
       localStorage.removeItem('user');
       return [
       // Suppression du UserIdent
@@ -1650,9 +1664,9 @@ class AuthEffect {
         message: resMessage,
         isError: false
       })];
-    }), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => {
+    }), (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.catchError)(error => {
       localStorage.removeItem('user');
-      return (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)([
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.from)([
       // Suppression du UserIdent
       src_store_user_ident_store_action__WEBPACK_IMPORTED_MODULE_1__.clearUserIden(),
       // Generation Message d'erreur
@@ -1661,27 +1675,27 @@ class AuthEffect {
         isError: true
       })]);
     })))));
-    this.csrf$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.csrf), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(() => this._authService.csrf().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_5__.switchMap)(csrf => [
+    this.csrf$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.csrf), (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.mergeMap)(() => this._authService.csrf().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_6__.switchMap)(csrf => [
     // Generation Message Register
     src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
       message: csrf,
       isError: false
-    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => {
-      return (0,rxjs__WEBPACK_IMPORTED_MODULE_10__.of)(
+    })]), (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.catchError)(error => {
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.of)(
       // Generation Message d'erreur
       src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
         message: error.error.error,
         isError: true
       }));
     })))));
-    this.captcha$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.captcha), (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.mergeMap)(() => this._authService.captcha().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_9__.map)(captcha => {
+    this.captcha$ = (0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.createEffect)(() => this._action$.pipe((0,_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.ofType)(_action__WEBPACK_IMPORTED_MODULE_0__.captcha), (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.mergeMap)(() => this._authService.captcha().pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_10__.map)(captcha => {
       const captchaString = JSON.stringify(captcha);
       localStorage.setItem('captcha', captchaString);
       return _action__WEBPACK_IMPORTED_MODULE_0__.captchaSuccess({
         captcha
       });
-    }), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.catchError)(error => {
-      return (0,rxjs__WEBPACK_IMPORTED_MODULE_10__.of)(
+    }), (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.catchError)(error => {
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_11__.of)(
       // Generation Message d'erreur
       src_store_flash_message_store_action__WEBPACK_IMPORTED_MODULE_2__.createMessage({
         message: error.error.error,
@@ -1690,9 +1704,9 @@ class AuthEffect {
     })))));
   }
   static #_ = this.ɵfac = function AuthEffect_Factory(t) {
-    return new (t || AuthEffect)(_angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵinject"](_ngrx_effects__WEBPACK_IMPORTED_MODULE_4__.Actions), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵinject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_3__.AuthService));
+    return new (t || AuthEffect)(_angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵinject"](_ngrx_effects__WEBPACK_IMPORTED_MODULE_5__.Actions), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵinject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_4__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵinject"](_angular_router__WEBPACK_IMPORTED_MODULE_14__.Router));
   };
-  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdefineInjectable"]({
+  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_13__["ɵɵdefineInjectable"]({
     token: AuthEffect,
     factory: AuthEffect.ɵfac
   });
@@ -2059,6 +2073,42 @@ class UserService {
 
 /***/ }),
 
+/***/ 6868:
+/*!********************************************!*\
+  !*** ./src/app/utils/frontend-link-url.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  home: {
+    url: 'home'
+  },
+  notFound: {
+    url: 'not-found'
+  },
+  forbidden: {
+    url: "forbidden"
+  },
+  error: {
+    url: 'error'
+  },
+  login: {
+    url: 'auth/login'
+  },
+  register: {
+    url: 'auth/create-account/user/:user/confirmation/:confirmation'
+  },
+  userHome: {
+    url: 'user/home'
+  }
+});
+
+/***/ }),
+
 /***/ 6174:
 /*!******************************************************!*\
   !*** ./src/app/utils/messages/login-page-message.ts ***!
@@ -2206,6 +2256,51 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ 6538:
+/*!*************************************!*\
+  !*** ./src/app/utils/page-title.ts ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var src_environments_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! src/environments/environment */ 553);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  loginPageTitle: {
+    fr: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Page de connexion`,
+    en: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Login page`
+  },
+  registerPageTitle: {
+    fr: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Inscription`,
+    en: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Register`
+  },
+  notFoundPageTitle: {
+    fr: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Pas de résultat`,
+    en: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | No found`
+  },
+  forbiddenPageTitle: {
+    fr: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Interdit`,
+    en: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Forbidden page`
+  },
+  errorPageTitle: {
+    fr: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Erreur`,
+    en: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Error`
+  },
+  userHomePageTitle: {
+    fr: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Votre compte`,
+    en: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title} | Your account`
+  },
+  homePageTitle: {
+    fr: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title}`,
+    en: `${src_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.main_page_title}`
+  }
+});
+
+/***/ }),
+
 /***/ 553:
 /*!*****************************************!*\
   !*** ./src/environments/environment.ts ***!
@@ -2224,7 +2319,8 @@ const environment = {
   name: 'dev',
   language: 'fr',
   api_base: 'http://localhost:8080/api',
-  webapp_path: 'webapp'
+  webapp_path: 'webapp',
+  main_page_title: 'My APP'
 };
 
 /***/ }),

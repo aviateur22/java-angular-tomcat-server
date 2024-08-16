@@ -14,6 +14,9 @@ import ctoutweb.lalamiam.service.AuthService;
 import ctoutweb.lalamiam.service.CaptchaService;
 import ctoutweb.lalamiam.service.JwtService;
 import ctoutweb.lalamiam.service.UserService;
+import ctoutweb.lalamiam.util.message.Language;
+import ctoutweb.lalamiam.util.message.Message;
+import ctoutweb.lalamiam.util.message.MessageType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,28 +39,54 @@ public class AuthServiceImpl implements AuthService {
   private final JwtService jwtService;
   private final JwtIssuer jwtIssuer;
   private final CaptchaService captchaService;
+  private final Message message;
 
   public AuthServiceImpl(
           AuthenticationManager authenticationManager,
           UserService userService,
           JwtService jwtService,
-          JwtIssuer jwtIssuer, CaptchaService captchaService) {
+          JwtIssuer jwtIssuer, CaptchaService captchaService, Message message) {
     this.authenticationManager = authenticationManager;
     this.userService = userService;
     this.jwtService = jwtService;
     this.jwtIssuer = jwtIssuer;
     this.captchaService = captchaService;
+    this.message = message;
   }
 
   @Override
   @Transactional
   public LoginResponseDto login(LoginDto loginDto) {
 
+    final String DEFAULT_LANGUAGE = "fr";
+
+    if(loginDto.language() == null) {
+      LOGGER.error(()->String.format("Aucun language de défini. Sélection: ", DEFAULT_LANGUAGE));
+    }
+    String language = loginDto.language() != null ? loginDto.language() : DEFAULT_LANGUAGE;
+
+    // Controlle language
+    if(!Language.isLanguageValid(language)) {
+      throw new RuntimeException("Language pas valide");
+    }
+
+    // Chargement des messages
+    try{
+      this.loadMessage(MessageType.LOGIN, language);
+    } catch (IOException exception) {
+      LOGGER.error(()->String.format("Erreur chargement message: %s", exception));
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+
+    LOGGER.debug(message.getExceptionMessages().get("emailExist"));
+
     // Validation des données
     validateInputData(loginDto);
 
     // Destruction JWT existant
     jwtService.deleteJwtByUserEmail(loginDto.email());
+
 
     Authentication auth = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.password())
@@ -112,5 +143,12 @@ public class AuthServiceImpl implements AuthService {
   private <T> void validateInputData(T inputData) {
     AnnotationValidator<T> registerValidator = new AnnotationValidator<>();
     registerValidator.validate(inputData);
+  }
+
+  /**
+   * Chargement des Messages
+   */
+  private void loadMessage(MessageType type, String language) throws IOException, URISyntaxException {
+   this.message.loadMessages(type, language);
   }
 }

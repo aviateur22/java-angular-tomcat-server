@@ -8,5 +8,6 @@ export const environment: EnvironmentRef = {
   name: 'tomcat',
   language: 'fr',
   api_base: 'http://localhost:8080/lalamiam-app/api',
-  webapp_path: 'webapp'
+  webapp_path: 'webapp',
+  main_page_title: 'My APP'
 };

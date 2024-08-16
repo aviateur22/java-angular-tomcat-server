@@ -1,0 +1,40 @@
+{
+  "apiExceptionMessage": {
+    "emailExist": {
+      "fr" : "Email déjà existant",
+      "en": "Email already exist"
+    },
+    "error": {
+      "fr" : "Erreur",
+      "en": "Error"
+    },
+    "unvalidJwtStrategy": {
+      "fr": "Strategie JWT identification inexistante",
+      "en": "Unvalid JWT strategy"
+    },
+    "unvalidJWT" : {
+      "fr": "Le JWT n'est pas valide",
+      "en" : "JWT is unvalid"
+    },
+    "loginPasswordUnvalid" : {
+      "fr":  "Email ou mot de passe invalide",
+      "en" : "Email or password unvalid"
+    },
+    "captchaUnvalidConfig" : {
+      "fr":  "Erreur configuration captcha",
+      "en" : "Unvalid captcha configuration"
+    },
+    "captchaNoData" : {
+      "fr":  "Aucune données de diponible pour le captcha",
+      "en" : "No captcha data"
+    },
+    "captchaNoImage" : {
+      "fr":  "Impossible de générer l'image captcha",
+      "en" : "Captcha image error"
+    },
+    "logoutError" : {
+      "fr":      "echec de deconnexion",
+      "en" : "Logout error"
+    }
+  }
+}

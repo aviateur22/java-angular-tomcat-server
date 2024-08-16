@@ -30,6 +30,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { DividerModule } from 'primeng/divider';
   ButtonModule,
   ConfirmDialogModule,
   CardModule,
-  DividerModule
+  DividerModule,
+  SkeletonModule
 
   ],
   providers: [

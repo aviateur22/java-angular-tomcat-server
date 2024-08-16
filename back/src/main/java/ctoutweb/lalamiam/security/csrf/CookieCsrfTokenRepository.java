@@ -39,7 +39,7 @@ public class CookieCsrfTokenRepository implements CustomCsrfTokenRepository {
   // Header key pour la récupération d'un token CSRF lors de la soumission d'un formulaire
   private static final String FORM_CSRF_TOKEN = "FORM-CSRF-TOKEN";
   @Override
-  public HeaderCsrfFormToken loadFormToken(HttpServletRequest request) {
+  public HeaderCsrfFormToken loadHeaderToken(HttpServletRequest request) {
     String token = request.getHeader(FORM_CSRF_TOKEN);
     return token != null ? new HeaderCsrfFormToken(FORM_CSRF_TOKEN, "_header", token) : null;
   }
@@ -75,7 +75,7 @@ public class CookieCsrfTokenRepository implements CustomCsrfTokenRepository {
     if (token == null) {
       Cookie cookie = new Cookie("_csrf", "");
       cookie.setMaxAge(0);
-      response.setHeader(X_CSRF_TOKEN, "");
+      response.setHeader(X_CSRF_TOKEN, "-");
       response.addCookie(cookie);
     } else {
       LOGGER.debug(String.format("Cookie samesite: %s", this.cookieSameSite));

@@ -5,6 +5,7 @@ import ctoutweb.lalamiam.security.authentication.UserPrincipalDetailService;
 
 import ctoutweb.lalamiam.security.filter.CookieCsrfFilter;
 import ctoutweb.lalamiam.security.filter.FullJwtAuthFilter;
+import ctoutweb.lalamiam.security.filter.OnLogoutFilter;
 import ctoutweb.lalamiam.security.filter.PartialJwtAuthFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -35,6 +37,7 @@ public class WebSecurity {
   private final CustomAuthProvider customAuthProvider;
   private final FullJwtAuthFilter fullJwtAuthFilter;
   private final PartialJwtAuthFilter partialJwtAuthFilter;
+  private final OnLogoutFilter logoutFilter;
   private final CookieCsrfFilter cookieCsrfFilter;
 
   public WebSecurity(
@@ -42,11 +45,12 @@ public class WebSecurity {
           CustomAuthProvider customAuthProvider,
           FullJwtAuthFilter fullJwtAuthFilter,
           PartialJwtAuthFilter partialJwtAuthFilter,
-          CookieCsrfFilter cookieCsrfFilter) {
+          OnLogoutFilter logoutFilter, CookieCsrfFilter cookieCsrfFilter) {
     this.userPrincipalDetailService = userPrincipalDetailService;
     this.customAuthProvider = customAuthProvider;
     this.fullJwtAuthFilter = fullJwtAuthFilter;
     this.partialJwtAuthFilter = partialJwtAuthFilter;
+    this.logoutFilter = logoutFilter;
     this.cookieCsrfFilter = cookieCsrfFilter;
   }
 
@@ -55,6 +59,7 @@ public class WebSecurity {
     http
             .addFilterBefore(fullJwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(partialJwtAuthFilter,FullJwtAuthFilter.class)
+            .addFilterBefore(logoutFilter, LogoutFilter.class)
             .csrf().disable().addFilterBefore(cookieCsrfFilter, CsrfFilter.class)
             .authorizeRequests(httpRequest->httpRequest
                     .antMatchers("/api/client").hasAnyRole("ADMIN", "CLIENT")

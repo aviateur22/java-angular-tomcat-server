@@ -28328,7 +28328,7 @@ body {
   --first_color: #FFAE00;
 
   /* Hauteur navbar*/
-  --nav_height: 95px;
+  --nav_height: 105px;
 }
 
 /* Max-width 500px */
@@ -28340,6 +28340,14 @@ body {
 .p-message div {
   padding: 10px !important;
   margin-bottom: 0.5rem;
+}
+
+.container--center {
+  min-height: calc(100vh - var(--nav_height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 
 

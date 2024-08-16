@@ -42,4 +42,12 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.container--center {
+  min-height: calc(100vh - var(--nav_height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
 

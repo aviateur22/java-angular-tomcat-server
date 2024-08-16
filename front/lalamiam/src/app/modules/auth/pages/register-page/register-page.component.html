@@ -96,7 +96,7 @@
     </div>
 
     <!--captcha-->
-    <div class="flex flex-column w-full m-4 p-4 shadow-1" *ngIf="(captcha$ | async) as captcha">
+    <div class="flex flex-column w-full m-4 p-4 shadow-1" *ngIf="(captcha$ | async) as captcha; else waitingBlock">
       <p class="mb-2">{{captcha.question}}</p>
       <div class="flex flex-column align-items-center mb-2">
         <img [src]="'data:' + captcha.mimeType + ';base64,' + captcha.image">
@@ -107,6 +107,13 @@
         <p-message class="p-message" severity="error" [text]="errorMessages.get('captchaResponseMissing')" ></p-message>
       </div>
     </div>
+    <ng-template #waitingBlock>
+      <div class="shadow-2 p-4 m-4 w-12">
+        <p-skeleton class="p-2" width="10rem" height="2rem"></p-skeleton>
+        <p-skeleton class="ml-4" width="80%" height="70px" borderRadius="16px"></p-skeleton>
+        <p-skeleton class="p-2" width="10rem" height="35px"></p-skeleton>
+      </div>
+    </ng-template>
 
 
     <p-button class="pt-4" type="submit" label="creation"></p-button>

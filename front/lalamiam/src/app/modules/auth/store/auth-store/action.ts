@@ -12,3 +12,4 @@ export const logoutSuccess = createAction('[Auth] Logout success', props<{messag
 export const logoutFailed = createAction('[Auth] Logout failed', props<{error: string, isErrorVisible: boolean}>());
 
 export const register = createAction('[Auth] Register client', props<{email: string, password: string, name: string, captchaClientResponseDto: CaptchaClientResponseDto}>());
+export const leaveRegisterPage = createAction('[Auth] leave register page');

@@ -17,6 +17,7 @@ export const reducers = createReducer(
   on(AuthAction.captchaSuccess,(state, {captcha})=>({
     ...state,
     ...state.captcha, captcha
-  })
-)
+    })
+  ),
+  on(AuthAction.leaveRegisterPage, (state)=>({...state, captcha: null}))
 );

@@ -20,7 +20,17 @@ export class HandlerHttpInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
     if(request.urlWithParams.includes('/api/')){
-      const token: string| null = localStorage.getItem('token');
+      let token: string | undefined = undefined;
+
+      const user: any | null = localStorage.getItem('user');
+      console.log(`Données utilisateur : ${user}`)
+
+      if(user !== null) {
+        const userJSON = JSON.parse(user);
+        console.log(`token bearer: : ${userJSON.jwt}`);
+        token = userJSON.jwt;
+      }
+
       const formToken: string|null = localStorage.getItem('form-csrf-token');
       request = request.clone({
         withCredentials: true,

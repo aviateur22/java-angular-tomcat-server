@@ -51,6 +51,11 @@ export class RegisterPageComponent {
     this.initializeForm();
   }
 
+  ngOnDestroy() {
+    this._store.dispatch(AuthAction.leaveRegisterPage());
+    localStorage.clear('captcha');
+  }
+
   /**
    * Formgroup Init
    */

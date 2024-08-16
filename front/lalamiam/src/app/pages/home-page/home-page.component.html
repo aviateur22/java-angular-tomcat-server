@@ -1,4 +1,9 @@
-<p>home-page works!</p>
-
-<h2>Message du backend</h2>
-<p>{{message}}</p>
+<div class="container--center">
+  <div class="p-4 shadow-5">
+    <h2 class="pb-2 font-bold text-xl">Message du backend</h2>
+    <p *ngIf="message; else waitingBlock">{{message}}</p>
+    <ng-template #waitingBlock>
+      <p-skeleton class="p-2" width="10rem" height="1rem"></p-skeleton>
+    </ng-template>
+  </div>
+</div>

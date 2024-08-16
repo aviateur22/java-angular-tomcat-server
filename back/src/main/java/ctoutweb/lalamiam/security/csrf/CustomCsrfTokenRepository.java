@@ -12,7 +12,7 @@ public interface CustomCsrfTokenRepository extends CsrfTokenRepository {
    * @param request HttpServletRequest
    * @return HeaderCsrfFormToken
    */
-  public HeaderCsrfFormToken loadFormToken(HttpServletRequest request);
+  public HeaderCsrfFormToken loadHeaderToken(HttpServletRequest request);
 
   public CookieCsrfToken loadCookieToken(HttpServletRequest request);
 

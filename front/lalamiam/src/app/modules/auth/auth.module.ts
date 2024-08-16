@@ -20,6 +20,7 @@ import { MessageModule } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { ShowOnFocusDirective } from './directives/show-on-focus.directive';
+import { SkeletonModule } from 'primeng/skeleton';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { ShowOnFocusDirective } from './directives/show-on-focus.directive';
     MessagesModule,
     ButtonModule,
     MessageModule,
-    DividerModule
+    DividerModule,
+    SkeletonModule
   ],
   providers: [AuthService]
 })

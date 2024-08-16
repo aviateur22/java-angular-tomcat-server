@@ -11,8 +11,8 @@ public class UrlPath {
       // Path commencant par
       "STARTING_WORD", List.of(
           "/assets",
-          "/lalamiam",
-          "/lalamiam-app/lalamiam",
+          "/webapp",
+          "/lalamiam-app/webapp",
           "/api/version"
       ),
 
@@ -28,7 +28,10 @@ public class UrlPath {
             "/vendor.js.map",
             "/polyfills.js.map",
             "/runtime.js",
-            "/favicon.ico"
+            "/favicon.ico",
+            "/primeicons.woff2",
+            "/primeicons.woff",
+            "/primeicons.ttf"
         ),
 
     // Path contenant:

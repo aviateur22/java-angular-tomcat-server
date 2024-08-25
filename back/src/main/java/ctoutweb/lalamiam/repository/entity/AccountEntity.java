@@ -5,17 +5,35 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "account")
 public class AccountEntity {
 
+  @PrePersist
+  public void onCreate() {
+    if (this.accountActivationLimitDateAt == null) {
+      this.accountActivationLimitDateAt = LocalDateTime.now().plusDays(7).with(LocalTime.MAX);
+      this.isAccountActive = false;
+    }
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "is_account_active", columnDefinition = "boolean default TRUE")
+  @Column(name = "account_activation_at")
+  private LocalDateTime accountActivationAt;
+
+  @Column(name = "account_activation_limit_date_at")
+  private LocalDateTime accountActivationLimitDateAt;
+  @Column(name = "is_account_active")
   private Boolean isAccountActive;
+
+  @Column(name = "token_activation")
+  private String tokenActivation;
+
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private UserEntity accountUser;
@@ -34,10 +52,10 @@ public class AccountEntity {
    * Constructeur pour creation d'un compte
    * @param user
    */
-  public AccountEntity(UserEntity user) {
+  public AccountEntity(UserEntity user, String tokenActivationHash) {
     this.accountUser = user;
     this.isAccountActive = true;
-
+    this.tokenActivation = tokenActivationHash;
   }
 
   public Long getId() {
@@ -64,6 +82,30 @@ public class AccountEntity {
     this.accountUser = user;
   }
 
+  public LocalDateTime getAccountActivationAt() {
+    return accountActivationAt;
+  }
+
+  public void setAccountActivationAt(LocalDateTime accountActivationAt) {
+    this.accountActivationAt = accountActivationAt;
+  }
+
+  public LocalDateTime getAccountActivationLimitDateAt() {
+    return accountActivationLimitDateAt;
+  }
+
+  public void setAccountActivationLimitDateAt(LocalDateTime accountActivationLimitDateAt) {
+    this.accountActivationLimitDateAt = accountActivationLimitDateAt;
+  }
+
+  public String getTokenActivation() {
+    return tokenActivation;
+  }
+
+  public void setTokenActivation(String tokenActivation) {
+    this.tokenActivation = tokenActivation;
+  }
+
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }
@@ -85,6 +127,8 @@ public class AccountEntity {
     return "AccountEntity{" +
             "id=" + id +
             ", isAccountActive=" + isAccountActive +
+            ", activationDate=" + accountActivationAt +
+            ", activationAccountToken=" + tokenActivation +
            // ", user=" + accountUser +
             ", createdAt=" + createdAt +
             ", updatedAt=" + updatedAt +

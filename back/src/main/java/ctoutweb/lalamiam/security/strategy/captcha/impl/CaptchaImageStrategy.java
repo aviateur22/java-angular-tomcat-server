@@ -6,6 +6,7 @@ import ctoutweb.lalamiam.model.captcha.CaptchaData;
 import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.service.ImageService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,11 +33,15 @@ public class CaptchaImageStrategy extends CaptchaEnigme implements CaptchaStrate
   private String captchaToken;
   private final PasswordEncoder passwordEncoder;
   private final ImageService imageService;
-
-  public CaptchaImageStrategy(PasswordEncoder passwordEncoder, ImageService imageService) {
+  private final Properties messageExceptions;
+  public CaptchaImageStrategy(
+          PasswordEncoder passwordEncoder,
+          ImageService imageService,
+          @Qualifier("exceptionMessages") Properties messageExceptions) {
     super(passwordEncoder, imageService);
     this.passwordEncoder = passwordEncoder;
     this.imageService = imageService;
+    this.messageExceptions = messageExceptions;
   }
 
   @Override
@@ -74,7 +76,7 @@ public class CaptchaImageStrategy extends CaptchaEnigme implements CaptchaStrate
     }
 
     if(imagePaths.isEmpty())
-      throw new AuthException("Aucune données de diponible pour le captcha", HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new AuthException(messageExceptions.getProperty("captcha.data.error"), HttpStatus.INTERNAL_SERVER_ERROR);
 
     final int RANDOM_IMAGE = random.nextInt(imagePaths.size());
 

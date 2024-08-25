@@ -17,6 +17,11 @@ public class HandlerException {
   public ResponseEntity<ErrorResponseDto> validationException(ValidationException exception) {
     ErrorResponseDto errorResponse = new ErrorResponseDto(exception.getMessage());
     return new ResponseEntity<>(errorResponse, exception.getStatus());
+  }
 
+  @ExceptionHandler(value = {AppMailException.class})
+  public ResponseEntity<ErrorResponseDto> mailException(AppMailException exception) {
+    ErrorResponseDto errorResponse = new ErrorResponseDto(exception.getMessage());
+    return new ResponseEntity<>(errorResponse, exception.getStatus());
   }
 }

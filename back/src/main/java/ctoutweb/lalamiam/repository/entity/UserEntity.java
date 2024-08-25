@@ -19,7 +19,7 @@ public class UserEntity {
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private List<RoleUserEntity> roleUsers;
 
-  @OneToOne(mappedBy = "accountUser")
+  @OneToOne(mappedBy = "accountUser", cascade = CascadeType.REMOVE)
   private AccountEntity account;
   @OneToOne(mappedBy = "user")
   private JwtEntity jwt;

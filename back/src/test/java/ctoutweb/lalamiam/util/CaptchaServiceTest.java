@@ -8,10 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Properties;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -24,6 +26,9 @@ public class CaptchaServiceTest {
   @Mock
   PasswordEncoder passwordEncoder;
 
+  @Mock
+  Properties messageExceptions;
+
 
 
   @BeforeEach
@@ -33,7 +38,7 @@ public class CaptchaServiceTest {
 
   @Test
   public void getImageTestData_should_find_images() throws URISyntaxException, IOException {
-    CaptchaImageStrategy captchaService = new CaptchaImageStrategy(passwordEncoder, imageService);
+    CaptchaImageStrategy captchaService = new CaptchaImageStrategy(passwordEncoder, imageService, messageExceptions);
     when(passwordEncoder.encode(any(String.class))).thenReturn("test123");
 
     GenerateEnigmeData generateTestData = captchaService.getImageTestData();

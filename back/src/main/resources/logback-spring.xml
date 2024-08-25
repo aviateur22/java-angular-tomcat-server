@@ -24,9 +24,15 @@
     <logger name="org.springframework.web" level="INFO"/>
     <logger name="org.springframework.security" level="INFO"/>
     <logger name="org.springframework.web.servlet.HandlerMapping" level="INFO"/>
+    <logger name="org.springframework.mail" level="INFO"/>
+    <logger name="com.sun.mail" level="INFO"/>
+    <logger name="javax.activation" level="INFO"/>
+    <logger name="javax.mail" level="INFO"/>
+    <logger name="jdk.event.security" level="INFO"/>
+    <logger name="SMTP" level="INFO"/>
+
     <logger name="com.zaxxer.hikari" level="WARN"/>
     <logger name="org.postgresql" level="WARN"/>
-
     <logger name="com.zaxxer.hikari" level="WARN"/>
     <logger name="org.postgresql" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>

@@ -14,6 +14,7 @@ public class ResourceHandlerConfig implements WebMvcConfigurer
                   "classpath:/static/",
                   "classpath:/public/",
                   "classpath:/message/",
+                  "classpath:/html/",
                   "classpath:/static/assets/",
           };
 

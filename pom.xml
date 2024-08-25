@@ -34,6 +34,8 @@
             <properties>
                 <angular.configuration>development</angular.configuration>
                 <angular.base.href>/</angular.base.href>
+                <domain.front>http://localhost:8080</domain.front>
+                <front.path>webapp</front.path>
                 <database.schema>sc_project</database.schema>
                 <war.name>lalamiam-app</war.name>
                 <jwt.validity.hour>72</jwt.validity.hour>
@@ -46,6 +48,11 @@
                 <cookie.secure>false</cookie.secure>
                 <cookie.samesite>Lax</cookie.samesite>
                 <cookie.is.httponly>true</cookie.is.httponly>
+                <mailer.from>admin@ctoutweb.fr</mailer.from>
+                <mailer.port>587</mailer.port>
+                <mailer.smtp>smtp.gmail.com</mailer.smtp>
+                <mailer.secure>true</mailer.secure>
+                <mailer.smtp.auth>true</mailer.smtp.auth>
             </properties>
         </profile>
         <profile>
@@ -53,6 +60,8 @@
             <properties>
                 <angular.configuration>tomcat</angular.configuration>
                 <angular.base.href>/lalamiam-app/</angular.base.href>
+                <domain.front>http://localhost:8080</domain.front>
+                <front.path>webapp</front.path>
                 <database.schema>sc_project</database.schema>
                 <war.name>lalamiam-app</war.name>
                 <jwt.validity.hour>72</jwt.validity.hour>
@@ -66,6 +75,11 @@
                 <cookie.secure>false</cookie.secure>
                 <cookie.samesite>Lax</cookie.samesite>
                 <cookie.is.httponly>true</cookie.is.httponly>
+                <mailer.from>admin@ctoutweb.fr</mailer.from>
+                <mailer.port>465</mailer.port>
+                <mailer.smtp>smtp.gmail.com</mailer.smtp>
+                <mailer.secure>true</mailer.secure>
+                <mailer.smtp.auth>true</mailer.smtp.auth>
             </properties>
         </profile>
         <profile>
@@ -73,6 +87,8 @@
             <properties>
                 <angular.configuration>tomcat-root</angular.configuration>
                 <angular.base.href>/</angular.base.href>
+                <domain.front>http://localhost:8080</domain.front>
+                <front.path>webapp</front.path>
                 <database.schema>sc_project</database.schema>
                 <war.name>ROOT</war.name>
                 <jwt.validity.hour>72</jwt.validity.hour>
@@ -86,13 +102,20 @@
                 <cookie.secure>false</cookie.secure>
                 <cookie.samesite>Lax</cookie.samesite>
                 <cookie.is.httponly>true</cookie.is.httponly>
+                <mailer.from>admin@ctoutweb.fr</mailer.from>
+                <mailer.port>465</mailer.port>
+                <mailer.smtp>smtp.gmail.com</mailer.smtp>
+                <mailer.secure>true</mailer.secure>
+                <mailer.smtp.auth>true</mailer.smtp.auth>
             </properties>
         </profile>
-        <profile>
+        <profile    >
             <id>heroku</id>
             <properties>
                 <angular.configuration>production</angular.configuration>
                 <angular.base.href>/</angular.base.href>
+                <domain.front>http://localhost:8080</domain.front>
+                <front.path>webapp</front.path>
                 <database.schema>sc_project</database.schema>
                 <war.name>lalamiam-app</war.name>
                 <jwt.validity.hour>12</jwt.validity.hour>
@@ -105,6 +128,11 @@
                 <cookie.secure>true</cookie.secure>
                 <cookie.samesite>Lax</cookie.samesite>
                 <cookie.is.httponly>true</cookie.is.httponly>
+                <mailer.from>admin@ctoutweb.fr</mailer.from>
+                <mailer.port>465</mailer.port>
+                <mailer.smtp>smtp.gmail.com</mailer.smtp>
+                <mailer.secure>true</mailer.secure>
+                <mailer.smtp.auth>true</mailer.smtp.auth>
             </properties>
         </profile>
     </profiles>

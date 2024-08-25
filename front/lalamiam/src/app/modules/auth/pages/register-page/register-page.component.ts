@@ -53,7 +53,7 @@ export class RegisterPageComponent {
 
   ngOnDestroy() {
     this._store.dispatch(AuthAction.leaveRegisterPage());
-    localStorage.clear('captcha');
+    localStorage.removeItem('captcha');
   }
 
   /**

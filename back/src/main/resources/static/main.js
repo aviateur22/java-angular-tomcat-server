@@ -1264,7 +1264,7 @@ class RegisterPageComponent {
   }
   ngOnDestroy() {
     this._store.dispatch(_store_auth_store_action__WEBPACK_IMPORTED_MODULE_0__.leaveRegisterPage());
-    localStorage.clear('captcha');
+    localStorage.removeItem('captcha');
   }
   /**
    * Formgroup Init

@@ -6,12 +6,17 @@ import javax.validation.constraints.NotNull;
 
 public record LoginDto(
         String language,
-        @NotNull(message = "Email maqnuant")
-        @NotBlank(message = "Email maqnuant")
-        @Email(message = "Format de l'email invalide")
+        @NotNull(message = "{email.missing}")
+        @NotBlank(message = "{email.missing}")
+        @Email(message = "{email.bad.format}")
         String email,
-        @NotNull(message = "Nom manquant")
-        @NotBlank(message = "Nom manquant")
+        @NotNull(message = "{password.missing}")
+        @NotBlank(message = "{password.missing}")
         String password
-) {
+) implements HasLanguage {
+        @Override
+        public String getLanguage() {
+                return language();
+        }
+
 }

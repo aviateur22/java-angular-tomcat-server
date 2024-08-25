@@ -16,7 +16,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public AccountEntity createAccount(UserEntity user) {
-    return accountRepository.save(new AccountEntity(user));
+  public AccountEntity createAccount(UserEntity user, String tokenAccountActivationHash) {
+    return accountRepository.save(new AccountEntity(user, tokenAccountActivationHash));
   }
 }

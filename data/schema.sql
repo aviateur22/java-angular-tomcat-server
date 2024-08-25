@@ -55,7 +55,10 @@ create table IF NOT EXISTS sc_project.role_user(
 create table IF NOT EXISTS sc_project.account(
     "id" BIGINT PRIMARY KEY,
     "user_id" BIGINT NOT NULL REFERENCES sc_project."users"("id") on delete cascade,
+    "account_activation_at" TIMESTAMPTZ,
+    "account_activation_limit_date_at" TIMESTAMPTZ,
     "is_account_active" BOOLEAN NOT NULL DEFAULT TRUE,
+    "token_activation" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );

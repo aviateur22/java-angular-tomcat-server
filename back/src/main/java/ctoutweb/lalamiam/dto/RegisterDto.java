@@ -1,7 +1,6 @@
 package ctoutweb.lalamiam.dto;
 
 import ctoutweb.lalamiam.annotation.custom.password.PasswordConstraint;
-import ctoutweb.lalamiam.model.captcha.ClientResponseCaptcha;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -9,15 +8,20 @@ import javax.validation.constraints.NotNull;
 
 public record RegisterDto(
         String language,
-        @NotNull(message = "Email maqnuant")
-        @NotBlank(message = "Email maqnuant")
-        @Email(message = "Format de l'email invalide")
+        @NotNull(message = "{email.missing}")
+        @NotBlank(message = "{email.missing}")
+        @Email(message = "{email.bad.format}")
         String email,
-        @NotNull(message = "Nom manquant")
-        @NotBlank(message = "Nom manquant")
+        @NotNull(message = "{password.missing}")
+        @NotBlank(message = "{password.missing}")
         String name,
-        @PasswordConstraint
+        @PasswordConstraint(message = "{password.bad.format}")
         String password,
-        @NotNull(message = "Réponse captcha manquant")
-        ClientResponseCaptcha captchaClientResponseDto
-) { }
+        @NotNull(message = "{captcha.response.missing}")
+        ClientResponseCaptchaDto captchaClientResponseDto
+) implements HasLanguage {
+        @Override
+        public String getLanguage() {
+                return language();
+        }
+}

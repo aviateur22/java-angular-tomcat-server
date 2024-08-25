@@ -6,6 +6,7 @@ import ctoutweb.lalamiam.model.captcha.CaptchaData;
 import ctoutweb.lalamiam.model.captcha.GenerateEnigmeData;
 import ctoutweb.lalamiam.security.strategy.captcha.CaptchaStrategy;
 import ctoutweb.lalamiam.service.ImageService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Properties;
 import java.util.Random;
 
 @Component
@@ -26,10 +28,15 @@ public class CaptchaCalculStrategy extends CaptchaEnigme implements CaptchaStrat
 
   protected final PasswordEncoder passwordEncoder;
   protected final ImageService imageService;
-  public CaptchaCalculStrategy(PasswordEncoder passwordEncoder, ImageService imageService) {
+  private final Properties messageExceptions;
+  public CaptchaCalculStrategy(
+          PasswordEncoder passwordEncoder,
+          ImageService imageService,
+          @Qualifier("exceptionMessages") Properties messageExceptions) {
     super(passwordEncoder, imageService);
     this.passwordEncoder = passwordEncoder;
     this.imageService = imageService;
+    this.messageExceptions = messageExceptions;
   }
   @Override
   public CaptchaData generateCaptcha() {
@@ -66,7 +73,7 @@ public class CaptchaCalculStrategy extends CaptchaEnigme implements CaptchaStrat
       case '+' -> RANDOM_NUMBER_1 + RANDOM_NUMBER_2;
       case '-' -> RANDOM_NUMBER_1 - RANDOM_NUMBER_2;
       case '*' -> RANDOM_NUMBER_1 * RANDOM_NUMBER_2;
-      default -> throw new AuthException("Erreur config captcha", HttpStatus.INTERNAL_SERVER_ERROR);
+      default -> throw new AuthException(messageExceptions.getProperty("captcha.config.error"), HttpStatus.INTERNAL_SERVER_ERROR);
     };
 
     return CaptchaFactory.getDataTest(

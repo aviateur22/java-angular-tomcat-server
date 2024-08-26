@@ -48,8 +48,8 @@ import { SkeletonModule } from 'primeng/skeleton';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule,
     AuthModule,
+    AppRoutingModule,
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([UserEffect, FlashMessageEffect]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode(), serialize: {

@@ -17,10 +17,9 @@ const routes: Routes = [
       { path: "users-page", component: UserPageComponent, title: pageTitle.userHomePageTitle[environment.language]},
       { path: "not-found-page", component: NotFoundPageComponent, title: pageTitle.notFoundPageTitle[environment.language]}
     ]
-
   },
   { path: "", redirectTo: environment.webapp_path, pathMatch: "full"},
-  { path: "**", redirectTo:"not-found-page", title: pageTitle.notFoundPageTitle[environment.language]}
+  { path: "**", redirectTo:`${environment.webapp_path}/not-found-page`, pathMatch: "full"}
 ];
 
 

@@ -92,10 +92,10 @@ public class MessageResourceHelper {
 
     // Controlle language
     if(userLanguage == null || !Language.isLanguageValid(userLanguage)) {
-      LOGGER.error(()->String.format("Le language demandé par l'utilisateur n'est pas valide. Sélection: %s", DEFAULT_LANGUAGE));
+      LOGGER.debug(()->String.format("Le language demandé par l'utilisateur n'est pas valide. Sélection: %s", DEFAULT_LANGUAGE));
       return DEFAULT_LANGUAGE;
     }
-
+    LOGGER.debug(()->String.format("Language selectionné OK : %s", userLanguage));
     return userLanguage;
 
   }

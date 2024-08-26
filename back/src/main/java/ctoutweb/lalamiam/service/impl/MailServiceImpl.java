@@ -40,21 +40,25 @@ public class MailServiceImpl extends BaseService implements MailService {
           String to,
           String mailContent,
           String exceptionMessage) {
-    try{
-      MimeMessage message = mailSender.createMimeMessage();
-      MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-      helper.setText(mailContent, true);
-      helper.setTo(to);
-      helper.setSubject(mailSubject);
-      helper.setFrom("admin@ctoutweb.fr");
-      mailSender.send(message);
-    } catch (MessagingException exception) {
-      LOGGER.error("Erreur envoie email: " + exception);
-      throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
-    } catch (MailException exception) {
-      LOGGER.error("Erreur envoie email: " + exception);
-      throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
-    }
+      new Thread(()->{
+        try{
+          LOGGER.debug("Envoie email");
+          MimeMessage message = mailSender.createMimeMessage();
+          MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+          helper.setText(mailContent, true);
+          helper.setTo(to);
+          helper.setSubject(mailSubject);
+          helper.setFrom("admin@ctoutweb.fr");
+          mailSender.send(message);
+          LOGGER.debug("Envoie email terminé");
+        } catch (MessagingException exception) {
+          LOGGER.error("Erreur envoie email: " + exception);
+          throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
+        } catch (MailException exception) {
+          LOGGER.error("Erreur envoie email: " + exception);
+          throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
+        }
+      }).start();
   }
 
   /**

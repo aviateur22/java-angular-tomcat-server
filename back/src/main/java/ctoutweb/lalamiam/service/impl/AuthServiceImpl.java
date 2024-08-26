@@ -79,7 +79,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
   public RegisterResponse register(RegisterDto registerDto) {
 
     boolean isCaptchaResponseValid = captchaService.validateResponse(registerDto.captchaClientResponseDto());
-    LOGGER.debug("isCaptchaResponseValid: " + isCaptchaResponseValid);
+    LOGGER.debug("Réponse client au captcha: " + isCaptchaResponseValid);
 
     if (!isCaptchaResponseValid)
       throw new AuthException(getExceptionMessage("captcha.invalid.response"), HttpStatus.UNAUTHORIZED);
@@ -96,7 +96,8 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
     UserEntity registerUser = userService.registerUser(registerDto);
 
-    return RegisterFactory.getRegisterResponse("Enregistrement utilisateur " + registerUser.getEmail());
+    String responseMessage = getApiMessage("register.success");
+    return RegisterFactory.getRegisterResponse(responseMessage);
 
 
   }

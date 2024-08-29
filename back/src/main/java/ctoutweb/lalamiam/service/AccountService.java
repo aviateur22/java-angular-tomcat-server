@@ -12,4 +12,12 @@ public interface AccountService {
    * @return AccountEntity
    */
   public AccountEntity createAccount(UserEntity user, String tokenAccountActivationHash);
+
+  /**
+   * Vérification si compte activable
+   * @param activateToken String _ token d'activayion
+   * @param user UserEntity - Proprietaire du commpte
+   * @return boolean
+   */
+  public boolean isAccountActivatable(UserEntity user, String activateToken);
 }

@@ -3,7 +3,6 @@ package ctoutweb.lalamiam.controller;
 import ctoutweb.lalamiam.dto.*;
 import ctoutweb.lalamiam.factory.CaptchaFactory;
 import ctoutweb.lalamiam.helper.MessageResourceHelper;
-import ctoutweb.lalamiam.model.RegisterResponse;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
 import ctoutweb.lalamiam.service.CaptchaService;
 import ctoutweb.lalamiam.service.impl.AuthServiceImpl;
@@ -43,15 +42,15 @@ public class AuthController extends BaseController {
   }
 
   @PostMapping("/register")
-  ResponseEntity<RegisterResponse> register(@RequestBody RegisterDto registerDto)  {
+  ResponseEntity<MessageResponse> register(@RequestBody RegisterDto registerDto)  {
     initializeResponse("registerMessage", registerDto);
 
     //validation response captcha client
     validateInputData(registerDto.captchaClientResponseDto());
 
-    RegisterResponse registerResponse = authService.register(registerDto);
+    MessageResponse messageResponse = authService.register(registerDto);
 
-    return new ResponseEntity<RegisterResponse>(registerResponse, HttpStatus.CREATED);
+    return new ResponseEntity<MessageResponse>(messageResponse, HttpStatus.CREATED);
   }
 
   @GetMapping("/logout/language/{language}/user-id/{userId}")
@@ -66,7 +65,8 @@ public class AuthController extends BaseController {
     // Initialisation de la données
     initializeResponse("accountActivationMessage", activateAccount);
 
-    return null;
+    MessageResponse messageResponse = authService.activateAccount(activateAccount);
+    return new ResponseEntity<>(messageResponse, HttpStatus.OK);
   }
 
   @GetMapping("/csrf")

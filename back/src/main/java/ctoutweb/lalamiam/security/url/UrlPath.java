@@ -39,7 +39,8 @@ public class UrlPath {
             "/register",
             "/login",
             "/captcha",
-            "/csrf"
+            "/csrf",
+            "/account-activation"
     )
   );
 }

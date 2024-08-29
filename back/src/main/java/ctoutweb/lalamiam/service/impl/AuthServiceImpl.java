@@ -2,7 +2,7 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.dto.*;
 import ctoutweb.lalamiam.exception.AuthException;
-import ctoutweb.lalamiam.factory.RegisterFactory;
+import ctoutweb.lalamiam.factory.MessageResponseFactory;
 import ctoutweb.lalamiam.model.*;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.security.authentication.UserPrincipal;
@@ -31,6 +31,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
   private final JwtService jwtService;
   private final JwtIssuer jwtIssuer;
   private final CaptchaService captchaService;
+  private final AccountService accountService;
   public AuthServiceImpl(
           AuthenticationManager authenticationManager,
           UserService userService,
@@ -38,13 +39,15 @@ public class AuthServiceImpl extends BaseService implements AuthService {
           JwtIssuer jwtIssuer,
           CaptchaService captchaService,
           @Qualifier("exceptionMessages") Properties messageExceptions,
-          @Qualifier("apiMessageSource") MessageSource messageSource) {
+          @Qualifier("apiMessageSource") MessageSource messageSource,
+          AccountService accountService) {
     super(messageSource, messageExceptions);
     this.authenticationManager = authenticationManager;
     this.userService = userService;
     this.jwtService = jwtService;
     this.jwtIssuer = jwtIssuer;
     this.captchaService = captchaService;
+    this.accountService = accountService;
   }
 
   @Override
@@ -76,7 +79,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
   }
 
   @Override
-  public RegisterResponse register(RegisterDto registerDto) {
+  public MessageResponse register(RegisterDto registerDto) {
 
     boolean isCaptchaResponseValid = captchaService.validateResponse(registerDto.captchaClientResponseDto());
     LOGGER.debug("Réponse client au captcha: " + isCaptchaResponseValid);
@@ -97,7 +100,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
     UserEntity registerUser = userService.registerUser(registerDto);
 
     String responseMessage = getApiMessage("register.success");
-    return RegisterFactory.getRegisterResponse(responseMessage);
+    return MessageResponseFactory.getMessageResponse(responseMessage);
 
 
   }
@@ -107,10 +110,20 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
     UserEntity findUser = userService.getUserInformationByEmail(activateAccount.email());
 
-    if(findUser != null && findUser.getAccount() != null && findUser.getAccount().getIsAccountActive())
-      throw new AuthException("Votre compte est déjà activé", HttpStatus.CONFLICT);
+    if(findUser == null)
+      throw new AuthException(getExceptionMessage("account.not.existing"), HttpStatus.CONFLICT);
 
-    return null;
+    if(findUser != null && findUser.getAccount() != null && findUser.getAccount().getIsAccountActive())
+      throw new AuthException(getExceptionMessage("account.already.activate"), HttpStatus.CONFLICT);
+
+    String activateAccountToken = activateAccount.token();
+
+    boolean isAccountActivable = accountService.isAccountActivatable(findUser, activateAccountToken);
+
+    if(!isAccountActivable)
+      throw new AuthException(getExceptionMessage("account.activate.failure"), HttpStatus.BAD_REQUEST);
+
+    return MessageResponseFactory.getMessageResponse(getApiMessage("account.activation.success"));
   }
 
   @Override

@@ -21,13 +21,17 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { ShowOnFocusDirective } from './directives/show-on-focus.directive';
 import { SkeletonModule } from 'primeng/skeleton';
+import { AccountActivationPageComponent } from './pages/account-activation-page/account-activation-page.component';
+import { ChangeAccountPasswordPageComponent } from './pages/change-account-password-page/change-account-password-page.component';
 
 
 @NgModule({
   declarations: [
     LoginPageComponent,
     RegisterPageComponent,
-    ShowOnFocusDirective
+    ShowOnFocusDirective,
+    AccountActivationPageComponent,
+    ChangeAccountPasswordPageComponent
   ],
   imports: [
     CommonModule,

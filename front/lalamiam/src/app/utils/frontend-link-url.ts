@@ -17,7 +17,13 @@ export default {
   register: {
     url: 'auth/create-account/user/:user/confirmation/:confirmation'
   },
+  accountActivation: {
+    url: 'auth/account-activation/user-email/:user-email/confirmation-token/:confirmation-token'
+  },
+  changeAccountPassword: {
+    url: 'auth/change-account-password/user-email/:user-email/change-account-password-token/:confirmation-token'
+  },
   userHome: {
-    url: 'user/home'
+    url: 'users-page'
   }
 }

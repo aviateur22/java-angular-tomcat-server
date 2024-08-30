@@ -7,19 +7,20 @@ import { UserPageComponent } from './pages/user-page/user-page.component';
 import { environment } from 'src/environments/environment';
 import { ErrorPageComponent } from './pages/error-page/error-page.component';
 import pageTitle from './utils/page-title';
+import frontendLinkUrl from './utils/frontend-link-url';
 
 const routes: Routes = [
   {
     path: environment.webapp_path,
     children: [
-      { path: "", component: HomePageComponent, title: pageTitle.homePageTitle[environment.language]},
-      { path: "error", component: ErrorPageComponent, title: pageTitle.errorPageTitle[environment.language]},
-      { path: "users-page", component: UserPageComponent, title: pageTitle.userHomePageTitle[environment.language]},
-      { path: "not-found-page", component: NotFoundPageComponent, title: pageTitle.notFoundPageTitle[environment.language]}
+      { path: frontendLinkUrl.home.url, component: HomePageComponent, title: pageTitle.homePageTitle[environment.language]},
+      { path: frontendLinkUrl.error.url, component: ErrorPageComponent, title: pageTitle.errorPageTitle[environment.language]},
+      { path: frontendLinkUrl.userHome.url, component: UserPageComponent, title: pageTitle.userHomePageTitle[environment.language]},
+      { path: frontendLinkUrl.notFound.url, component: NotFoundPageComponent, title: pageTitle.notFoundPageTitle[environment.language]}
     ]
   },
   { path: "", redirectTo: environment.webapp_path, pathMatch: "full"},
-  { path: "**", redirectTo:`${environment.webapp_path}/not-found-page`, pathMatch: "full"}
+  { path: "**", redirectTo:`${environment.webapp_path}/${frontendLinkUrl.notFound.url}`, pathMatch: "full"}
 ];
 
 

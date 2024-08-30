@@ -10,6 +10,7 @@ import {
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import frontendLinkUrl from './utils/frontend-link-url';
 
 
 @Injectable()
@@ -54,28 +55,28 @@ export class HandlerHttpInterceptor implements HttpInterceptor {
         error: (error: HttpErrorResponse)=>{
           const errorStatus: number = error.status;
           const router = this._injector.get(Router);
-          const webapp_path: string = environment.webapp_path !== '' ?
-          environment.webapp_path+'/' : '';
+          const webappPath: string = environment.webapp_path !== '' ?
+          environment.webapp_path : '';
           switch(errorStatus) {
             case 0: {
               console.log('erreur: 0: ', error.status);
-              router.navigate([`${webapp_path}error`]);
+              router.navigate([`${webappPath}/${frontendLinkUrl.error.url}`]);
               break;
             }
             case 401: {
               console.log('erreur: 401: ', error.message);
-              router.navigate([`${webapp_path}connexion`]);
+              router.navigate([`${webappPath}/${frontendLinkUrl.login.url}`]);
               break;
             }
             case 403: {
 
               console.log('error 403: ', 'error 403');
-              router.navigate([`${webapp_path}connexion`]);
+              router.navigate([`${webappPath}/${frontendLinkUrl.login.url}`]);
               break;
             }
             case 404: {
               console.log('error 404: ', error.status);
-              router.navigate(["not-found-page"]);
+              router.navigate([`${webappPath}/${frontendLinkUrl.notFound.url}`]);
              break;
             }
           }

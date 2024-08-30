@@ -6,6 +6,7 @@ import { getEmailSelector } from 'src/store/user-ident-store/selector';
 import * as Action from 'src/app/modules/auth/store/auth-store/action'
 import { environment } from 'src/environments/environment';
 import { ConfirmationService, MessageService, ConfirmEventType, MenuItem } from 'primeng/api';
+import frontendLinkUrl from 'src/app/utils/frontend-link-url';
 
 @Component({
   selector: 'app-navbar',
@@ -49,9 +50,9 @@ export class NavbarComponent {
   }
 
   ngOnInit() {
-    this.homeLink = `/${this.webappPath}`;
-    this.userLink = `/${this.webappPath}/users-page`;
-    this.loginLink = `/${this.webappPath}/connexion`;
+    this.homeLink = `/${this.webappPath}/${frontendLinkUrl.home.url}`;
+    this.userLink = `/${this.webappPath}/${frontendLinkUrl.userHome.url}`;
+    this.loginLink = `/${this.webappPath}/${frontendLinkUrl.login.url}`;
   }
 
   /**

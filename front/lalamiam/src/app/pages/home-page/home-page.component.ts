@@ -13,10 +13,7 @@ export class HomePageComponent {
   constructor(private _homeService: HomeService) { }
 
   ngOnInit() {
-    this._homeService.getHomeMessage().subscribe(
-      res=> this.message = res,
-      error => console.error('Erreur!', error)
-    );
+    this._homeService.getHomeMessage().subscribe(res=> this.message = res);
   }
 
 }

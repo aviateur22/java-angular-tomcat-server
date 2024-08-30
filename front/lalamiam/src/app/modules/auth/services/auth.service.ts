@@ -9,6 +9,7 @@ import { RegisterResponseDto } from "../models/register-response.dto";
 import { Captcha } from "../models/captcha.model";
 import { CaptchaDto } from "../models/captcha.dto";
 import { CaptchaClientResponseDto } from "../models/captcha-client-response.dto";
+import { ActivateAccountDto } from "../models/activate-account.dto";
 
 @Injectable({
   providedIn:"root"
@@ -66,6 +67,10 @@ export class AuthService {
     return this._http.get(path,{
       responseType: 'text' as const
     });
+  }
+
+  public activateAccount(activateAccountDto: ActivateAccountDto ): Observable<string> {
+    return this._http.post<string>(this._apiEndPoint + '/account-activation', activateAccountDto);
   }
 
   private toCaptchaModel(dto: CaptchaDto): Captcha {

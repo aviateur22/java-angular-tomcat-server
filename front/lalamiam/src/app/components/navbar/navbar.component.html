@@ -43,18 +43,24 @@
           <p-button (onClick)="displayMenuOverlay()"  icon="pi pi-times" [rounded]="true" [text]="true" severity="danger "></p-button>
         </div>
         <ul class="p-4 flex flex-column justify-content-center w-12">
+          <!-- Accueil-->
           <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="mr-4">
             <a (click)="displayMenuOverlay()" class="link" [routerLink]=homeLink>Home</a>
           </li>
+
+          <!-- Page accueil utilisateur -->
           <li (onClick)="displayMenuOverlay()" routerLinkActive="active" class="mr-4">
             <a (click)="displayMenuOverlay()" class="link" [routerLink]=userLink>users</a>
           </li>
+
+          <!-- Deconnexion -->
           <ng-container *ngIf="(userEmail$ | async) as user; else elseBlock">
             <li>
               <p-button label="Déconnexion" (onClick)="displayLogoutOverlay()"></p-button>
             </li>
           </ng-container>
 
+          <!-- login -->
           <ng-template #elseBlock>
             <li (onClick)="displayMenuOverlay()" routerLinkActive="active">
               <a [routerLink]=loginLink

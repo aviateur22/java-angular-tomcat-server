@@ -5,6 +5,14 @@ export default {
     fr: `${environment.main_page_title} | Page de connexion`,
     en: `${environment.main_page_title} | Login page`
   },
+  changeAccountPasswordTitle:  {
+    fr: `${environment.main_page_title} | Modification du mot de passe`,
+    en: `${environment.main_page_title} | Update password`
+  },
+  activateAccountTitle:  {
+    fr: `${environment.main_page_title} | Activation de votre commpte`,
+    en: `${environment.main_page_title} | Account activation`
+  },
   registerPageTitle:  {
    fr: `${environment.main_page_title} | Inscription`,
     en: `${environment.main_page_title} | Register`

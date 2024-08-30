@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 @Service
@@ -38,6 +39,13 @@ public class AccountServiceImpl extends BaseService implements AccountService {
   public boolean isAccountActivatable(UserEntity user, String activateToken) {
     AccountEntity account = accountRepository.findFirstByAccountUserId(user.getId()).orElseThrow(()->new AuthException(getExceptionMessage("account.not.existing"), HttpStatus.BAD_REQUEST));
     boolean isActivateTokenValid = this.passwordEncoder.matches(activateToken, account.getTokenActivation());
+    if(isActivateTokenValid) {
+      LocalDateTime activationTime = LocalDateTime.now();
+      account.setAccountActivationAt(activationTime);
+      account.setIsAccountActive(true);
+      account.setTokenActivation(null);
+      accountRepository.save(account);
+    }
     return isActivateTokenValid;
   }
 }

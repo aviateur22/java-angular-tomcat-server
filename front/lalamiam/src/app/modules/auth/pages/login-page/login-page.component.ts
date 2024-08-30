@@ -10,6 +10,7 @@ import { isLoadingSelector } from '../../store/auth-store/selector';
 import { MessageUtil } from 'src/app/utils/messages/message-utils';
 import { environment } from 'src/environments/environment';
 import loginPageMessage from 'src/app/utils/messages/login-page-message';
+import frontendLinkUrl from 'src/app/utils/frontend-link-url';
 
 @Component({
   selector: 'app-login-page',
@@ -46,7 +47,7 @@ export class LoginPageComponent {
   }
 
   ngOnInit() {
-    this.registerLink =  `/${this.webappPath}/register`
+    this.registerLink =  `/${this.webappPath}/${frontendLinkUrl.register.url}`
 
     this._store.dispatch(AuthAction.csrf());
     this.initializeLoginData();

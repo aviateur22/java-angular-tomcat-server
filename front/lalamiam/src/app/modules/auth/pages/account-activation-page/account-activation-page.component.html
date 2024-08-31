@@ -1,1 +1,17 @@
 <p>account-activation-page works!</p>
+<div class="flex flex-column align-items-center">
+  <div *ngIf="(activatedAccountResponse$|async) as activateAccount; else elseBlock">
+    <div *ngIf="activateAccount.accountActivatedStatus===activateAccountStatusSuccess">
+      <p>{{activateMessages.get('accountActivationSuccessMessage')}}</p>
+    </div>
+    <div *ngIf="activateAccount.accountActivatedStatus===activateAccountStatusFailure">
+      <p>{{activateMessages.get('accountActivationErrorMessage')}}</p>
+    </div>
+  </div>
+  <ng-template #elseBlock>
+    <div>
+      <p>{{activateMessages.get('accountActivationWaitingMessage')}}</p>
+    </div>
+  </ng-template>
+
+</div>

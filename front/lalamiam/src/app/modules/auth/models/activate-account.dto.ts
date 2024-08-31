@@ -4,3 +4,8 @@ export interface ActivateAccountDto extends RequestBaseDto {
   email: string,
   token: string
 }
+
+export interface ActivateAccountResponseDto {
+  accountActivateStatus: string,
+  message: string
+}

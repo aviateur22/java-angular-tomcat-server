@@ -40,6 +40,11 @@ public class UserServiceImpl implements UserService {
   private String domainFront;
   @Value("${front.path}")
   private String frontPath;
+
+  @Value("${front.account.activation.url}")
+  private String activateAccounteFrontEndUrl;
+  @Value("${front.change.password.account.url}")
+  private String changePasswordAccountFrontEndUrl;
   private static final Logger LOGGER = LogManager.getLogger();
   private final MailService mailService;
   private final PasswordEncoder passwordEncoder;
@@ -112,9 +117,8 @@ public class UserServiceImpl implements UserService {
 
     Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
 
-    String activateAccountLink = String.format(
-            "%s/%s/auth/account-activation/language/%s/user-mail/%s/confirmation-token/%s",
-            domainFront, frontPath, this.apiValidateLanguage.getLanguage(), registerDto.email(), activateAccountToken);
+    // Generation frontEnd URL pour le lien d'activation
+    String activateAccountLink = String.format(activateAccounteFrontEndUrl, domainFront, frontPath, registerDto.email(), activateAccountToken);
     LOGGER.debug("Lien du compte d'activtion : " + activateAccountLink);
 
     listWordsToReplaceInHtmlTemplate.put("email", registerDto.email());

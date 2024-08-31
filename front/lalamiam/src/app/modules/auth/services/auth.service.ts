@@ -9,7 +9,8 @@ import { RegisterResponseDto } from "../models/register-response.dto";
 import { Captcha } from "../models/captcha.model";
 import { CaptchaDto } from "../models/captcha.dto";
 import { CaptchaClientResponseDto } from "../models/captcha-client-response.dto";
-import { ActivateAccountDto } from "../models/activate-account.dto";
+import { ActivateAccountDto, ActivateAccountResponseDto } from "../models/activate-account.dto";
+import { ActivateAccountResponse, ActivatedAccountStatus } from "../models/activate-account.model";
 
 @Injectable({
   providedIn:"root"
@@ -69,12 +70,29 @@ export class AuthService {
     });
   }
 
-  public activateAccount(activateAccountDto: ActivateAccountDto ): Observable<string> {
-    return this._http.post<string>(this._apiEndPoint + '/account-activation', activateAccountDto);
+  public activateAccount(activateAccountDto: ActivateAccountDto ): Observable<ActivateAccountResponse> {
+    return this._http.post<ActivateAccountResponseDto>(this._apiEndPoint + '/account-activation', activateAccountDto).pipe(
+      map(dto=>this.toActivateAccountModel(dto))
+    );
   }
 
+  /**
+   * Convertie un CaptchaDto -> Captcha
+   * @param dto CaptchaDto
+   * @returns Captcha
+   */
   private toCaptchaModel(dto: CaptchaDto): Captcha {
     return new Captcha(dto.imageBase64, dto.imageMimeType, dto.question, dto.response);
+  }
+
+  /**
+   * Converti un ActivateAccountResponseDto -> ActivateAccountResponse
+   * @param dto ActivateAccountResponseDto - réponse API
+   * @returns ActivateAccountResponse
+   */
+  private toActivateAccountModel(dto: ActivateAccountResponseDto): ActivateAccountResponse {
+    const activateStatus: ActivatedAccountStatus  = this.getAcctivateAccountStatus(dto.accountActivateStatus);
+    return new ActivateAccountResponse(activateStatus, dto.message);
   }
 
   /**
@@ -106,6 +124,21 @@ export class AuthService {
       password,
       name,
       captchaClientResponseDto
+    }
+  }
+
+  /**
+   * Renvoie un string en ActivatedAccountStatus
+   * @param accountActivateStatus string
+   * @returns ActivatedAccountStatus
+   */
+  public getAcctivateAccountStatus(accountActivateStatus: string): ActivatedAccountStatus {
+
+    switch(accountActivateStatus.toLowerCase()) {
+      case ActivatedAccountStatus.SUCCESS.toString().toLowerCase(): return ActivatedAccountStatus.SUCCESS; break;
+      case ActivatedAccountStatus.FAILURE.toString().toLowerCase(): return ActivatedAccountStatus.FAILURE; break;
+      case ActivatedAccountStatus.ALREADY_ACTIVATED.toString().toLowerCase(): return ActivatedAccountStatus.ALREADY_ACTIVATED; break;
+      default: return ActivatedAccountStatus.FAILURE; break;
     }
   }
 }

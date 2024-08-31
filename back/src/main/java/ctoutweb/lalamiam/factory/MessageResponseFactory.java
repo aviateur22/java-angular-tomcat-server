@@ -1,5 +1,6 @@
 package ctoutweb.lalamiam.factory;
 
+import ctoutweb.lalamiam.dto.ActivateAccountResponseDto;
 import ctoutweb.lalamiam.dto.MessageResponse;
 
 public class MessageResponseFactory {

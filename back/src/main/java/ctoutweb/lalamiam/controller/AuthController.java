@@ -60,13 +60,13 @@ public class AuthController extends BaseController {
   }
 
   @PostMapping("/account-activation")
-  ResponseEntity<MessageResponse> activateAccount(@RequestBody ActivateAccountDto activateAccount) {
+  ResponseEntity<ActivateAccountResponseDto> activateAccount(@RequestBody ActivateAccountDto activateAccount) {
 
     // Initialisation de la données
     initializeResponse("accountActivationMessage", activateAccount);
 
-    MessageResponse messageResponse = authService.activateAccount(activateAccount);
-    return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    ActivateAccountResponseDto activateAccountResponseDto = authService.activateAccount(activateAccount);
+    return new ResponseEntity<>(activateAccountResponseDto, HttpStatus.OK);
   }
 
   @GetMapping("/csrf")

@@ -8,6 +8,7 @@ import { catchError, from, map, mergeMap, of, switchMap, tap } from "rxjs";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import frontendLinkUrl from "src/app/utils/frontend-link-url";
+import { ActivateAccountResponse } from "../../models/activate-account.model";
 
 @Injectable()
 export class AuthEffect {
@@ -134,6 +135,30 @@ export class AuthEffect {
             return of(
               // Generation Message d'erreur
               FlashMessageAction.createMessage({message: error.error.error, isError: true})
+            )
+          })
+        )
+      )
+    )
+  )
+
+  activateAction$ = createEffect(()=>
+    this._action$.pipe(
+      ofType(AuthAction.activateAccount),
+      mergeMap((activateAccountDto)=>
+        this._authService.activateAccount(activateAccountDto).pipe(
+          switchMap((activateAccountResponse)=>[
+            // Message de success
+            FlashMessageAction.createMessage({message: activateAccountResponse.message, isError: false}),
+
+            AuthAction.activateAccountSuccess({activateAccountResponse})
+          ]
+        ),
+          catchError(error=> {
+            return of(
+              // Generation Message d'erreur
+              FlashMessageAction.createMessage({message: error.error.error, isError: true}),
+              AuthAction.activateAccountFailure()
             )
           })
         )

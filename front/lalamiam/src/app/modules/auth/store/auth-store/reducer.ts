@@ -2,12 +2,14 @@ import { createReducer, on } from "@ngrx/store";
 
 import * as AuthAction from "./action";
 import { AuthModel } from "./auth.model";
+import { ActivatedAccountStatus } from "../../models/activate-account.model";
 
 export const initialState: AuthModel = {
   error: '',
   isErrorVisible: false,
   isLoading: false,
-  captcha: null
+  captcha: null,
+  activateAccountResponse: null
 }
 
 export const reducers = createReducer(
@@ -19,5 +21,15 @@ export const reducers = createReducer(
     ...state.captcha, captcha
     })
   ),
-  on(AuthAction.leaveRegisterPage, (state)=>({...state, captcha: null}))
+  on(AuthAction.leaveRegisterPage, (state)=>({...state, captcha: null})),
+  on(AuthAction.activateAccountSuccess, (state, {activateAccountResponse})=>({
+    ...state,
+    ...state.activateAccountResponse, activateAccountResponse
+    })
+  ),
+  on(AuthAction.activateAccountFailure, (state)=>({
+    ...state,
+    ...state.activateAccountResponse, accountActivatedStatus: ActivatedAccountStatus.FAILURE
+    })
+  )
 );

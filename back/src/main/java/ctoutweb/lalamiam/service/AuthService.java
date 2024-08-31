@@ -7,7 +7,7 @@ public interface AuthService {
 
   public MessageResponse register(RegisterDto dto);
 
-  public MessageResponse activateAccount(ActivateAccountDto activateAccount);
+  public ActivateAccountResponseDto activateAccount(ActivateAccountDto activateAccount);
 
   public MessageResponse logout(Long userId);
 }

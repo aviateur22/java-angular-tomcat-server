@@ -2,6 +2,7 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.dto.*;
 import ctoutweb.lalamiam.exception.AuthException;
+import ctoutweb.lalamiam.factory.ActivateAccountFactory;
 import ctoutweb.lalamiam.factory.MessageResponseFactory;
 import ctoutweb.lalamiam.model.*;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
@@ -106,7 +107,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
   }
 
   @Override
-  public MessageResponse activateAccount(ActivateAccountDto activateAccount) {
+  public ActivateAccountResponseDto activateAccount(ActivateAccountDto activateAccount) {
 
     UserEntity findUser = userService.getUserInformationByEmail(activateAccount.email());
 
@@ -123,7 +124,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
     if(!isAccountActivable)
       throw new AuthException(getExceptionMessage("account.activate.failure"), HttpStatus.BAD_REQUEST);
 
-    return MessageResponseFactory.getMessageResponse(getApiMessage("account.activation.success"));
+    return ActivateAccountFactory.getActivateAccountDto(getApiMessage("account.activation.success"), ActivateAccountStatus.SUCCESS);
   }
 
   @Override

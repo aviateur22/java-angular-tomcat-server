@@ -7,4 +7,5 @@ export const isErrorVisibleSelector = createSelector(selector, (state) => state.
 export const isLoadingSelector = createSelector(selector, (state)=>state.isLoading)
 export const errorMessageSelector = createSelector(selector, (state) => state.error);
 export const captchaSelector = createSelector(selector, (state) => state.captcha);
-export const captchaQuestionSelector = createSelector(selector, (state) => state.captcha?.question)
+export const captchaQuestionSelector = createSelector(selector, (state) => state.captcha?.question);
+export const activateAccountResponseSelector = createSelector(selector, (state) => state.activateAccountResponse);

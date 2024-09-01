@@ -80,4 +80,9 @@ public class AuthController extends BaseController {
 
     return new ResponseEntity<>(CaptchaFactory.getCaptchaDto(captcha), HttpStatus.OK);
   }
+
+  @PostMapping("/lost-password-mailing")
+  public ResponseEntity<MessageResponse> lostPasswordMailing() {
+    return null;
+  }
 }

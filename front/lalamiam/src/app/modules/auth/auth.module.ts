@@ -23,6 +23,7 @@ import { ShowOnFocusDirective } from './directives/show-on-focus.directive';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AccountActivationPageComponent } from './pages/account-activation-page/account-activation-page.component';
 import { ChangeAccountPasswordPageComponent } from './pages/change-account-password-page/change-account-password-page.component';
+import { LostPasswordMailingPageComponent } from './pages/lost-password-mailing-page/lost-password-mailing-page.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { ChangeAccountPasswordPageComponent } from './pages/change-account-passw
     RegisterPageComponent,
     ShowOnFocusDirective,
     AccountActivationPageComponent,
-    ChangeAccountPasswordPageComponent
+    ChangeAccountPasswordPageComponent,
+    LostPasswordMailingPageComponent
   ],
   imports: [
     CommonModule,

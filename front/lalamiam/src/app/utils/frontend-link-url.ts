@@ -23,6 +23,9 @@ export default {
   changeAccountPassword: {
     url: 'auth/change-account-password/user-email/:user-email/change-account-password-token/:confirmation-token'
   },
+  lostPasswordMailingPage: {
+    url: 'auth/lost-password/mailing'
+  },
   userHome: {
     url: 'users-page'
   }

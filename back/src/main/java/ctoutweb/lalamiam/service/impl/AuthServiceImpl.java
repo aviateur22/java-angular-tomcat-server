@@ -112,10 +112,10 @@ public class AuthServiceImpl extends BaseService implements AuthService {
     UserEntity findUser = userService.getUserInformationByEmail(activateAccount.email());
 
     if(findUser == null)
-      throw new AuthException(getExceptionMessage("account.not.existing"), HttpStatus.CONFLICT);
+      throw new AuthException(getExceptionMessage("account.not.existing"), HttpStatus.BAD_REQUEST);
 
     if(findUser != null && findUser.getAccount() != null && findUser.getAccount().getIsAccountActive())
-      throw new AuthException(getExceptionMessage("account.already.activate"), HttpStatus.CONFLICT);
+      throw new AuthException(getExceptionMessage("account.already.activate"), HttpStatus.BAD_REQUEST);
 
     String activateAccountToken = activateAccount.token();
 

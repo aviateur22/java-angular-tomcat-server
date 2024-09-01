@@ -5,19 +5,19 @@ import * as AuthAction from '../../store/auth-store/action'
 import { Observable } from 'rxjs';
 import { AppState } from 'src/store/app.state';
 
-import { LoginDto } from './../../models/login-dto.model';
+import { LoginDto } from '../../models/login.dto';
 import { isLoadingSelector } from '../../store/auth-store/selector';
-import { MessageUtil } from 'src/app/utils/messages/message-utils';
 import { environment } from 'src/environments/environment';
-import loginPageMessage from 'src/app/utils/messages/login-page-message';
 import frontendLinkUrl from 'src/app/utils/frontend-link-url';
+import ComponentBase from 'src/app/component.base';
+import appMessage from 'src/app/utils/messages/login-page-message';
 
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css']
 })
-export class LoginPageComponent {
+export class LoginPageComponent extends ComponentBase {
 
   loginDataFormGroup: FormGroup = new FormGroup({});
   isLoading$: Observable<boolean>;
@@ -31,27 +31,24 @@ export class LoginPageComponent {
    * Link page inscription
    */
   registerLink!: string;
-  /**
-   * Erreurs formulaire
-   */
-  errorMessages: Map<string, string> = new Map();
 
   /**
-   * Info sur champs du formulaire   *
+   * Link reset mot de passe
    */
-  formInput: Map<string, string> = new Map();
+  resetPasswordLink!: string;
 
   constructor(private _fb: FormBuilder, private _store: Store<AppState>) {
+    super(appMessage.loginPage);
     this.isLoading$ = this._store.pipe(select(isLoadingSelector));
 
   }
 
   ngOnInit() {
-    this.registerLink =  `/${this.webappPath}/${frontendLinkUrl.register.url}`
+    this.registerLink =  `/${this.webappPath}/${frontendLinkUrl.register.url}`;
+    this.resetPasswordLink = `/${this.webappPath}/${frontendLinkUrl.lostPasswordMailingPage.url}`;
 
     this._store.dispatch(AuthAction.csrf());
     this.initializeLoginData();
-    this.initializeFormMessages();
   }
 
   /**
@@ -68,22 +65,6 @@ export class LoginPageComponent {
   }
 
   /**
-   * Chargement des données du Formulaire
-   */
-  initializeFormMessages() {
-    /**
-     * chargement des infos du formulaire
-     */
-    this.formInput = MessageUtil.loadMessageInMap(loginPageMessage.loginPage.information, environment.language)
-
-    /**
-     * Chargement des messages d'erreur
-     */
-    this.errorMessages = MessageUtil.loadMessageInMap(loginPageMessage.loginPage.error, environment.language);
-
-    }
-
-  /**
    * Login
    * @returns
    */
@@ -93,10 +74,11 @@ export class LoginPageComponent {
       return this.loginDataFormGroup.markAllAsTouched();
     }
 
-    const logindata = new LoginDto(
-      this.loginDataFormGroup.get('email')?.value,
-      this.loginDataFormGroup.get('password')?.value
-    );
+    const logindata: LoginDto = {
+      email: this.loginDataFormGroup.get('email')?.value,
+      password:  this.loginDataFormGroup.get('password')?.value,
+      language: environment.language
+    }
 
     this._store.dispatch(AuthAction.login(logindata));
 

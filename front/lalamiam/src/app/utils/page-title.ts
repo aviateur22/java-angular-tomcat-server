@@ -13,6 +13,10 @@ export default {
     fr: `${environment.main_page_title} | Activation de votre commpte`,
     en: `${environment.main_page_title} | Account activation`
   },
+  lostPasswordMailingTitle:  {
+    fr: `${environment.main_page_title} | Perte mot de passe`,
+    en: `${environment.main_page_title} | Lost password`
+  },
   registerPageTitle:  {
    fr: `${environment.main_page_title} | Inscription`,
     en: `${environment.main_page_title} | Register`

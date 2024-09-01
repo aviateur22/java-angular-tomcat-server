@@ -1,12 +1,12 @@
 <div class="flex flex-column align-items-center">
 
   <form class="form--border flex flex-column align-items-center p-4 w-full m-w-500" [formGroup]="registerDataFormGroup" (submit)="register()">
-    <p class="text-base pt-6 pb-4 font-semibold">{{formInput.get('title')}}</p>
+    <p class="text-base pt-6 pb-4 font-semibold">{{pageMessages.get('title')}}</p>
     <p-divider class="p-2 w-full"></p-divider>
 
     <!--Email-->
     <div class="flex flex-column w-full pt-4">
-      <label class="pb-1" for="email">{{formInput.get('email')}}</label>
+      <label class="pb-1" for="email">{{pageMessages.get('email')}}</label>
       <input style="border-color: var(--first_color)" type="email" pInputText id="email" formControlName="email" aria-describedby="email-help" placeholder="votre email...">
       <div>
         <ul>
@@ -22,7 +22,7 @@
 
     <!--Nom-->
     <div class="flex flex-column w-full pt-4">
-      <label class="pb-1" for="name">{{formInput.get('name')}}</label>
+      <label class="pb-1" for="name">{{pageMessages.get('name')}}</label>
       <input
         style="border-color: var(--first_color)"
         type="text"
@@ -41,7 +41,7 @@
     <!--mot de pase-->
     <div class="flex flex-column w-full pt-4">
       <div class="relative flex flex-column w-full">
-        <label class="pb-1" for="password">{{formInput.get('password')}}</label>
+        <label class="pb-1" for="password">{{pageMessages.get('password')}}</label>
         <p-password
         [appShowOnFocus]="passwordTemplate"
         id="password"
@@ -74,7 +74,7 @@
 
      <!-- confirmation mot de pase-->
     <div class="flex flex-column w-full pt-4">
-      <label class="pb-1" for="password">{{formInput.get('confirmPassword')}}</label>
+      <label class="pb-1" for="password">{{pageMessages.get('confirmPassword')}}</label>
       <p-password
         id="confirmPassword"
         aria-describedby="confirm-password-help"

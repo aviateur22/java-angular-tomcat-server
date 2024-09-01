@@ -19,7 +19,7 @@ const routes: Routes = [
       { path: frontendLinkUrl.notFound.url, component: NotFoundPageComponent, title: pageTitle.notFoundPageTitle[environment.language]}
     ]
   },
-  { path: "", redirectTo: environment.webapp_path, pathMatch: "full"},
+  { path: '', redirectTo: `${environment.webapp_path}/${frontendLinkUrl.home.url}`, pathMatch: 'full'},
   { path: "**", redirectTo:`${environment.webapp_path}/${frontendLinkUrl.notFound.url}`, pathMatch: "full"}
 ];
 

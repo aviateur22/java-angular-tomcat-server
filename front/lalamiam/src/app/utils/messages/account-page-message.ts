@@ -21,6 +21,9 @@ export default {
         fr: 'Il semble que votre compte soit déjà activé',
         en: 'It\'s seems that your account is already activated'
       }
+    },
+    error: {
+
     }
   }
 }

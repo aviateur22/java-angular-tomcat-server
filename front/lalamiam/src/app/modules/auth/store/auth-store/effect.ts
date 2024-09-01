@@ -166,4 +166,22 @@ export class AuthEffect {
     )
 
   )
+
+  lostPasswordMailing$ = createEffect(()=>
+    this._action$.pipe(
+      ofType(AuthAction.lostPasswordMailing),
+      mergeMap((dto)=>
+        this._authService.lostPasswordMailing(dto).pipe(
+          map((message)=>FlashMessageAction.createMessage({message: message, isError: false})),
+          catchError((error)=>{
+            return of(
+              // Generation Message d'erreur
+              FlashMessageAction.createMessage({message: error.error.error, isError: true})
+            )
+          })
+        )
+
+      )
+    )
+  )
 }

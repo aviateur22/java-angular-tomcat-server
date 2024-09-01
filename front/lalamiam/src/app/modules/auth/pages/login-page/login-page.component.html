@@ -1,12 +1,12 @@
 <div class="container--center">
   <div class="flex flex-column align-items-center w-full">
     <form class="form--border flex flex-column align-items-center p-4 w-full m-w-500" [formGroup]="loginDataFormGroup" (submit)="login()" >
-      <p class="text-base pt-6 pb-4 font-semibold">{{formInput.get('title')}}</p>
+      <p class="text-base pt-6 pb-4 font-semibold">{{pageMessages.get('title')}}</p>
       <p-divider class="p-2 w-full"></p-divider>
 
       <!--Email-->
       <div class="flex flex-column w-full pt-4">
-        <label class="pb-1" for="email">{{formInput.get('email')}}</label>
+        <label class="pb-1" for="email">{{pageMessages.get('email')}}</label>
         <input style="border-color: var(--first_color)" type="email" pInputText id="email" formControlName="email" placeholder="votre email.">
 
          <!--Message erreur-->
@@ -17,7 +17,7 @@
 
       <!-- Mote de passe-->
       <div class="flex flex-column w-full pt-4">
-        <label class="pb-1" for="password">{{formInput.get('password')}}</label>
+        <label class="pb-1" for="password">{{pageMessages.get('password')}}</label>
         <p-password
           id="password"
           [feedback]="false"
@@ -25,17 +25,21 @@
           formControlName="password"
           placeholder="mot de passe...">
         </p-password>
-
         <!--Message erreur-->
         <div *ngIf="loginDataFormGroup.get('password')?.touched && loginDataFormGroup.get('password')?.errors?.['required']">
           <p-message class="p-message" severity="error" [text]="errorMessages.get('passwordMissing')" ></p-message>
         </div>
+
+        <!-- Lien perte de mot de passe -->
+        <div class="flex flex-column w-full pt-1">
+          <a class="text-sm" [routerLink]=resetPasswordLink>{{pageMessages.get('lostPassword')}}</a>
+        </div>
+
       </div>
 
       <p-button class="pt-4" type="submit" label="connexion"></p-button>
       <div class="flex flex-column w-full pt-4">
-        <p> {{formInput.get('register')}} </p> <a [routerLink]=registerLink>inscription</a>
-
+        <p> {{pageMessages.get('register')}} </p> <a [routerLink]=registerLink>{{pageMessages.get('registerLink')}}</a>
       </div>
     </form>
   </div>

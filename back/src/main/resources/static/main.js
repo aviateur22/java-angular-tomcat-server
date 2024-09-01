@@ -926,7 +926,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function AccountActivationPageComponent_div_3_div_1_Template(rf, ctx) {
+function AccountActivationPageComponent_div_5_div_1_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div")(1, "p");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](2);
@@ -938,7 +938,7 @@ function AccountActivationPageComponent_div_3_div_1_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate"](ctx_r4.activateMessages.get("accountActivationSuccessMessage"));
   }
 }
-function AccountActivationPageComponent_div_3_div_2_Template(rf, ctx) {
+function AccountActivationPageComponent_div_5_div_2_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div")(1, "p");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](2);
@@ -950,11 +950,11 @@ function AccountActivationPageComponent_div_3_div_2_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate"](ctx_r5.activateMessages.get("accountActivationErrorMessage"));
   }
 }
-function AccountActivationPageComponent_div_3_Template(rf, ctx) {
+function AccountActivationPageComponent_div_5_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div");
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](1, AccountActivationPageComponent_div_3_div_1_Template, 3, 1, "div", 3);
-    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](2, AccountActivationPageComponent_div_3_div_2_Template, 3, 1, "div", 3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](1, AccountActivationPageComponent_div_5_div_1_Template, 3, 1, "div", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](2, AccountActivationPageComponent_div_5_div_2_Template, 3, 1, "div", 5);
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -966,7 +966,7 @@ function AccountActivationPageComponent_div_3_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", activateAccount_r3.accountActivatedStatus === ctx_r0.activateAccountStatusFailure);
   }
 }
-function AccountActivationPageComponent_ng_template_5_Template(rf, ctx) {
+function AccountActivationPageComponent_ng_template_7_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "div")(1, "p");
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](2);
@@ -1027,24 +1027,24 @@ class AccountActivationPageComponent {
   static #_2 = this.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({
     type: AccountActivationPageComponent,
     selectors: [["app-account-activation-page"]],
-    decls: 7,
+    decls: 9,
     vars: 4,
-    consts: [[1, "flex", "flex-column", "align-items-center"], [4, "ngIf", "ngIfElse"], ["elseBlock", ""], [4, "ngIf"]],
+    consts: [[1, "container--center"], [1, "flex", "flex-column", "align-items-center"], [1, "p-4", "shadow-5"], [4, "ngIf", "ngIfElse"], ["elseBlock", ""], [4, "ngIf"]],
     template: function AccountActivationPageComponent_Template(rf, ctx) {
       if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "p");
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](1, "account-activation-page works!");
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](2, "div", 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](3, AccountActivationPageComponent_div_3_Template, 3, 2, "div", 1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵpipe"](4, "async");
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](5, AccountActivationPageComponent_ng_template_5_Template, 3, 1, "ng-template", null, 2, _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplateRefExtractor"]);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](2, "div", 0)(3, "div", 1)(4, "div", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](5, AccountActivationPageComponent_div_5_Template, 3, 2, "div", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵpipe"](6, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](7, AccountActivationPageComponent_ng_template_7_Template, 3, 1, "ng-template", null, 4, _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplateRefExtractor"]);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]()()();
       }
       if (rf & 2) {
-        const _r1 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵreference"](6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵpipeBind1"](4, 2, ctx.activatedAccountResponse$))("ngIfElse", _r1);
+        const _r1 = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵreference"](8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵpipeBind1"](6, 2, ctx.activatedAccountResponse$))("ngIfElse", _r1);
       }
     },
     dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_10__.NgIf, _angular_common__WEBPACK_IMPORTED_MODULE_10__.AsyncPipe],

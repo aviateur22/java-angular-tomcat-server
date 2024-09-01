@@ -16,25 +16,16 @@ import appMessage from 'src/app/utils/messages/register-page-message';
 import { MessageUtil } from 'src/app/utils/messages/message-utils';
 import { CaptchaClientResponseDto } from '../../models/captcha-client-response.dto';
 import { AuthService } from '../../services/auth.service';
+import ComponentBaseApp from 'src/app/component.base';
 
 @Component({
   selector: 'app-register-page',
   templateUrl: './register-page.component.html',
   styleUrls: ['./register-page.component.css']
 })
-export class RegisterPageComponent {
+export class RegisterPageComponent extends ComponentBaseApp {
 
   registerDataFormGroup: FormGroup = new FormGroup({});
-
-  /**
-   * Erreurs formulaire
-   */
-  errorMessages: Map<string, string> = new Map();
-
-  /**
-   * Info sur champs du formulaire   *
-   */
-  formInput: Map<string, string> = new Map();
 
   /**
    * Données pour le captcha
@@ -42,11 +33,11 @@ export class RegisterPageComponent {
   captcha$: Observable<Captcha|null>;
 
   constructor(private _fb: FormBuilder, private _store: Store<AppState>, private _authService: AuthService){
+    super(appMessage.registerPage);
     this.captcha$ = _store.pipe(select(captchaSelector));
   }
 
   ngOnInit() {
-    this.initializeFormMessages();
     this.initializeRegisterData();
     this.initializeForm();
   }
@@ -77,19 +68,6 @@ export class RegisterPageComponent {
   initializeForm() {
     this._store.dispatch(AuthAction.captcha());
     this._store.dispatch(AuthAction.csrf());
-  }
-
-  initializeFormMessages() {
-
-    /**
-     * chargement des infos du formulaire
-     */
-    this.formInput = MessageUtil.loadMessageInMap(appMessage.registerPage.information, environment.language)
-
-    /**
-     * Chargement des messages d'erreur
-     */
-    this.errorMessages = MessageUtil.loadMessageInMap(appMessage.registerPage.error, environment.language);
   }
 
   register() {

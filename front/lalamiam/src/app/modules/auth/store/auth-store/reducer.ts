@@ -28,8 +28,11 @@ export const reducers = createReducer(
     })
   ),
   on(AuthAction.activateAccountFailure, (state)=>({
-    ...state,
-    ...state.activateAccountResponse, accountActivatedStatus: ActivatedAccountStatus.FAILURE
+    ...state, activateAccountResponse: {
+      accountActivatedStatus: ActivatedAccountStatus.FAILURE,
+      message: ''
+    }
+
     })
   )
 );

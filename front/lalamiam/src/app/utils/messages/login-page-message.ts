@@ -13,6 +13,14 @@ export default {
         fr: 'Votre mot de passe',
         en: 'Your password'
       },
+      lostPassword: {
+        fr: 'J\'ai oublié mon mot de passe',
+        en: 'I lost my password'
+      },
+      registerLink: {
+        fr: 'Inscription',
+        en: 'Register'
+      },
       register: {
         fr: 'Pas encore de compte chez nous?',
         en: 'Not yet register?'

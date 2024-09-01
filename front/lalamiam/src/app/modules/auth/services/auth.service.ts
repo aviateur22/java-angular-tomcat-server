@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { LoginDto } from "../models/login-dto.model";
+import { LoginDto } from "../models/login.dto";
 import { map, Observable, of, tap } from "rxjs";
 import { LoginResponseDto } from "../models/login-response.dto";
 import { environment } from "src/environments/environment";
@@ -11,6 +11,7 @@ import { CaptchaDto } from "../models/captcha.dto";
 import { CaptchaClientResponseDto } from "../models/captcha-client-response.dto";
 import { ActivateAccountDto, ActivateAccountResponseDto } from "../models/activate-account.dto";
 import { ActivateAccountResponse, ActivatedAccountStatus } from "../models/activate-account.model";
+import { LostPasswordMailingResponseDto, LostPaswordMailingDto } from "../models/lost-password-mailing.dto";
 
 @Injectable({
   providedIn:"root"
@@ -70,6 +71,12 @@ export class AuthService {
     });
   }
 
+  public lostPasswordMailing(lostPasswordDto: LostPaswordMailingDto): Observable<string> {
+    return this._http.post<LostPasswordMailingResponseDto>(this._apiEndPoint + "/lost-password-mailing", lostPasswordDto).pipe(
+      map(response=>response.message)
+    )
+  }
+
   public activateAccount(activateAccountDto: ActivateAccountDto ): Observable<ActivateAccountResponse> {
     return this._http.post<ActivateAccountResponseDto>(this._apiEndPoint + '/account-activation', activateAccountDto).pipe(
       map(dto=>this.toActivateAccountModel(dto))
@@ -97,9 +104,9 @@ export class AuthService {
 
   /**
    * Renvoi un RegisterDto
-   * @param email
-   * @param password
-   * @param name
+   * @param email string
+   * @param password string
+   * @param name string
    * @param captchaClientResponse
    * @returns RegisterDto
    */
@@ -123,7 +130,8 @@ export class AuthService {
       email,
       password,
       name,
-      captchaClientResponseDto
+      captchaClientResponseDto,
+      language: environment.language
     }
   }
 

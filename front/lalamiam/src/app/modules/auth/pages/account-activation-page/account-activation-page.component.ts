@@ -9,15 +9,15 @@ import { Observable } from 'rxjs';
 import { ActivateAccountResponse, ActivatedAccountStatus } from '../../models/activate-account.model';
 import { activateAccountResponseSelector } from '../../store/auth-store/selector';
 import { AppState } from 'src/store/app.state';
-import { MessageUtil } from 'src/app/utils/messages/message-utils';
 import appMessage from 'src/app/utils/messages/account-page-message';
+import ComponentBaseApp from 'src/app/component.base';
 
 @Component({
   selector: 'app-account-activation-page',
   templateUrl: './account-activation-page.component.html',
   styleUrls: ['./account-activation-page.component.css']
 })
-export class AccountActivationPageComponent {
+export class AccountActivationPageComponent extends ComponentBaseApp {
 
   activatedAccountResponse$: Observable<ActivateAccountResponse|null>;
 
@@ -27,19 +27,14 @@ export class AccountActivationPageComponent {
 
   // Données de URL
   activationToken: string | null = '';
-  userEmail: string | null = ''
-
-  /**
-   * Erreurs formulaire
-   */
-    activateMessages: Map<string, string> = new Map();
+  userEmail: string | null = '';
 
   constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _store: Store<AppState>) {
+    super(appMessage.accountActivationPage);
     this.activatedAccountResponse$ = this._store.pipe(select(activateAccountResponseSelector));
   }
 
   ngOnInit() {
-    this.initializeMessages();
     this.userEmail = this._activatedRoute.snapshot.paramMap.get('user-email');
     this.activationToken = this._activatedRoute.snapshot.paramMap.get('confirmation-token');
 
@@ -61,14 +56,5 @@ export class AccountActivationPageComponent {
     }
 
     this._store.dispatch(AuthAction.activateAccount(activateAccountDto))
-  }
-
-  initializeMessages() {
-
-    /**
-     * chargement des infos du formulaire
-     */
-    this.activateMessages = MessageUtil.loadMessageInMap(appMessage.accountActivationPage.information, environment.language)
-
   }
 }

@@ -10,4 +10,6 @@ public interface AuthService {
   public ActivateAccountResponseDto activateAccount(ActivateAccountDto activateAccount);
 
   public MessageResponse logout(Long userId);
+
+  public MessageResponse sendLostPasswordMail(LostPasswordMailingDto lostPasswordMailingDto);
 }

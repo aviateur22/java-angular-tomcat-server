@@ -3,10 +3,6 @@ package ctoutweb.lalamiam.service;
 import ctoutweb.lalamiam.dto.RegisterDto;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 public interface UserService {
 
   /**
@@ -33,5 +29,12 @@ public interface UserService {
    * Suppression d'un utilisateur
    * @param email
    */
-  public void deleteUserByemail(String email);
+  public void deleteUserByEmail(String email);
+
+  /**
+   * Recherche un utilisateur par email
+   * @param email String
+   * @return UserEntity
+   */
+  public UserEntity findUserByEmail(String email);
 }

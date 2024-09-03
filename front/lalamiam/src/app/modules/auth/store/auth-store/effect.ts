@@ -8,7 +8,6 @@ import { catchError, from, map, mergeMap, of, switchMap, tap } from "rxjs";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import frontendLinkUrl from "src/app/utils/frontend-link-url";
-import { ActivateAccountResponse } from "../../models/activate-account.model";
 
 @Injectable()
 export class AuthEffect {
@@ -105,9 +104,9 @@ export class AuthEffect {
       ofType(AuthAction.csrf),
       mergeMap(()=>
         this._authService.csrf().pipe(
-          switchMap((csrf)=>[
+          switchMap(()=>[
             // Generation Message Register
-            FlashMessageAction.createMessage({message: csrf, isError: false})
+            //FlashMessageAction.createMessage({message: csrf, isError: false})
           ]),
           catchError(error=> {
             return of(
@@ -142,7 +141,7 @@ export class AuthEffect {
     )
   )
 
-  activateAction$ = createEffect(()=>
+  activateAccount$ = createEffect(()=>
     this._action$.pipe(
       ofType(AuthAction.activateAccount),
       mergeMap((activateAccountDto)=>
@@ -180,8 +179,25 @@ export class AuthEffect {
             )
           })
         )
-
       )
     )
+  )
+
+  changePassword$ = createEffect(()=>
+    this._action$.pipe(
+      ofType(AuthAction.changePassword),
+      mergeMap((ChangePasswordDto)=>
+        this._authService.changePassword(ChangePasswordDto).pipe(
+          map((message)=>FlashMessageAction.createMessage({message , isError: false })),
+          catchError((error)=>{
+            return of(
+              // Generation Message d'erreur
+              FlashMessageAction.createMessage({message: error.error.error, isError: true})
+            )
+          })
+        )
+      )
+    )
+
   )
 }

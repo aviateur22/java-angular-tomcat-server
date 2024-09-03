@@ -23,8 +23,10 @@ export const reducers = createReducer(
   ),
   on(AuthAction.leaveRegisterPage, (state)=>({...state, captcha: null})),
   on(AuthAction.activateAccountSuccess, (state, {activateAccountResponse})=>({
-    ...state,
-    ...state.activateAccountResponse, activateAccountResponse
+    ...state, activateAccountResponse: {
+      accountActivatedStatus: ActivatedAccountStatus.SUCCESS,
+      message: activateAccountResponse.message
+    }
     })
   ),
   on(AuthAction.activateAccountFailure, (state)=>({

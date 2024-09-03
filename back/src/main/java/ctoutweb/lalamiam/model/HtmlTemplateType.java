@@ -1,7 +1,8 @@
 package ctoutweb.lalamiam.model;
 
 public enum HtmlTemplateType {
-  ACCOUNT_ACTIVATION("activationAccount.html");
+  ACCOUNT_ACTIVATION("activationAccount.html"),
+  CHANGE_PASSWORD("lostPasswordMailing.html");
 
   private String fileName;
   private HtmlTemplateType(String fileName) {

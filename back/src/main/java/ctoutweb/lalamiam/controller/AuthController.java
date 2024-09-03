@@ -2,6 +2,7 @@ package ctoutweb.lalamiam.controller;
 
 import ctoutweb.lalamiam.dto.*;
 import ctoutweb.lalamiam.factory.CaptchaFactory;
+import ctoutweb.lalamiam.factory.MessageResponseFactory;
 import ctoutweb.lalamiam.helper.MessageResourceHelper;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
 import ctoutweb.lalamiam.service.CaptchaService;
@@ -82,7 +83,13 @@ public class AuthController extends BaseController {
   }
 
   @PostMapping("/lost-password-mailing")
-  public ResponseEntity<MessageResponse> lostPasswordMailing() {
+  public ResponseEntity<MessageResponse> lostPasswordMailing(@RequestBody LostPasswordMailingDto lostPasswordMailingDto) {
+    initializeResponse("lostPasswordMailing", lostPasswordMailingDto);
+    return new ResponseEntity<>(authService.sendLostPasswordMail(lostPasswordMailingDto), HttpStatus.OK);
+  }
+
+  @PostMapping("/change-password")
+  public ResponseEntity<MessageResponse> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
     return null;
   }
 }

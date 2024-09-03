@@ -1,5 +1,7 @@
 package ctoutweb.lalamiam.service;
 
+import ctoutweb.lalamiam.dto.ChangePasswordDto;
+import ctoutweb.lalamiam.dto.LostPasswordMailingDto;
 import ctoutweb.lalamiam.repository.entity.AccountEntity;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 
@@ -20,4 +22,17 @@ public interface AccountService {
    * @return boolean
    */
   public boolean isAccountActivatable(UserEntity user, String activateToken);
+
+  /**
+   * Envoie d'un email pour modification du mot de passe
+   * @param userData UserEntity
+   */
+  public void accountLostPasswordMailing(UserEntity userData);
+
+  /**
+   * Modification du mot de passe
+   * @param changePassword ChangePasswordDto
+   * @return Boolean
+   */
+  public boolean isAccountPasswordEditable(ChangePasswordDto changePassword);
 }

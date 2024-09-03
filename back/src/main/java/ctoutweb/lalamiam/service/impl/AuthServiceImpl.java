@@ -95,7 +95,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
     // Suppression de l'ancien user si existant
     if (findUser != null) {
-      userService.deleteUserByemail(findUser.getEmail());
+      userService.deleteUserByEmail(findUser.getEmail());
     }
 
     UserEntity registerUser = userService.registerUser(registerDto);
@@ -134,6 +134,20 @@ public class AuthServiceImpl extends BaseService implements AuthService {
     return new MessageResponse(getApiMessage("logout"));
   }
 
+  @Transactional
+  @Override
+  public MessageResponse sendLostPasswordMail(LostPasswordMailingDto lostPasswordMailingDto) {
+    UserEntity user = userService.findUserByEmail(lostPasswordMailingDto.email());
+
+    if(user == null) {
+      throw new AuthException(getExceptionMessage("send.reset.passord.error"), HttpStatus.BAD_REQUEST);
+    }
+
+    // Envoie le mail pour réinitialiser le mot de passe
+    accountService.accountLostPasswordMailing(user);
+
+    return MessageResponseFactory.getMessageResponse(getApiMessage("send.mail"));
+  }
 
 
 }

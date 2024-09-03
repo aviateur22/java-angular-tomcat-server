@@ -1,7 +1,5 @@
 package ctoutweb.lalamiam.service.impl;
 
-
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 
 import java.util.Properties;

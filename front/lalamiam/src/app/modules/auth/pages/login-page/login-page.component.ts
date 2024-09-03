@@ -5,7 +5,7 @@ import * as AuthAction from '../../store/auth-store/action'
 import { Observable } from 'rxjs';
 import { AppState } from 'src/store/app.state';
 
-import { LoginDto } from '../../models/login.dto';
+import { LoginDto } from '../../models/auth.dto';
 import { isLoadingSelector } from '../../store/auth-store/selector';
 import { environment } from 'src/environments/environment';
 import frontendLinkUrl from 'src/app/utils/frontend-link-url';

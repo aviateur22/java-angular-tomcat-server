@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import frontendLinkUrl from 'src/app/utils/frontend-link-url';
 import { environment } from 'src/environments/environment';
-import { ActivateAccountDto } from '../../models/activate-account.dto';
+import { ActivateAccountDto } from '../../models/auth.dto';
 import { select, Store } from '@ngrx/store';
 import * as AuthAction from '../../store/auth-store/action'
 import { Observable } from 'rxjs';
@@ -35,6 +35,9 @@ export class AccountActivationPageComponent extends ComponentBaseApp {
   }
 
   ngOnInit() {
+    // chargement token csrf
+    this._store.dispatch(AuthAction.csrf());
+
     this.userEmail = this._activatedRoute.snapshot.paramMap.get('user-email');
     this.activationToken = this._activatedRoute.snapshot.paramMap.get('confirmation-token');
 

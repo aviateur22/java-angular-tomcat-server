@@ -1,17 +1,18 @@
 import { Injectable } from "@angular/core";
-import { LoginDto } from "../models/login.dto";
+import { LoginDto } from "../models/auth.dto";
 import { map, Observable, of, tap } from "rxjs";
-import { LoginResponseDto } from "../models/login-response.dto";
+import { LoginResponseDto } from "../models/auth.dto";
 import { environment } from "src/environments/environment";
 import { HttpClient } from "@angular/common/http";
-import { RegisterDto } from "../models/register.dto";
-import { RegisterResponseDto } from "../models/register-response.dto";
+import { RegisterDto } from "../models/auth.dto";
+import { RegisterResponseDto } from "../models/auth.dto";
 import { Captcha } from "../models/captcha.model";
-import { CaptchaDto } from "../models/captcha.dto";
-import { CaptchaClientResponseDto } from "../models/captcha-client-response.dto";
-import { ActivateAccountDto, ActivateAccountResponseDto } from "../models/activate-account.dto";
+import { CaptchaDto } from "../models/auth.dto";
+import { CaptchaClientResponseDto } from "../models/auth.dto";
+import { ActivateAccountDto, ActivateAccountResponseDto } from "../models/auth.dto";
 import { ActivateAccountResponse, ActivatedAccountStatus } from "../models/activate-account.model";
-import { LostPasswordMailingResponseDto, LostPaswordMailingDto } from "../models/lost-password-mailing.dto";
+import { LostPasswordMailingResponseDto, LostPaswordMailingDto } from "../models/auth.dto";
+import { ChangePasswordDto, ChangePasswordResponseDto } from "../models/auth.dto";
 
 @Injectable({
   providedIn:"root"
@@ -73,6 +74,12 @@ export class AuthService {
 
   public lostPasswordMailing(lostPasswordDto: LostPaswordMailingDto): Observable<string> {
     return this._http.post<LostPasswordMailingResponseDto>(this._apiEndPoint + "/lost-password-mailing", lostPasswordDto).pipe(
+      map(response=>response.message)
+    )
+  }
+
+  public changePassword(changePasswordDto: ChangePasswordDto): Observable<string> {
+    return this._http.post<ChangePasswordResponseDto>(this._apiEndPoint + "/change-password", changePasswordDto).pipe(
       map(response=>response.message)
     )
   }

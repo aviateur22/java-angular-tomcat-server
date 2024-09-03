@@ -12,6 +12,7 @@ import ctoutweb.lalamiam.service.MailService;
 import ctoutweb.lalamiam.service.RoleService;
 import ctoutweb.lalamiam.service.UserService;
 import ctoutweb.lalamiam.util.TextUtility;
+import org.apache.catalina.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -40,11 +41,9 @@ public class UserServiceImpl implements UserService {
   private String domainFront;
   @Value("${front.path}")
   private String frontPath;
-
   @Value("${front.account.activation.url}")
   private String activateAccounteFrontEndUrl;
-  @Value("${front.change.password.account.url}")
-  private String changePasswordAccountFrontEndUrl;
+
   private static final Logger LOGGER = LogManager.getLogger();
   private final MailService mailService;
   private final PasswordEncoder passwordEncoder;
@@ -150,7 +149,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public void deleteUserByemail(String email) {
+  public void deleteUserByEmail(String email) {
     try{
     long delete = userRepository.deleteByEmail(email);
     LOGGER.debug(delete);
@@ -158,5 +157,10 @@ public class UserServiceImpl implements UserService {
     } catch (Exception ex) {
       LOGGER.error(ex);
     }
+  }
+
+  @Override
+  public UserEntity findUserByEmail(String email) {
+    return userRepository.findByEmail(email).orElse(null);
   }
 }

@@ -4,6 +4,7 @@ import ctoutweb.lalamiam.model.csrf.CookieCsrfToken;
 import ctoutweb.lalamiam.model.csrf.HeaderCsrfFormToken;
 import ctoutweb.lalamiam.security.csrf.CustomCsrfTokenRepository;
 
+import ctoutweb.lalamiam.security.url.AuthenticationType;
 import ctoutweb.lalamiam.util.HttpServletUtility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,26 +31,35 @@ public class CookieCsrfFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     try {
+      String urlPath = request.getRequestURI();
+
       boolean isCookieGenerate = false;
 
       CookieCsrfToken csrfCookieToken = csrfTokenRepository.loadCookieToken(request);
       HeaderCsrfFormToken headerCsrfFormToken = csrfTokenRepository.loadHeaderToken(request);
 
-      if(csrfCookieToken == null) {
+      // Génération nouveau token CSRF pour le path auth/csrf
+      if(urlPath.contains("/auth/csrf")) {
         isCookieGenerate = true;
         csrfCookieToken = csrfTokenRepository.generateTokenCookieType(request);
         csrfTokenRepository.saveToken(csrfCookieToken, request, response);
       }
 
+
       // Vérification CSRF pour une methode POST
       if (requireCsrfProtectionMatcher.matches(request)) {
         if(!areCsrfHeaderCookieEquals(isCookieGenerate, headerCsrfFormToken, csrfCookieToken)) {
-          LOGGER.error(String.format("Données Token %s, %s",csrfCookieToken.getToken(), headerCsrfFormToken.getToken()));
-          LOGGER.error(String.format("Erreur TOKEN CSRF - Path: %s  - CSRF Formulaire Header: %s - CSRF Cookie: %s",
-                  request.getRequestURI(),
-                  headerCsrfFormToken != null ? headerCsrfFormToken.toString() : null,
-                  csrfCookieToken != null ? csrfCookieToken.toString() : null)
-          );
+
+          if(csrfCookieToken != null && headerCsrfFormToken != null) {
+            LOGGER.error(String.format("Données Token %s, %s",csrfCookieToken.getToken(), headerCsrfFormToken.getToken()));
+            LOGGER.error(String.format("Erreur TOKEN CSRF - Path: %s  - CSRF Formulaire Header: %s - CSRF Cookie: %s",
+                    request.getRequestURI(),
+                    headerCsrfFormToken != null ? headerCsrfFormToken.toString() : null,
+                    csrfCookieToken != null ? csrfCookieToken.toString() : null)
+            );
+          }
+
+          LOGGER.error("CSRF token ou COOKIE token == null");
 
           response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
           response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -86,6 +96,9 @@ public class CookieCsrfFilter extends OncePerRequestFilter {
       return true;
 
     if (headerCsrfFormToken == null)
+      return false;
+
+    if (csrfCookieToken == null)
       return false;
 
     if(!csrfCookieToken.getToken().equals(headerCsrfFormToken.getToken()))

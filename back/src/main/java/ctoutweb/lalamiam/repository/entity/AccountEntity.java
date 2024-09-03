@@ -31,8 +31,11 @@ public class AccountEntity {
   @Column(name = "is_account_active")
   private Boolean isAccountActive;
 
-  @Column(name = "token_activation")
-  private String tokenActivation;
+  @Column(name = "url_token_activation")
+  private String urlTokenActivation;
+
+  @Column(name = "change_password_token")
+  private String changePasswordToken;
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -52,12 +55,22 @@ public class AccountEntity {
    * Constructeur pour creation d'un compte
    * @param user
    */
-  public AccountEntity(UserEntity user, String tokenActivationHash) {
+  public AccountEntity(UserEntity user, String urlTokenActivationHash) {
     this.accountUser = user;
     this.isAccountActive = true;
-    this.tokenActivation = tokenActivationHash;
+    this.urlTokenActivation = urlTokenActivationHash;
   }
 
+  public AccountEntity(
+          UserEntity user,
+          String urlTokenActivationHash,
+          String changePasswordTokenHash
+  ) {
+    this.accountUser = user;
+    this.isAccountActive = true;
+    this.urlTokenActivation = urlTokenActivationHash;
+    this.changePasswordToken = changePasswordTokenHash;
+  }
   public Long getId() {
     return id;
   }
@@ -98,12 +111,20 @@ public class AccountEntity {
     this.accountActivationLimitDateAt = accountActivationLimitDateAt;
   }
 
-  public String getTokenActivation() {
-    return tokenActivation;
+  public String getUrlTokenActivation() {
+    return urlTokenActivation;
   }
 
-  public void setTokenActivation(String tokenActivation) {
-    this.tokenActivation = tokenActivation;
+  public void setUrlTokenActivation(String urlTokenActivation) {
+    this.urlTokenActivation = urlTokenActivation;
+  }
+
+  public String getChangePasswordToken() {
+    return changePasswordToken;
+  }
+
+  public void setChangePasswordToken(String changePasswordToken) {
+    this.changePasswordToken = changePasswordToken;
   }
 
   public LocalDateTime getCreatedAt() {
@@ -128,7 +149,8 @@ public class AccountEntity {
             "id=" + id +
             ", isAccountActive=" + isAccountActive +
             ", activationDate=" + accountActivationAt +
-            ", activationAccountToken=" + tokenActivation +
+            ", urlAccountToken=" + urlTokenActivation +
+            ", changePasswordToken=" + changePasswordToken +
            // ", user=" + accountUser +
             ", createdAt=" + createdAt +
             ", updatedAt=" + updatedAt +

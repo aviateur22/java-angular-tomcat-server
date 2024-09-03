@@ -1,7 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 import { Captcha } from "../../models/captcha.model";
-import { CaptchaClientResponseDto } from "../../models/captcha-client-response.dto";
-import { ActivateAccountDto } from "../../models/activate-account.dto";
+import { CaptchaClientResponseDto, ActivateAccountDto } from "../../models/auth.dto";
 import { ActivateAccountResponse } from "../../models/activate-account.model";
 
 export const login = createAction('[Auth] Login client', props<{email: string, password: string, language: string}>());
@@ -21,4 +20,8 @@ export const activateAccountSuccess = createAction('[Auth] Activate account succ
 export const activateAccountFailure = createAction('[Auth] Activate account failure');
 
 export const lostPasswordMailing = createAction('[Auth] Lost password mailing', props<{email: string, language: string}>());
+
+export const changePassword = createAction('[Auth] change password', props<{changePasswordToken: string, urlToken: string, email: string, password: string, language: string}>());
+export const changePasswordSuccess = createAction('[Auth] change password success', props<{message: string}>());
+export const changePasswordFailure = createAction('[Auth] change password failure', props<{message: string}>());
 

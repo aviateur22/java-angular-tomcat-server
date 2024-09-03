@@ -3,6 +3,7 @@ package ctoutweb.lalamiam.controller;
 import ctoutweb.lalamiam.annotation.AnnotationValidator;
 import ctoutweb.lalamiam.dto.HasLanguage;
 import ctoutweb.lalamiam.helper.MessageResourceHelper;
+import ctoutweb.lalamiam.service.impl.BaseService;
 
 import javax.validation.Validator;
 

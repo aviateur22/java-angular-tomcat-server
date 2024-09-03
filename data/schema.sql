@@ -58,7 +58,8 @@ create table IF NOT EXISTS sc_project.account(
     "account_activation_at" TIMESTAMPTZ,
     "account_activation_limit_date_at" TIMESTAMPTZ,
     "is_account_active" BOOLEAN NOT NULL DEFAULT TRUE,
-    "token_activation" TEXT,
+    "url_token_activation" TEXT,
+    "change_password_token" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );

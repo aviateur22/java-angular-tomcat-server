@@ -73,7 +73,8 @@ public class MailServiceImpl extends BaseService implements MailService {
     try {
 
       String fileName = switch (type) {
-        case ACCOUNT_ACTIVATION ->type.getFileName();
+        case ACCOUNT_ACTIVATION ->HtmlTemplateType.ACCOUNT_ACTIVATION.getFileName();
+        case CHANGE_PASSWORD -> HtmlTemplateType.CHANGE_PASSWORD.getFileName();
       };
       String filePath = "html/" + fileName;
       LOGGER.debug(String.format("TemplateHTML name: %s , path: %s", fileName, filePath));

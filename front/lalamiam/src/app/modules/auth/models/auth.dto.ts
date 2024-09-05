@@ -31,6 +31,7 @@ export interface ChangePasswordDto extends RequestBaseDto {
 }
 
 export interface ChangePasswordResponseDto extends ResponseBaseDto {
+  isPasswordChange: boolean
 }
 
 export interface LoginDto extends RequestBaseDto {

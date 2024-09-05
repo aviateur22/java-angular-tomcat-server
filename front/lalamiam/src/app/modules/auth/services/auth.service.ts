@@ -13,6 +13,7 @@ import { ActivateAccountDto, ActivateAccountResponseDto } from "../models/auth.d
 import { ActivateAccountResponse, ActivatedAccountStatus } from "../models/activate-account.model";
 import { LostPasswordMailingResponseDto, LostPaswordMailingDto } from "../models/auth.dto";
 import { ChangePasswordDto, ChangePasswordResponseDto } from "../models/auth.dto";
+import { ChangeAccountPassword } from "../models/change-account-password.model";
 
 @Injectable({
   providedIn:"root"
@@ -78,12 +79,22 @@ export class AuthService {
     )
   }
 
-  public changePassword(changePasswordDto: ChangePasswordDto): Observable<string> {
+  /**
+   * Modification du mot de passe
+   * @param changePasswordDto ChangePasswordDto
+   * @returns ChangeAccountPassword
+   */
+  public changePassword(changePasswordDto: ChangePasswordDto): Observable<ChangeAccountPassword> {
     return this._http.post<ChangePasswordResponseDto>(this._apiEndPoint + "/change-password", changePasswordDto).pipe(
-      map(response=>response.message)
+      map(dto=>this.toChangeAccountModel(dto))
     )
   }
 
+  /**
+   * Activation du compte
+   * @param activateAccountDto ActivateAccountDto
+   * @returns ActivateAccountResponse
+   */
   public activateAccount(activateAccountDto: ActivateAccountDto ): Observable<ActivateAccountResponse> {
     return this._http.post<ActivateAccountResponseDto>(this._apiEndPoint + '/account-activation', activateAccountDto).pipe(
       map(dto=>this.toActivateAccountModel(dto))
@@ -107,6 +118,15 @@ export class AuthService {
   private toActivateAccountModel(dto: ActivateAccountResponseDto): ActivateAccountResponse {
     const activateStatus: ActivatedAccountStatus  = this.getAcctivateAccountStatus(dto.accountActivateStatus);
     return new ActivateAccountResponse(activateStatus, dto.message);
+  }
+
+  /**
+   * Converti un ChangePasswordResponseDto-> ChangeAccountPassword
+   * @param dto ChangePasswordResponseDto
+   * @returns ChangeAccountPassword
+   */
+  private toChangeAccountModel(dto: ChangePasswordResponseDto): ChangeAccountPassword {
+    return new ChangeAccountPassword(dto.message, dto.isPasswordChange);
   }
 
   /**

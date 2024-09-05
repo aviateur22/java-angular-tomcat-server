@@ -9,7 +9,8 @@ export const initialState: AuthModel = {
   isErrorVisible: false,
   isLoading: false,
   captcha: null,
-  activateAccountResponse: null
+  activateAccountResponse: null,
+  changeAccountPassword: null
 }
 
 export const reducers = createReducer(
@@ -34,7 +35,21 @@ export const reducers = createReducer(
       accountActivatedStatus: ActivatedAccountStatus.FAILURE,
       message: ''
     }
-
     })
-  )
+  ),
+  on(AuthAction.changePasswordSuccess, (state,{isPasswordChange})=>({
+    ...state, changeAccountPassword: {
+      message: '',
+      isPasswordChange: isPasswordChange
+    }
+    })
+  ),
+  on(AuthAction.changePasswordFailure, (state,{isPasswordChange})=>({
+    ...state, changeAccountPassword: {
+      message: '',
+      isPasswordChange: isPasswordChange
+    }
+  })
+)
+
 );

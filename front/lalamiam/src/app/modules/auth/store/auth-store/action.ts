@@ -22,6 +22,6 @@ export const activateAccountFailure = createAction('[Auth] Activate account fail
 export const lostPasswordMailing = createAction('[Auth] Lost password mailing', props<{email: string, language: string}>());
 
 export const changePassword = createAction('[Auth] change password', props<{changePasswordToken: string, urlToken: string, email: string, password: string, language: string}>());
-export const changePasswordSuccess = createAction('[Auth] change password success', props<{message: string}>());
-export const changePasswordFailure = createAction('[Auth] change password failure', props<{message: string}>());
+export const changePasswordSuccess = createAction('[Auth] change password success', props<{isPasswordChange: boolean}>());
+export const changePasswordFailure = createAction('[Auth] change password failure', props<{isPasswordChange: boolean}>());
 

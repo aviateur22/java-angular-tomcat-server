@@ -6,8 +6,8 @@ export default {
         en: 'Password modification'
       },
       changePasswordToken: {
-        fr: 'Token pour valider la modification du mot de passe',
-        en: 'Token to enable password update'
+        fr: 'Token recu par email',
+        en: 'Token recieve by email'
       },
       password: {
         fr: 'Votre mot de passe',
@@ -16,6 +16,14 @@ export default {
       confirmPassword: {
         fr: 'Confirmer votre mot de passe',
         en: 'Confirm your password'
+      },
+      changePasswordFailure: {
+        fr: 'Echec de mise à jour du mot de passe',
+        en: 'Updating password failed'
+      },
+      changePasswordSuccess: {
+        fr: 'Votre mot de passe a été mis à jour',
+        en: 'Your password is updated'
       }
     },
     error: {

@@ -9,3 +9,4 @@ export const errorMessageSelector = createSelector(selector, (state) => state.er
 export const captchaSelector = createSelector(selector, (state) => state.captcha);
 export const captchaQuestionSelector = createSelector(selector, (state) => state.captcha?.question);
 export const activateAccountResponseSelector = createSelector(selector, (state) => state.activateAccountResponse);
+export const changeAccountPasswordSelector = createSelector(selector, (state) => state.changeAccountPassword);

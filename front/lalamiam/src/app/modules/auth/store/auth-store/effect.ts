@@ -188,12 +188,18 @@ export class AuthEffect {
       ofType(AuthAction.changePassword),
       mergeMap((ChangePasswordDto)=>
         this._authService.changePassword(ChangePasswordDto).pipe(
-          map((message)=>FlashMessageAction.createMessage({message , isError: false })),
+          switchMap((changeAccountPassword)=>[
+            AuthAction.changePasswordSuccess({isPasswordChange: true}),
+            FlashMessageAction.createMessage({message: changeAccountPassword.message , isError: false })
+
+          ]),
           catchError((error)=>{
-            return of(
+            return from([
               // Generation Message d'erreur
-              FlashMessageAction.createMessage({message: error.error.error, isError: true})
-            )
+              FlashMessageAction.createMessage({message: error.error.error, isError: true}),
+              AuthAction.changePasswordFailure({isPasswordChange: false})
+
+            ])
           })
         )
       )

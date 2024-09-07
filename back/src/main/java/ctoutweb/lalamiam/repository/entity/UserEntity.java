@@ -21,8 +21,13 @@ public class UserEntity {
 
   @OneToOne(mappedBy = "accountUser", cascade = CascadeType.REMOVE)
   private AccountEntity account;
-  @OneToOne(mappedBy = "user")
+  @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
   private JwtEntity jwt;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private List<UserLoginEntity> userLogins;
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private DelayLoginEntity delayLogin;
 
   @CreationTimestamp
   @Column(name = "created_at")
@@ -118,6 +123,22 @@ public class UserEntity {
 
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public List<UserLoginEntity> getUserLogin() {
+    return userLogins;
+  }
+
+  public void setUserLogin(List<UserLoginEntity> userLogins) {
+    this.userLogins = userLogins;
+  }
+
+  public DelayLoginEntity getDelayLogin() {
+    return delayLogin;
+  }
+
+  public void setDelayLogin(DelayLoginEntity delayLogin) {
+    this.delayLogin = delayLogin;
   }
 
   @Override

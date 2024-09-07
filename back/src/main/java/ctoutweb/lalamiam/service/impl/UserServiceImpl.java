@@ -51,22 +51,19 @@ public class UserServiceImpl implements UserService {
   private final EntityManagerFactory entityManagerFactory;
   private final AccountService accountService;
   private final RoleService roleService;
-  private final ValidateLanguage apiValidateLanguage;
   public UserServiceImpl(
           MailService mailService,
           PasswordEncoder passwordEncoder,
           UserRepository userRepository,
           EntityManagerFactory entityManagerFactory,
           AccountService accountService,
-          RoleService roleService,
-          ValidateLanguage validateLanguage) {
+          RoleService roleService) {
     this.mailService = mailService;
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
     this.entityManagerFactory = entityManagerFactory;
     this.accountService = accountService;
     this.roleService = roleService;
-    this.apiValidateLanguage = validateLanguage;
   }
   @Override
   public String getTotalOfUsers() {
@@ -163,4 +160,14 @@ public class UserServiceImpl implements UserService {
   public UserEntity findUserByEmail(String email) {
     return userRepository.findByEmail(email).orElse(null);
   }
+
+  @Override
+  public void updateUser(UserEntity updatedUser) {
+    String passwordHash = passwordEncoder.encode(updatedUser.getPassword());
+    updatedUser.setPassword(passwordHash);
+
+    userRepository.save(updatedUser);
+  }
+
+
 }

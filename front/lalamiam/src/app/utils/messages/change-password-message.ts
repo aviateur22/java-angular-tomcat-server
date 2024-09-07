@@ -24,6 +24,10 @@ export default {
       changePasswordSuccess: {
         fr: 'Votre mot de passe a été mis à jour',
         en: 'Your password is updated'
+      },
+      buttonText:{
+        fr: 'Modifier',
+        en: 'Update'
       }
     },
     error: {

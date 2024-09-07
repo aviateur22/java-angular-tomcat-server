@@ -90,6 +90,7 @@ public class AuthController extends BaseController {
 
   @PostMapping("/change-password")
   public ResponseEntity<ChangePasswordResponseDto> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
-    return null;
+    initializeResponse("changePasswordMessage", changePasswordDto);
+    return new ResponseEntity<>(authService.changePassword(changePasswordDto), HttpStatus.OK);
   }
 }

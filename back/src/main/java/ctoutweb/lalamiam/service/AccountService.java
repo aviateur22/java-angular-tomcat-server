@@ -34,5 +34,6 @@ public interface AccountService {
    * @param changePassword ChangePasswordDto
    * @return Boolean
    */
-  public boolean isAccountPasswordEditable(ChangePasswordDto changePassword);
+  public boolean isAccountPasswordEditable(UserEntity user, ChangePasswordDto changePassword);
+
 }

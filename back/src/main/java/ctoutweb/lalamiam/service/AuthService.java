@@ -12,4 +12,6 @@ public interface AuthService {
   public MessageResponse logout(Long userId);
 
   public MessageResponse sendLostPasswordMail(LostPasswordMailingDto lostPasswordMailingDto);
+
+  public ChangePasswordResponseDto changePassword(ChangePasswordDto changePasswordDto);
 }

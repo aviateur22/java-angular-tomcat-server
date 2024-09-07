@@ -32,7 +32,8 @@ public class UserPrincipalDetailService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) throws AuthException {
     UserEntity user = userService.getUserInformationByEmail(email);
 
-    if(user == null) throw new AuthException(messageExceptions.getProperty("email.unvalid"), HttpStatus.BAD_REQUEST);
+    if(user == null)
+      return null;
 
     return UserPrincipal.UserPrincipalBuilder.anUserPrincipal()
             .withId(user.getId())

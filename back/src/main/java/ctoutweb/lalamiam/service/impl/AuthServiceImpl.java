@@ -3,6 +3,7 @@ package ctoutweb.lalamiam.service.impl;
 import ctoutweb.lalamiam.dto.*;
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.factory.ActivateAccountFactory;
+import ctoutweb.lalamiam.factory.ChangePasswordFactory;
 import ctoutweb.lalamiam.factory.MessageResponseFactory;
 import ctoutweb.lalamiam.model.*;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
@@ -52,7 +53,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
   }
 
   @Override
-  @Transactional
+  @Transactional(dontRollbackOn = AuthException.class)
   public LoginResponseDto login(LoginDto loginDto) {
 
     // Destruction JWT existant
@@ -146,7 +147,27 @@ public class AuthServiceImpl extends BaseService implements AuthService {
     // Envoie le mail pour réinitialiser le mot de passe
     accountService.accountLostPasswordMailing(user);
 
-    return MessageResponseFactory.getMessageResponse(getApiMessage("send.mail"));
+    return MessageResponseFactory.getMessageResponse(getApiMessage("mail.send"));
+  }
+
+  @Transactional
+  @Override
+  public ChangePasswordResponseDto changePassword(ChangePasswordDto changePasswordDto) {
+    UserEntity user = userService.findUserByEmail(changePasswordDto.email());
+
+    if(user == null) {
+      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+    }
+    boolean isAccountPasswordEditable = accountService.isAccountPasswordEditable(user, changePasswordDto);
+
+    if(!isAccountPasswordEditable) {
+      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+    }
+
+    // Mise a jour de l'utilisateur
+    userService.updateUser(user);
+
+    return ChangePasswordFactory.getChangePasswordResponse(getApiMessage("change.password.success"), true);
   }
 
 

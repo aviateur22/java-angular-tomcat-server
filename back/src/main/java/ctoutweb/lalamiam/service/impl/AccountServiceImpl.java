@@ -90,7 +90,7 @@ public class AccountServiceImpl extends BaseService implements AccountService {
     String urlTokenHash = passwordEncoder.encode(urlToken);
 
     // génération token pour modifier mot de passe
-    String passwordChangeToken = TextUtility.generateInteger(5);
+    String passwordChangeToken = TextUtility.generateInteger(6);
     String passwordChangeTokenHash = passwordEncoder.encode(passwordChangeToken);
 
     // Mise a jour de données account
@@ -116,7 +116,32 @@ public class AccountServiceImpl extends BaseService implements AccountService {
   }
 
   @Override
-  public boolean isAccountPasswordEditable(ChangePasswordDto changePassword) {
-    return false;
+  public boolean isAccountPasswordEditable(UserEntity user, ChangePasswordDto changePasswordDto) {
+
+    // Compte utilisateur
+    AccountEntity account = accountRepository.findFirstByAccountUserId(user.getId()).orElse(null);
+
+    if(account == null || !account.getIsAccountActive()) {
+      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+    }
+
+    boolean isPasswordTokenValid = passwordEncoder.matches(changePasswordDto.changePasswordToken(), account.getChangePasswordToken());
+
+    if(!isPasswordTokenValid) {
+      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+    }
+
+    boolean isUrlTokenValid = passwordEncoder.matches(changePasswordDto.urlToken(), account.getUrlTokenActivation());
+
+    if(!isUrlTokenValid) {
+      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+    }
+
+    // Mise a jour des données du compte
+    account.setChangePasswordToken(null);
+    account.setUrlTokenActivation(null);
+    accountRepository.save(account);
+
+    return true;
   }
 }

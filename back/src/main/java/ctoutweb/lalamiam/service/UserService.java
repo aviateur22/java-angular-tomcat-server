@@ -37,4 +37,10 @@ public interface UserService {
    * @return UserEntity
    */
   public UserEntity findUserByEmail(String email);
+
+  /**
+   * Mise a jour de l'utilisateur
+   * @param updatedUser
+   */
+  public void updateUser(UserEntity updatedUser);
 }

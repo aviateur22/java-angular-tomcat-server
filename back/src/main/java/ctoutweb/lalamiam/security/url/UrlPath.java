@@ -40,7 +40,9 @@ public class UrlPath {
             "/login",
             "/captcha",
             "/csrf",
-            "/account-activation"
+            "/account-activation",
+            "/change-password",
+            "/lost-password-mailing"
     )
   );
 }

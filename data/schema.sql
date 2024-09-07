@@ -14,8 +14,9 @@ CREATE SCHEMA IF NOT EXISTS sc_project;
 ALTER SCHEMA sc_project OWNER TO project;
 
 
-DROP TABLE IF EXISTS sc_project."account", sc_project."jwt",sc_project."role_user",sc_project."role",sc_project."users";
+DROP TABLE IF EXISTS sc_project."user_login" , sc_project."delay_login" , sc_project."account", sc_project."jwt",sc_project."role_user",sc_project."role",sc_project."users";
 
+-- Utilisateur --
 CREATE TABLE if NOT EXISTS sc_project.users(
     "id" BIGINT PRIMARY KEY,
     "name" text not null,
@@ -25,6 +26,7 @@ CREATE TABLE if NOT EXISTS sc_project.users(
     "updated_at" TIMESTAMPTZ
 );
 
+-- JWT --
 CREATE TABLE if NOT EXISTS sc_project.jwt(
     "id" BIGINT PRIMARY KEY,
     "user_id" BIGINT NOT NULL REFERENCES sc_project."users"("id") on delete cascade,
@@ -37,6 +39,7 @@ CREATE TABLE if NOT EXISTS sc_project.jwt(
     "updated_at" TIMESTAMPTZ
 );
 
+-- Role --
 create table IF NOT EXISTS sc_project.role(
     "id" INT PRIMARY KEY,
     "name" TEXT NOT NULL,
@@ -44,6 +47,7 @@ create table IF NOT EXISTS sc_project.role(
     "updated_at" TIMESTAMPTZ
 );
 
+-- Role - utilisateur --
 create table IF NOT EXISTS sc_project.role_user(
     "id" BIGINT PRIMARY KEY,
     "user_id" BIGINT NOT NULL REFERENCES sc_project."users"("id") on delete cascade,
@@ -52,6 +56,7 @@ create table IF NOT EXISTS sc_project.role_user(
     "updated_at" TIMESTAMPTZ
 );
 
+-- Compte --
 create table IF NOT EXISTS sc_project.account(
     "id" BIGINT PRIMARY KEY,
     "user_id" BIGINT NOT NULL REFERENCES sc_project."users"("id") on delete cascade,
@@ -64,22 +69,45 @@ create table IF NOT EXISTS sc_project.account(
     "updated_at" TIMESTAMPTZ
 );
 
+-- Connexion utilisateur --
+create table IF NOT EXISTS sc_project.user_login(
+    "id" BIGINT PRIMARY KEY,
+    "user_id" BIGINT NOT NULL REFERENCES sc_project."users"("id") on delete cascade,
+    "is_login_success" BOOLEAN NOT NULL,
+    "login_at" TIMESTAMPTZ NOT NULL
+);
+
+-- Delai de connexion au compte --
+create table IF NOT EXISTS sc_project.delay_login(
+    "id" BIGINT PRIMARY KEY,
+    "user_id" BIGINT NOT NULL REFERENCES sc_project."users"("id") on delete cascade,
+    "login_delay_until" TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '5 minutes',
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "updated_at" TIMESTAMPTZ
+);
+
 ALTER table IF EXISTS sc_project.users OWNER TO project;
 ALTER table IF EXISTS sc_project.jwt OWNER TO project;
 ALTER table IF EXISTS sc_project.role OWNER TO project;
 ALTER table IF EXISTS sc_project.role_user OWNER TO project;
 ALTER table IF EXISTS sc_project.account OWNER TO project;
+ALTER table IF EXISTS sc_project.user_login OWNER TO project;
+ALTER table IF EXISTS sc_project.delay_login OWNER TO project;
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_project.users TO project;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_project.jwt TO project;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_project.role TO project;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_project.role_user TO project;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_project.account TO project;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_project.user_login TO project;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_project.delay_login TO project;
 
 CREATE SEQUENCE if not exists sc_project.users_pk_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE if not exists sc_project.jwt_pk_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE if not exists sc_project.role_user_pk_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE if not exists sc_project.account_pk_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
+CREATE SEQUENCE if not exists sc_project.user_login_pk_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
+CREATE SEQUENCE if not exists sc_project.delay_login_pk_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 
 ALTER SEQUENCE if exists sc_project.users_pk_seq OWNER TO project;
 ALTER SEQUENCE if exists sc_project.users_pk_seq owned by sc_project.users.id;
@@ -93,6 +121,12 @@ ALTER TABLE sc_project.role_user ALTER COLUMN id SET DEFAULT NEXTVAL('sc_project
 ALTER SEQUENCE if exists sc_project.account_pk_seq OWNER TO project;
 ALTER SEQUENCE if exists sc_project.account_pk_seq owned by sc_project.account.id;
 ALTER TABLE sc_project.account ALTER COLUMN id SET DEFAULT NEXTVAL('sc_project.account_pk_seq');
+ALTER SEQUENCE if exists sc_project.user_login_pk_seq OWNER TO project;
+ALTER SEQUENCE if exists sc_project.user_login_pk_seq owned by sc_project.user_login.id;
+ALTER TABLE sc_project.user_login ALTER COLUMN id SET DEFAULT NEXTVAL('sc_project.user_login_pk_seq');
+ALTER SEQUENCE if exists sc_project.delay_login_pk_seq OWNER TO project;
+ALTER SEQUENCE if exists sc_project.delay_login_pk_seq owned by sc_project.delay_login.id;
+ALTER TABLE sc_project.delay_login ALTER COLUMN id SET DEFAULT NEXTVAL('sc_project.delay_login_pk_seq');
 
 --Clear password: test
 INSERT INTO sc_project.users ("name", "email" , "password") VALUES

@@ -1138,7 +1138,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function ChangeAccountPasswordPageComponent_div_1_div_1_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div")(1, "p");
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div", 6)(1, "p");
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]()();
   }
@@ -1150,21 +1150,21 @@ function ChangeAccountPasswordPageComponent_div_1_div_1_Template(rf, ctx) {
 }
 function ChangeAccountPasswordPageComponent_div_1_ng_template_2_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "p");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div", 6)(1, "p");
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]()();
   }
   if (rf & 2) {
     const ctx_r6 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtextInterpolate"](ctx_r6.pageMessages.get("changePasswordFailure"));
   }
 }
 function ChangeAccountPasswordPageComponent_div_1_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](1, ChangeAccountPasswordPageComponent_div_1_div_1_Template, 3, 1, "div", 1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](2, ChangeAccountPasswordPageComponent_div_1_ng_template_2_Template, 2, 1, "ng-template", null, 3, _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplateRefExtractor"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div", 3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](1, ChangeAccountPasswordPageComponent_div_1_div_1_Template, 3, 1, "div", 4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](2, ChangeAccountPasswordPageComponent_div_1_ng_template_2_Template, 3, 1, "ng-template", null, 5, _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplateRefExtractor"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -1176,24 +1176,24 @@ function ChangeAccountPasswordPageComponent_div_1_Template(rf, ctx) {
 }
 function ChangeAccountPasswordPageComponent_ng_template_3_ng_template_9_Template(rf, ctx) {
   if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div", 26)(1, "p", 27);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div", 29)(1, "p", 30);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](2, "Contraintes");
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](3, "p-divider", 28);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](4, "ul", 29)(5, "li", 30);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](6, "i", 31);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](3, "p-divider", 31);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](4, "ul", 32)(5, "li", 33);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](6, "i", 34);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](7, "Au moins 1 caract\u00E8re en miniscule");
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](8, "li", 30);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](9, "i", 31);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](8, "li", 33);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](9, "i", 34);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](10, "Au moins 1 caract\u00E8re en majiscule ");
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](11, "li", 30);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](12, "i", 31);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](11, "li", 33);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](12, "i", 34);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](13, "Au moins 1 chiffre");
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](14, "li", 30);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](15, "i", 31);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](14, "li", 33);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](15, "i", 34);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](16, "Minimum 8 caract\u00E8res");
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]()()();
   }
@@ -1201,7 +1201,7 @@ function ChangeAccountPasswordPageComponent_ng_template_3_ng_template_9_Template
 function ChangeAccountPasswordPageComponent_ng_template_3_div_11_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 35);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -1213,7 +1213,7 @@ function ChangeAccountPasswordPageComponent_ng_template_3_div_11_Template(rf, ct
 function ChangeAccountPasswordPageComponent_ng_template_3_li_18_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "li");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 35);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -1225,7 +1225,7 @@ function ChangeAccountPasswordPageComponent_ng_template_3_li_18_Template(rf, ctx
 function ChangeAccountPasswordPageComponent_ng_template_3_li_19_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "li");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 35);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -1237,7 +1237,7 @@ function ChangeAccountPasswordPageComponent_ng_template_3_li_19_Template(rf, ctx
 function ChangeAccountPasswordPageComponent_ng_template_3_li_35_Template(rf, ctx) {
   if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "li");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](1, "p-message", 35);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -1249,36 +1249,36 @@ function ChangeAccountPasswordPageComponent_ng_template_3_li_35_Template(rf, ctx
 function ChangeAccountPasswordPageComponent_ng_template_3_Template(rf, ctx) {
   if (rf & 1) {
     const _r18 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "form", 4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "form", 7);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵlistener"]("submit", function ChangeAccountPasswordPageComponent_ng_template_3_Template_form_submit_0_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵrestoreView"](_r18);
       const ctx_r17 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵresetView"](ctx_r17.updatePassword());
     });
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](1, "p", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](1, "p", 8);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](3, "p-divider", 6);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](4, "div", 7)(5, "div", 8)(6, "label", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](3, "p-divider", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](4, "div", 10)(5, "div", 11)(6, "label", 12);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](7);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](8, "p-password", 10);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](9, ChangeAccountPasswordPageComponent_ng_template_3_ng_template_9_Template, 17, 0, "ng-template", null, 11, _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplateRefExtractor"]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](8, "p-password", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](9, ChangeAccountPasswordPageComponent_ng_template_3_ng_template_9_Template, 17, 0, "ng-template", null, 14, _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplateRefExtractor"]);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](11, ChangeAccountPasswordPageComponent_ng_template_3_div_11_Template, 2, 1, "div", 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](11, ChangeAccountPasswordPageComponent_ng_template_3_div_11_Template, 2, 1, "div", 15);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](12, "div", 7)(13, "label", 9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](12, "div", 10)(13, "label", 12);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](14);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](15, "p-password", 13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](15, "p-password", 16);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](16, "div")(17, "ul");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](18, ChangeAccountPasswordPageComponent_ng_template_3_li_18_Template, 2, 1, "li", 12);
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](19, ChangeAccountPasswordPageComponent_ng_template_3_li_19_Template, 2, 1, "li", 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](18, ChangeAccountPasswordPageComponent_ng_template_3_li_18_Template, 2, 1, "li", 15);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](19, ChangeAccountPasswordPageComponent_ng_template_3_li_19_Template, 2, 1, "li", 15);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](20, "div", 7)(21, "label", 14);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](20, "div", 10)(21, "label", 17);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtext"](22);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](23, "div", 15)(24, "input", 16);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](23, "div", 18)(24, "input", 19);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵlistener"]("input", function ChangeAccountPasswordPageComponent_ng_template_3_Template_input_input_24_listener($event) {
       _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵrestoreView"](_r18);
       const _r12 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵreference"](26);
@@ -1286,7 +1286,7 @@ function ChangeAccountPasswordPageComponent_ng_template_3_Template(rf, ctx) {
       return _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵresetView"](ctx_r19.onInputChange($event, _r12));
     });
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](25, "input", 17, 18);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](25, "input", 20, 21);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵlistener"]("input", function ChangeAccountPasswordPageComponent_ng_template_3_Template_input_input_25_listener($event) {
       _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵrestoreView"](_r18);
       const _r13 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵreference"](28);
@@ -1294,7 +1294,7 @@ function ChangeAccountPasswordPageComponent_ng_template_3_Template(rf, ctx) {
       return _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵresetView"](ctx_r20.onInputChange($event, _r13));
     });
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](27, "input", 19, 20);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](27, "input", 22, 23);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵlistener"]("input", function ChangeAccountPasswordPageComponent_ng_template_3_Template_input_input_27_listener($event) {
       _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵrestoreView"](_r18);
       const _r14 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵreference"](30);
@@ -1302,7 +1302,7 @@ function ChangeAccountPasswordPageComponent_ng_template_3_Template(rf, ctx) {
       return _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵresetView"](ctx_r21.onInputChange($event, _r14));
     });
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](29, "input", 21, 22);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](29, "input", 24, 25);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵlistener"]("input", function ChangeAccountPasswordPageComponent_ng_template_3_Template_input_input_29_listener($event) {
       _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵrestoreView"](_r18);
       const _r15 = _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵreference"](32);
@@ -1310,12 +1310,12 @@ function ChangeAccountPasswordPageComponent_ng_template_3_Template(rf, ctx) {
       return _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵresetView"](ctx_r22.onInputChange($event, _r15));
     });
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](31, "input", 23, 24);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](31, "input", 26, 27);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](33, "div")(34, "ul");
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](35, ChangeAccountPasswordPageComponent_ng_template_3_li_35_Template, 2, 1, "li", 12);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](35, ChangeAccountPasswordPageComponent_ng_template_3_li_35_Template, 2, 1, "li", 15);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]()()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](36, "p-button", 25);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelement"](36, "p-button", 28);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -1346,6 +1346,8 @@ function ChangeAccountPasswordPageComponent_ng_template_3_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtextInterpolate"](ctx_r2.pageMessages.get("changePasswordToken"));
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](13);
     _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("ngIf", ((tmp_13_0 = ctx_r2.changePasswordFG.get("changePasswordToken")) == null ? null : tmp_13_0.touched) && ((tmp_13_0 = ctx_r2.changePasswordFG.get("changePasswordToken")) == null ? null : tmp_13_0.errors == null ? null : tmp_13_0.errors["required"]));
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵproperty"]("label", ctx_r2.pageMessages.get("buttonText"));
   }
 }
 class ChangeAccountPasswordPageComponent extends src_app_component_base__WEBPACK_IMPORTED_MODULE_0__["default"] {
@@ -1435,13 +1437,13 @@ class ChangeAccountPasswordPageComponent extends src_app_component_base__WEBPACK
     features: [_angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵInheritDefinitionFeature"]],
     decls: 5,
     vars: 4,
-    consts: [[1, "flex", "flex-column", "align-items-center"], [4, "ngIf", "ngIfElse"], ["elseBlock", ""], ["elseMessageBlock", ""], [1, "form--border", "flex", "flex-column", "align-items-center", "p-4", "w-full", "m-w-500", 3, "formGroup", "submit"], [1, "text-base", "pt-6", "pb-4", "font-semibold"], [1, "p-2", "w-full"], [1, "flex", "flex-column", "w-full", "pt-4"], [1, "relative", "flex", "flex-column", "w-full"], ["for", "password", 1, "pb-1"], ["id", "password", "aria-describedby", "password-help", "formControlName", "password", "placeholder", "mot de passe...", 3, "appShowOnFocus", "feedback", "toggleMask"], ["passwordTemplate", ""], [4, "ngIf"], ["id", "confirmPassword", "aria-describedby", "confirm-password-help", "formControlName", "confirmPassword", "placeholder", "mot de passe", 3, "feedback", "toggleMask"], ["for", "email", 1, "pb-1"], [1, "flex", "w-full", "align-items-center", "justify-content-center"], ["maxlength", "1", "formControlName", "char1", "type", "text", "pInputText", "", "id", "char1", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["maxlength", "1", "formControlName", "char2", "type", "text", "pInputText", "", "id", "char2", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["char2", ""], ["maxlength", "1", "formControlName", "char3", "type", "text", "pInputText", "", "id", "char3", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["char3", ""], ["maxlength", "1", "formControlName", "char4", "type", "text", "pInputText", "", "id", "char4", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["char4", ""], ["maxlength", "1", "formControlName", "char5", "type", "text", "pInputText", "", "id", "char5", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center"], ["char5", ""], ["type", "submit", "label", "Go", 1, "pt-4"], [1, "absolute", "top-100", "left-0", "shadow-1", "p-2", "z-1", "bg-white"], [1, "mt-2", "text-sm", "font-bold"], [1, "p-2"], [1, "pl-2", "ml-2", "mt-0", 2, "line-height", "1.5"], [1, "text-sm"], [1, "pi", "pi-caret-right", 2, "font-size", "1rem", "color", "var(--first_color)"], ["severity", "error", 1, "p-message", 3, "text"]],
+    consts: [[1, "container--center"], ["class", "flex flex-column align-items-center", 4, "ngIf", "ngIfElse"], ["elseBlock", ""], [1, "flex", "flex-column", "align-items-center"], ["class", "p-4 shadow-5 overflow-hidden", 4, "ngIf", "ngIfElse"], ["elseMessageBlock", ""], [1, "p-4", "shadow-5", "overflow-hidden"], [1, "form--border", "flex", "flex-column", "align-items-center", "p-4", "w-full", "m-w-500", 3, "formGroup", "submit"], [1, "text-base", "pt-6", "pb-4", "font-semibold"], [1, "p-2", "w-full"], [1, "flex", "flex-column", "w-full", "pt-4"], [1, "relative", "flex", "flex-column", "w-full"], ["for", "password", 1, "pb-1"], ["id", "password", "aria-describedby", "password-help", "formControlName", "password", "placeholder", "mot de passe...", 3, "appShowOnFocus", "feedback", "toggleMask"], ["passwordTemplate", ""], [4, "ngIf"], ["id", "confirmPassword", "aria-describedby", "confirm-password-help", "formControlName", "confirmPassword", "placeholder", "mot de passe", 3, "feedback", "toggleMask"], ["for", "email", 1, "pb-1"], [1, "flex", "w-full"], ["maxlength", "1", "formControlName", "char1", "type", "text", "pInputText", "", "id", "char1", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["maxlength", "1", "formControlName", "char2", "type", "text", "pInputText", "", "id", "char2", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["char2", ""], ["maxlength", "1", "formControlName", "char3", "type", "text", "pInputText", "", "id", "char3", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["char3", ""], ["maxlength", "1", "formControlName", "char4", "type", "text", "pInputText", "", "id", "char4", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center", 3, "input"], ["char4", ""], ["maxlength", "1", "formControlName", "char5", "type", "text", "pInputText", "", "id", "char5", "placeholder", ".", 1, "m-1", "w-3rem", 2, "border-color", "var(--first_color)", "text-align", "center"], ["char5", ""], ["type", "submit", 1, "pt-4", 3, "label"], [1, "absolute", "top-100", "left-0", "shadow-1", "p-2", "z-1", "bg-white"], [1, "mt-2", "text-sm", "font-bold"], [1, "p-2"], [1, "pl-2", "ml-2", "mt-0", 2, "line-height", "1.5"], [1, "text-sm"], [1, "pi", "pi-caret-right", 2, "font-size", "1rem", "color", "var(--first_color)"], ["severity", "error", 1, "p-message", 3, "text"]],
     template: function ChangeAccountPasswordPageComponent_Template(rf, ctx) {
       if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](1, ChangeAccountPasswordPageComponent_div_1_Template, 4, 2, "div", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵpipe"](2, "async");
-        _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](3, ChangeAccountPasswordPageComponent_ng_template_3_Template, 37, 14, "ng-template", null, 2, _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplateRefExtractor"]);
+        _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplate"](3, ChangeAccountPasswordPageComponent_ng_template_3_Template, 37, 15, "ng-template", null, 2, _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵtemplateRefExtractor"]);
         _angular_core__WEBPACK_IMPORTED_MODULE_8__["ɵɵelementEnd"]();
       }
       if (rf & 2) {
@@ -3078,6 +3080,10 @@ __webpack_require__.r(__webpack_exports__);
       changePasswordSuccess: {
         fr: 'Votre mot de passe a été mis à jour',
         en: 'Your password is updated'
+      },
+      buttonText: {
+        fr: 'Modifier',
+        en: 'Update'
       }
     },
     error: {

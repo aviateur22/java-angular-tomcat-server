@@ -1,8 +1,5 @@
 package ctoutweb.lalamiam.repository.entity;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,9 +7,17 @@ import java.util.Objects;
 @Entity
 @Table(name = "user_login")
 public class UserLoginEntity {
+
+  @PrePersist
+  public void newUserLogin() {
+    hasToBeCheck = true;
+  }
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(name = "has_to_be_check")
+  private boolean hasToBeCheck;
 
   @Column(name = "is_login_success")
   private boolean isLoginSuccess;
@@ -65,17 +70,25 @@ public class UserLoginEntity {
     this.user = user;
   }
 
+  public boolean getHasToBeCheck() {
+    return hasToBeCheck;
+  }
+
+  public void setHasToBeCheck(boolean hasToBeCheck) {
+    this.hasToBeCheck = hasToBeCheck;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    UserLoginEntity that = (UserLoginEntity) o;
-    return isLoginSuccess == that.isLoginSuccess && Objects.equals(id, that.id)  && Objects.equals(user, that.user);
+    UserLoginEntity userLogin = (UserLoginEntity) o;
+    return hasToBeCheck == userLogin.hasToBeCheck && isLoginSuccess == userLogin.isLoginSuccess && Objects.equals(id, userLogin.id) && Objects.equals(loginAt, userLogin.loginAt) && Objects.equals(user, userLogin.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, isLoginSuccess, user);
+    return Objects.hash(id, hasToBeCheck, isLoginSuccess, loginAt, user);
   }
 
   @Override
@@ -83,6 +96,7 @@ public class UserLoginEntity {
     return "UserLoginEntity{" +
             "id=" + id +
             ", isLoginSuccess=" + isLoginSuccess +
+            ", HasToBeCheck=" + hasToBeCheck +
             ", user=" + user +
             '}';
   }

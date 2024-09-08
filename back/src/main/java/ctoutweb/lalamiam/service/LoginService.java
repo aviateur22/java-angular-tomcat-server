@@ -1,15 +1,18 @@
 package ctoutweb.lalamiam.service;
 
+import ctoutweb.lalamiam.exception.AuthException;
+import ctoutweb.lalamiam.model.UserLoginInformation;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 
 public interface LoginService {
 
   /**
-   * Vérification si tentative de login autorisé
-   * @param user - UserEntity - Utilisateur voulant se conecter
+   * Mise a jour des information de connexion d'un utilisateur
+   * @param user - UserEntity - Utilisateur voulant se connecter
+   * @param isAuthenticationValid boolean - Validité de l'authentication
    * @return Booelan
    */
-  public boolean isLoginAuthorize(UserEntity user);
+  public UserLoginInformation updateUserLoginInformation(UserEntity user, boolean isAuthenticationValid);
 
 
   /**
@@ -18,4 +21,11 @@ public interface LoginService {
    * @param user Userentity - Utilisateur qui se connecte
    */
   public void addLoginInformation(boolean isLoginSuccess, UserEntity user);
+
+  /**
+   * Vérification si une connexion peut avoir lieu
+   * @param user UserEntity - Utilisateur voulant se connecter
+   * @return boolean
+   */
+  public boolean isLoginAuthorize(UserEntity user) throws AuthException;
 }

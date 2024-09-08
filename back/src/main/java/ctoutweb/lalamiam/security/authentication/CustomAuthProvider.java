@@ -2,6 +2,8 @@ package ctoutweb.lalamiam.security.authentication;
 
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.mapper.UserEntityMapper;
+import ctoutweb.lalamiam.model.UserLoginInformation;
+import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.service.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,7 +33,11 @@ public class CustomAuthProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthException {
 
+    // Authentification utilisateur
     boolean isAuthenticationValid = authentication.getCredentials() != null;
+
+    // Possibilité connexion au compte client
+    boolean isLoginPossible = true;
 
     String presentedPassword = authentication.getCredentials().toString();
     UserDetails user = userDetailsService.loadUserByUsername(authentication.getName());
@@ -46,7 +52,13 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
     // Ajout des information du login en base
     if(user != null) {
-      loginService.addLoginInformation(isAuthenticationValid, UserEntityMapper.map((UserPrincipal) user));
+      UserEntity loginUser = UserEntityMapper.map((UserPrincipal) user);
+
+      // Ajout du login en base
+      loginService.addLoginInformation(isAuthenticationValid, loginUser);
+
+      // Récuération des données de connexion client
+      UserLoginInformation userLoginInformation = loginService.updateUserLoginInformation(loginUser, isAuthenticationValid);
     }
 
     // Login erreur

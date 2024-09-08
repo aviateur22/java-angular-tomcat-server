@@ -74,6 +74,7 @@ create table IF NOT EXISTS sc_project.user_login(
     "id" BIGINT PRIMARY KEY,
     "user_id" BIGINT NOT NULL REFERENCES sc_project."users"("id") on delete cascade,
     "is_login_success" BOOLEAN NOT NULL,
+    "has_to_be_check" BOOLEAN NOT NULL DEFAULT TRUE,
     "login_at" TIMESTAMPTZ NOT NULL
 );
 

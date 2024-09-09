@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 @Service
-public class ImageServiceImpl extends BaseService implements ImageService {
+public class ImageServiceImpl extends MessageService implements ImageService {
   protected ImageServiceImpl(
           @Qualifier("apiMessageSource") MessageSource messageSource,
           @Qualifier("exceptionMessages") Properties messageExceptions) {

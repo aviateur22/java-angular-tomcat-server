@@ -2,6 +2,7 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.factory.UserLoginFactory;
+import ctoutweb.lalamiam.model.HtmlTemplateType;
 import ctoutweb.lalamiam.model.UserLoginInformation;
 import ctoutweb.lalamiam.repository.DelayLoginRepository;
 import ctoutweb.lalamiam.repository.UserLoginRepository;
@@ -9,6 +10,7 @@ import ctoutweb.lalamiam.repository.entity.DelayLoginEntity;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.repository.entity.UserLoginEntity;
 import ctoutweb.lalamiam.service.LoginService;
+import ctoutweb.lalamiam.service.MailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,26 +19,30 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import static ctoutweb.lalamiam.constant.ApplicationConstant.*;
 import static ctoutweb.lalamiam.factory.UserLoginFactory.*;
 
 @Service
-public class LoginServiceImpl extends BaseService implements LoginService {
+public class LoginServiceImpl extends MessageService implements LoginService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final DelayLoginRepository delayLoginRepository;
   private final UserLoginRepository userLoginRepository;
+  private final MailService mailService;
   public LoginServiceImpl(
           DelayLoginRepository delayLoginRepository,
           UserLoginRepository userLoginRepository,
           @Qualifier("exceptionMessages") Properties messageExceptions,
-          @Qualifier("apiMessageSource") MessageSource messageSource
-  ) {
+          @Qualifier("apiMessageSource") MessageSource messageSource,
+          MailService mailService) {
     super(messageSource, messageExceptions);
     this.delayLoginRepository = delayLoginRepository;
     this.userLoginRepository = userLoginRepository;
+    this.mailService = mailService;
   }
 
   @Override
@@ -52,7 +58,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
      return UserLoginFactory.getUserLoginInformation(true, null);
    }
 
-   // Nombre de connexion invalide
+   // Récupérartion du nombre de connexion invalide
     long loginAttemptErrorCount = getLastUserLoginList
             .stream()
             .filter(login-> !login.getIsLoginSuccess() && login.getHasToBeCheck())
@@ -66,6 +72,19 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
       // Suppression de la prise en compte des dernière données de connexion
       this.updateUserLoginstatus(getLastUserLoginList);
+
+      // Generation d'un email d'alerte
+      Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
+
+      listWordsToReplaceInHtmlTemplate.put("email", user.getEmail());
+
+      String templateHtml = mailService.generateHtml(HtmlTemplateType.LOGIN_CONNEXION_ALERT, listWordsToReplaceInHtmlTemplate);
+      mailService.sendEmail(
+              "Alerte tentative de connexion",
+              user.getEmail(),
+              templateHtml,
+              getExceptionMessage("mailing.error")
+      );
     }
 
     // Récupération d'un message sur le statut de connexion
@@ -85,8 +104,25 @@ public class LoginServiceImpl extends BaseService implements LoginService {
   }
 
   @Override
-  public boolean isLoginAuthorize(UserEntity user) throws AuthException {
-    return false;
+  public boolean isLoginAuthorize(Long userId) throws AuthException {
+    LocalDateTime checkLogintime = LocalDateTime.now();
+
+    DelayLoginEntity findUserDelayLogin = delayLoginRepository.findFirstByUserId(userId).orElse(null);
+
+    if(findUserDelayLogin == null) {
+      return true;
+    }
+
+    LocalDateTime loginDelayUntil = findUserDelayLogin.getDelayLoginUntil();
+
+    // Connexion bloquée
+    if(checkLogintime.isBefore(loginDelayUntil)) {
+      return false;
+    }
+
+    // Suppression de l'heure de blocage
+    delayLoginRepository.delete(findUserDelayLogin);
+    return true;
   }
 
   /**

@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthServiceImpl extends BaseService implements AuthService {
+public class AuthServiceImpl extends MessageService implements AuthService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final AuthenticationManager authenticationManager;
   private final UserService userService;

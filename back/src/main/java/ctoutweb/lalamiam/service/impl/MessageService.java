@@ -4,11 +4,11 @@ import org.springframework.context.MessageSource;
 
 import java.util.Properties;
 
-public abstract class BaseService {
+public abstract class MessageService {
   private final MessageSource messageSource;
   private final Properties messageExceptions;
 
-  protected BaseService(
+  protected MessageService(
           MessageSource messageSource,
           Properties messageExceptions) {
     this.messageSource = messageSource;

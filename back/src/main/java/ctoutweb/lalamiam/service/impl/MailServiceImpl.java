@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Service
-public class MailServiceImpl extends BaseService implements MailService {
+public class MailServiceImpl extends MessageService implements MailService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final JavaMailSender mailSender;
   public MailServiceImpl(
@@ -75,6 +75,7 @@ public class MailServiceImpl extends BaseService implements MailService {
       String fileName = switch (type) {
         case ACCOUNT_ACTIVATION ->HtmlTemplateType.ACCOUNT_ACTIVATION.getFileName();
         case CHANGE_PASSWORD -> HtmlTemplateType.CHANGE_PASSWORD.getFileName();
+        case LOGIN_CONNEXION_ALERT -> HtmlTemplateType.LOGIN_CONNEXION_ALERT.getFileName();
       };
       String filePath = "html/" + fileName;
       LOGGER.debug(String.format("TemplateHTML name: %s , path: %s", fileName, filePath));

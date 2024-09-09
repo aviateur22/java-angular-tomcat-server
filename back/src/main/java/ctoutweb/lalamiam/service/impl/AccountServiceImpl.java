@@ -26,7 +26,7 @@ import java.util.Properties;
 
 @PropertySource("classpath:application.properties")
 @Service
-public class AccountServiceImpl extends BaseService implements AccountService {
+public class AccountServiceImpl extends MessageService implements AccountService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final AccountRepository accountRepository;
   private final PasswordEncoder passwordEncoder;

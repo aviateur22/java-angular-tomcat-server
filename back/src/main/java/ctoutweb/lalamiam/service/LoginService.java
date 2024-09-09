@@ -24,8 +24,8 @@ public interface LoginService {
 
   /**
    * Vérification si une connexion peut avoir lieu
-   * @param user UserEntity - Utilisateur voulant se connecter
+   * @param userId Long - Utilisateur voulant se connecter
    * @return boolean
    */
-  public boolean isLoginAuthorize(UserEntity user) throws AuthException;
+  public boolean isLoginAuthorize(Long userId) throws AuthException;
 }

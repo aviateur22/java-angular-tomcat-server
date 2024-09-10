@@ -2,6 +2,7 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.exception.AppMailException;
 import ctoutweb.lalamiam.model.HtmlTemplateType;
+import ctoutweb.lalamiam.model.ValidateLanguage;
 import ctoutweb.lalamiam.service.MailService;
 import ctoutweb.lalamiam.util.FileUtility;
 import org.apache.logging.log4j.LogManager;
@@ -26,12 +27,15 @@ import java.util.Properties;
 public class MailServiceImpl extends MessageService implements MailService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final JavaMailSender mailSender;
+  private final ValidateLanguage validateLanguage;
   public MailServiceImpl(
           JavaMailSender mailSender,
+          @Qualifier("validateLanguage") ValidateLanguage validateLanguage,
           @Qualifier("apiMessageSource") MessageSource messageSource,
           @Qualifier("exceptionMessages") Properties messageExceptions) {
     super(messageSource, messageExceptions);
     this.mailSender = mailSender;
+    this.validateLanguage = validateLanguage;
   }
 
   @Override
@@ -42,7 +46,8 @@ public class MailServiceImpl extends MessageService implements MailService {
           String exceptionMessage) {
       new Thread(()->{
         try{
-          LOGGER.debug("Envoie email");
+          LOGGER.info("Language pour l'envoie des emails :" + validateLanguage.getLanguage());
+          LOGGER.info("Envoie email");
           MimeMessage message = mailSender.createMimeMessage();
           MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
           helper.setText(mailContent, true);
@@ -50,7 +55,7 @@ public class MailServiceImpl extends MessageService implements MailService {
           helper.setSubject(mailSubject);
           helper.setFrom("admin@ctoutweb.fr");
           mailSender.send(message);
-          LOGGER.debug("Envoie email terminé");
+          LOGGER.info("Envoie email terminé");
         } catch (MessagingException exception) {
           LOGGER.error("Erreur envoie email: " + exception);
           throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
@@ -65,7 +70,7 @@ public class MailServiceImpl extends MessageService implements MailService {
    * Récupération d'un templateHtml et évaluation des variables à remplacer
    * @param type - HtmlTemplateType
    * @param wordsToReplaceInHtmlTemplate Map<String, String>
-   * @return String - TemplateHtml mis a jour
+   * @return String - TemplateHtml mise a jour
    */
   @Override
   public String generateHtml(HtmlTemplateType type, Map<String, String> wordsToReplaceInHtmlTemplate) {
@@ -73,9 +78,9 @@ public class MailServiceImpl extends MessageService implements MailService {
     try {
 
       String fileName = switch (type) {
-        case ACCOUNT_ACTIVATION ->HtmlTemplateType.ACCOUNT_ACTIVATION.getFileName();
-        case CHANGE_PASSWORD -> HtmlTemplateType.CHANGE_PASSWORD.getFileName();
-        case LOGIN_CONNEXION_ALERT -> HtmlTemplateType.LOGIN_CONNEXION_ALERT.getFileName();
+        case ACCOUNT_ACTIVATION ->HtmlTemplateType.ACCOUNT_ACTIVATION.getFileName(validateLanguage.getLanguage());
+        case CHANGE_PASSWORD -> HtmlTemplateType.CHANGE_PASSWORD.getFileName(validateLanguage.getLanguage());
+        case LOGIN_CONNEXION_ALERT -> HtmlTemplateType.LOGIN_CONNEXION_ALERT.getFileName(validateLanguage.getLanguage());
       };
       String filePath = "html/" + fileName;
       LOGGER.debug(String.format("TemplateHTML name: %s , path: %s", fileName, filePath));

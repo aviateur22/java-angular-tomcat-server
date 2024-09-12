@@ -2,9 +2,9 @@ package ctoutweb.lalamiam.controller;
 
 import ctoutweb.lalamiam.dto.*;
 import ctoutweb.lalamiam.factory.CaptchaFactory;
-import ctoutweb.lalamiam.factory.MessageResponseFactory;
 import ctoutweb.lalamiam.helper.MessageResourceHelper;
 import ctoutweb.lalamiam.model.captcha.CaptchaData;
+import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.CaptchaService;
 import ctoutweb.lalamiam.service.impl.AuthServiceImpl;
 import org.apache.logging.log4j.LogManager;
@@ -22,20 +22,25 @@ import java.net.URISyntaxException;
 public class AuthController extends BaseController {
   private final AuthServiceImpl authService;
   private final CaptchaService captchaService;
+  private final ApplicationMessageService applicationMessageService;
 
   public AuthController(
           MessageResourceHelper messageSourceHelper,
           Validator validator,
           AuthServiceImpl authService,
-          CaptchaService captchaService) {
-    super(messageSourceHelper, validator);
+          CaptchaService captchaService,
+          ApplicationMessageService applicationMessageService) {
+    super(validator);
     this.authService = authService;
     this.captchaService = captchaService;
+    this.applicationMessageService = applicationMessageService;
   }
   private static final Logger LOGGER = LogManager.getLogger();
   @PostMapping("/login")
   ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto login) {
-    initializeResponse("loginMessage", login);
+
+    // Chargement des messages
+    applicationMessageService.loadApplicationMessages(login.language());
 
     LoginResponseDto loginResponse = authService.login(login);
 
@@ -44,10 +49,13 @@ public class AuthController extends BaseController {
 
   @PostMapping("/register")
   ResponseEntity<MessageResponse> register(@RequestBody RegisterDto registerDto)  {
-    initializeResponse("registerMessage", registerDto);
+    // Chargement des messages
+    applicationMessageService.loadApplicationMessages(registerDto.language());
 
     //validation response captcha client
     validateInputData(registerDto.captchaClientResponseDto());
+
+    validateInputData(registerDto);
 
     MessageResponse messageResponse = authService.register(registerDto);
 
@@ -56,15 +64,16 @@ public class AuthController extends BaseController {
 
   @GetMapping("/logout/language/{language}/user-id/{userId}")
   ResponseEntity<MessageResponse> logout(@PathVariable String language, @PathVariable Long userId) {
-    this.loadMessage("logoutMessage", language);
+    // Chargement des messages
+    applicationMessageService.loadApplicationMessages(language);
+
     return new ResponseEntity<>(authService.logout(userId), HttpStatus.OK);
   }
 
   @PostMapping("/account-activation")
   ResponseEntity<ActivateAccountResponseDto> activateAccount(@RequestBody ActivateAccountDto activateAccount) {
-
-    // Initialisation de la données
-    initializeResponse("accountActivationMessage", activateAccount);
+    // Chargement des messages
+    applicationMessageService.loadApplicationMessages(activateAccount.language());
 
     ActivateAccountResponseDto activateAccountResponseDto = authService.activateAccount(activateAccount);
     return new ResponseEntity<>(activateAccountResponseDto, HttpStatus.OK);
@@ -84,13 +93,17 @@ public class AuthController extends BaseController {
 
   @PostMapping("/lost-password-mailing")
   public ResponseEntity<MessageResponse> lostPasswordMailing(@RequestBody LostPasswordMailingDto lostPasswordMailingDto) {
-    initializeResponse("lostPasswordMailing", lostPasswordMailingDto);
+    // Chargement des messages
+    applicationMessageService.loadApplicationMessages(lostPasswordMailingDto.language());
+
     return new ResponseEntity<>(authService.sendLostPasswordMail(lostPasswordMailingDto), HttpStatus.OK);
   }
 
   @PostMapping("/change-password")
   public ResponseEntity<ChangePasswordResponseDto> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
-    initializeResponse("changePasswordMessage", changePasswordDto);
+    // Chargement des messages
+    applicationMessageService.loadApplicationMessages(changePasswordDto.language());
+
     return new ResponseEntity<>(authService.changePassword(changePasswordDto), HttpStatus.OK);
   }
 }

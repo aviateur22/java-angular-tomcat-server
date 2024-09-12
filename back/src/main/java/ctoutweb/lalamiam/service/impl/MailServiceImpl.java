@@ -3,12 +3,11 @@ package ctoutweb.lalamiam.service.impl;
 import ctoutweb.lalamiam.exception.AppMailException;
 import ctoutweb.lalamiam.model.HtmlTemplateType;
 import ctoutweb.lalamiam.model.ValidateLanguage;
+import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.MailService;
 import ctoutweb.lalamiam.util.FileUtility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
@@ -21,21 +20,22 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Properties;
 
 @Service
-public class MailServiceImpl extends MessageService implements MailService {
+public class MailServiceImpl implements MailService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final JavaMailSender mailSender;
   private final ValidateLanguage validateLanguage;
+  private final ApplicationMessageService applicationMessageService;
   public MailServiceImpl(
+          ValidateLanguage validateLanguage,
           JavaMailSender mailSender,
-          @Qualifier("validateLanguage") ValidateLanguage validateLanguage,
-          @Qualifier("apiMessageSource") MessageSource messageSource,
-          @Qualifier("exceptionMessages") Properties messageExceptions) {
-    super(messageSource, messageExceptions);
+          ApplicationMessageService applicationMessageService
+  ) {
+
     this.mailSender = mailSender;
     this.validateLanguage = validateLanguage;
+    this.applicationMessageService = applicationMessageService;
   }
 
   @Override
@@ -58,10 +58,10 @@ public class MailServiceImpl extends MessageService implements MailService {
           LOGGER.info("Envoie email terminé");
         } catch (MessagingException exception) {
           LOGGER.error("Erreur envoie email: " + exception);
-          throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
+          throw new AppMailException(applicationMessageService.getMessage("mailing.error"), HttpStatus.BAD_REQUEST);
         } catch (MailException exception) {
           LOGGER.error("Erreur envoie email: " + exception);
-          throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
+          throw new AppMailException(applicationMessageService.getMessage("mailing.error"), HttpStatus.BAD_REQUEST);
         }
       }).start();
   }
@@ -100,7 +100,7 @@ public class MailServiceImpl extends MessageService implements MailService {
      return content;
     } catch (IOException exception) {
       LOGGER.error("Erreur création mail template: " + exception);
-      throw new AppMailException(getExceptionMessage("mailing.error"), HttpStatus.BAD_REQUEST);
+      throw new AppMailException(applicationMessageService.getMessage("mailing.error"), HttpStatus.BAD_REQUEST);
     }
   }
 }

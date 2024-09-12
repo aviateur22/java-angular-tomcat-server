@@ -1,6 +1,5 @@
 package ctoutweb.lalamiam.helper;
 
-import ctoutweb.lalamiam.config.ApiLanguageConfig;
 import ctoutweb.lalamiam.model.ValidateLanguage;
 import ctoutweb.lalamiam.util.PropertiesUtility;
 import ctoutweb.lalamiam.util.message.DynamicMessageSource;
@@ -17,25 +16,28 @@ public class MessageResourceHelper {
 
   private final DynamicMessageSource messageSource;
   private final Properties messageExceptions;
+  private final Properties emailParameterMessages;
   private final ValidateLanguage apiValidateLanguage;
   private static final Logger LOGGER = LogManager.getLogger();
 
   public MessageResourceHelper(
           DynamicMessageSource messageSource,
           @Qualifier("exceptionMessages") Properties messageExceptions,
+          @Qualifier("emailParameterMessages") Properties emailParameterMessages,
           ValidateLanguage validateLanguage
          ) {
     this.messageSource = messageSource;
     this.messageExceptions = messageExceptions;
     this.apiValidateLanguage = validateLanguage;
+    this.emailParameterMessages = emailParameterMessages;
   }
 
   /**
-   * Chargement des messages
+   * Chargement des messages pour @Javax.validation.constraint.message
    * @param resourceBaseName String - Nom du fichier de base de la resource message
    * @param userLanguage String - Language demandé par l'utilisateur
    */
-  public void loadMessageResource(String resourceBaseName, String userLanguage) {
+  public void loadValidatorResourceMessage(String resourceBaseName, String userLanguage) {
 
     // Controle du language
     String validateLanguage = validateUserLanguage(userLanguage);
@@ -44,11 +46,15 @@ public class MessageResourceHelper {
     this.apiValidateLanguage.setLanguage(validateLanguage);
 
     // Chargement des messages
-    this.messageSource.updateMessageSource(this.getMessageResourcePath(resourceBaseName, validateLanguage));
+    this.messageSource.updateMessageSource(this.getFileResourceMessagePath(resourceBaseName, validateLanguage));
 
     // Chargment des messges exception
     Properties messages = PropertiesUtility.getProperties(this.getMessageExceptionName(validateLanguage));
     this.loadExceptionMessage(messages);
+
+    // Chargement des message de l'email
+    Properties emailParamMessages = PropertiesUtility.getProperties(this.getEmailParamFileName(validateLanguage));
+    this.loadEmailParameterMessage(emailParamMessages);
   }
 
   /**
@@ -57,7 +63,7 @@ public class MessageResourceHelper {
    * @param language String
    * @return String
    */
-  public String getMessageResourcePath(String resourceBaseName, String language) {
+  public String getFileResourceMessagePath(String resourceBaseName, String language) {
     final String BASE_FOLDER = "classpath:message/";
     return BASE_FOLDER + resourceBaseName +"_"+ language;
   }
@@ -72,6 +78,14 @@ public class MessageResourceHelper {
   }
 
   /**
+   * Récuperation du nom du fichier email à charger
+   * @param language string - language validé
+   * @return String
+   */
+  public String getEmailParamFileName(String language) {
+    return "message/emailParameterMessage_"+language+".properties";
+  }
+  /**
    * Chargement des messages d'exception
    * @param exceptionMessagesToBeLoad Properties
    */
@@ -79,6 +93,17 @@ public class MessageResourceHelper {
     this.messageExceptions.clear();
     exceptionMessagesToBeLoad.entrySet().stream().forEach(entry->{
       this.messageExceptions.put(entry.getKey(), entry.getValue());
+    });
+  }
+
+  /**
+   * Chargement des messages mail
+   * @param emailParameterMessagesToBeLoad Properties
+   */
+  public void loadEmailParameterMessage(Properties emailParameterMessagesToBeLoad) {
+    this.emailParameterMessages.clear();
+    emailParameterMessagesToBeLoad.entrySet().stream().forEach(entry->{
+      this.emailParameterMessages.put(entry.getKey(), entry.getValue());
     });
   }
 

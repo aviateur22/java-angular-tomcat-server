@@ -7,13 +7,12 @@ import ctoutweb.lalamiam.repository.AccountRepository;
 import ctoutweb.lalamiam.repository.entity.AccountEntity;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.service.AccountService;
+import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.MailService;
 import ctoutweb.lalamiam.util.TextUtility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,19 +21,18 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @PropertySource("classpath:application.properties")
 @Service
-public class AccountServiceImpl extends MessageService implements AccountService {
+public class AccountServiceImpl implements AccountService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final AccountRepository accountRepository;
   private final PasswordEncoder passwordEncoder;
   private final MailService mailService;
+  private final ApplicationMessageService applicationMessageService;
 
   @Value("${front.change.password.account.url}")
   private String changePasswordAccountFrontEndUrl;
-
   @Value("${domain.front}")
   private String domainFront;
   @Value("${front.path}")
@@ -44,13 +42,11 @@ public class AccountServiceImpl extends MessageService implements AccountService
           AccountRepository accountRepository,
           PasswordEncoder passwordEncoder,
           MailService mailService,
-          @Qualifier("exceptionMessages") Properties messageExceptions,
-          @Qualifier("apiMessageSource") MessageSource messageSource
-  ) {
-    super(messageSource, messageExceptions);
+          ApplicationMessageService applicationMessageService) {
     this.accountRepository = accountRepository;
     this.passwordEncoder = passwordEncoder;
     this.mailService = mailService;
+    this.applicationMessageService = applicationMessageService;
   }
 
   @Override
@@ -60,7 +56,8 @@ public class AccountServiceImpl extends MessageService implements AccountService
 
   @Override
   public boolean isAccountActivatable(UserEntity user, String activateToken) {
-    AccountEntity account = accountRepository.findFirstByAccountUserId(user.getId()).orElseThrow(()->new AuthException(getExceptionMessage("account.not.existing"), HttpStatus.BAD_REQUEST));
+    AccountEntity account = accountRepository.findFirstByAccountUserId(user.getId())
+            .orElseThrow(()->new AuthException(applicationMessageService.getMessage("account.not.existing"), HttpStatus.BAD_REQUEST));
     boolean isActivateTokenValid = this.passwordEncoder.matches(activateToken, account.getUrlTokenActivation());
     if(isActivateTokenValid) {
       LocalDateTime activationTime = LocalDateTime.now();
@@ -79,7 +76,7 @@ public class AccountServiceImpl extends MessageService implements AccountService
     AccountEntity account = accountRepository.findFirstByAccountUserId(userData.getId()).orElse(null);
 
     if(account == null || !account.getIsAccountActive()) {
-      throw new AuthException(getExceptionMessage("send.reset.passord.error"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("send.reset.passord.error"), HttpStatus.BAD_REQUEST);
     }
 
     // Map des mot à remplacer dans le template HTML
@@ -111,7 +108,7 @@ public class AccountServiceImpl extends MessageService implements AccountService
             "Changement du mot de passe",
             userData.getEmail(),
             templateHtml,
-            getExceptionMessage("mailing.error")
+            applicationMessageService.getMessage("mailing.error")
             );
   }
 
@@ -122,19 +119,19 @@ public class AccountServiceImpl extends MessageService implements AccountService
     AccountEntity account = accountRepository.findFirstByAccountUserId(user.getId()).orElse(null);
 
     if(account == null || !account.getIsAccountActive()) {
-      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("change.password.error"), HttpStatus.BAD_REQUEST);
     }
 
     boolean isPasswordTokenValid = passwordEncoder.matches(changePasswordDto.changePasswordToken(), account.getChangePasswordToken());
 
     if(!isPasswordTokenValid) {
-      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("change.password.error"), HttpStatus.BAD_REQUEST);
     }
 
     boolean isUrlTokenValid = passwordEncoder.matches(changePasswordDto.urlToken(), account.getUrlTokenActivation());
 
     if(!isUrlTokenValid) {
-      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("change.password.error"), HttpStatus.BAD_REQUEST);
     }
 
     // Mise a jour des données du compte

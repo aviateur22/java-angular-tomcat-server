@@ -17,6 +17,9 @@ class MessageResourceHelperTest {
   Properties messageException;
 
   @Mock
+  Properties emailsParamMessages;
+
+  @Mock
   ValidateLanguage validateLanguage;
 
   @BeforeEach
@@ -26,10 +29,10 @@ class MessageResourceHelperTest {
 
   @Test
   void getMessageResourcePath() {
-    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, validateLanguage);
+    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, emailsParamMessages, validateLanguage);
     String baseResourceName = "messageResource";
     String validateLanguage = "fr";
-    String resourcePath = messageResourceHelper.getMessageResourcePath(
+    String resourcePath = messageResourceHelper.getFileResourceMessagePath(
             baseResourceName, validateLanguage
     );
     Assertions.assertEquals("classpath:message/"+baseResourceName+"_"+validateLanguage, resourcePath);
@@ -37,14 +40,14 @@ class MessageResourceHelperTest {
 
   @Test
   void validateUserLanguage_should_load_fr_language() {
-    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, validateLanguage);
+    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, emailsParamMessages, validateLanguage);
     String language = messageResourceHelper.validateUserLanguage("fr");
     Assertions.assertEquals("fr", language);
   }
 
   @Test
   void validateUserLanguage_should_load_en_language() {
-    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, validateLanguage);
+    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, emailsParamMessages, validateLanguage);
 
     String language = messageResourceHelper.validateUserLanguage("en");
     Assertions.assertEquals("en", language);
@@ -53,7 +56,7 @@ class MessageResourceHelperTest {
 
   @Test
   void validateUserLanguage_should_load_fr_because_user_language_not_exist() {
-    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, validateLanguage);
+    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, emailsParamMessages, validateLanguage);
 
     String language = messageResourceHelper.validateUserLanguage("eg");
 
@@ -63,7 +66,7 @@ class MessageResourceHelperTest {
 
   @Test
   void validateUserLanguage_should_load_fr_because_user_language_is_null() {
-    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, validateLanguage);
+    MessageResourceHelper messageResourceHelper = new MessageResourceHelper(dynamicMessageSource, messageException, emailsParamMessages, validateLanguage);
 
     String language = messageResourceHelper.validateUserLanguage(null);
 

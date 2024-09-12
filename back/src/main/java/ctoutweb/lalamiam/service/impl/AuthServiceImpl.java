@@ -12,8 +12,6 @@ import ctoutweb.lalamiam.security.jwt.JwtIssuer;
 import ctoutweb.lalamiam.service.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,11 +20,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthServiceImpl extends MessageService implements AuthService {
+public class AuthServiceImpl implements AuthService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final AuthenticationManager authenticationManager;
   private final UserService userService;
@@ -34,22 +31,23 @@ public class AuthServiceImpl extends MessageService implements AuthService {
   private final JwtIssuer jwtIssuer;
   private final CaptchaService captchaService;
   private final AccountService accountService;
+  private final ApplicationMessageService applicationMessageService;
   public AuthServiceImpl(
           AuthenticationManager authenticationManager,
           UserService userService,
           JwtService jwtService,
           JwtIssuer jwtIssuer,
           CaptchaService captchaService,
-          @Qualifier("exceptionMessages") Properties messageExceptions,
-          @Qualifier("apiMessageSource") MessageSource messageSource,
-          AccountService accountService) {
-    super(messageSource, messageExceptions);
+          AccountService accountService,
+          ApplicationMessageService applicationMessageService
+  ) {
     this.authenticationManager = authenticationManager;
     this.userService = userService;
     this.jwtService = jwtService;
     this.jwtIssuer = jwtIssuer;
     this.captchaService = captchaService;
     this.accountService = accountService;
+    this.applicationMessageService = applicationMessageService;
   }
 
   @Override
@@ -70,7 +68,7 @@ public class AuthServiceImpl extends MessageService implements AuthService {
 
     jwtService.saveJwt(userPrincipal.getId(), jwtIssue, loginDto.email() );
 
-    String responseMessage = getApiMessage("login.success").replace(
+    String responseMessage = applicationMessageService.getMessage("login.success").replace(
             "!%!nickname!%!", userPrincipal.getUsername());
     return new LoginResponseDto(
             jwtIssue.getJwtToken(),
@@ -87,12 +85,12 @@ public class AuthServiceImpl extends MessageService implements AuthService {
     LOGGER.debug("Réponse client au captcha: " + isCaptchaResponseValid);
 
     if (!isCaptchaResponseValid)
-      throw new AuthException(getExceptionMessage("captcha.invalid.response"), HttpStatus.UNAUTHORIZED);
+      throw new AuthException(applicationMessageService.getMessage("captcha.invalid.response"), HttpStatus.UNAUTHORIZED);
 
     UserEntity findUser = userService.getUserInformationByEmail(registerDto.email());
 
     if (findUser != null && findUser.getAccount() != null && findUser.getAccount().getIsAccountActive())
-      throw new AuthException(getExceptionMessage("email.exist"), HttpStatus.CONFLICT);
+      throw new AuthException(applicationMessageService.getMessage("email.exist"), HttpStatus.CONFLICT);
 
     // Suppression de l'ancien user si existant
     if (findUser != null) {
@@ -101,7 +99,7 @@ public class AuthServiceImpl extends MessageService implements AuthService {
 
     UserEntity registerUser = userService.registerUser(registerDto);
 
-    String responseMessage = getApiMessage("register.success");
+    String responseMessage = applicationMessageService.getMessage("register.success");
     return MessageResponseFactory.getMessageResponse(responseMessage);
 
 
@@ -113,26 +111,26 @@ public class AuthServiceImpl extends MessageService implements AuthService {
     UserEntity findUser = userService.getUserInformationByEmail(activateAccount.email());
 
     if(findUser == null)
-      throw new AuthException(getExceptionMessage("account.not.existing"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("account.not.existing"), HttpStatus.BAD_REQUEST);
 
     if(findUser != null && findUser.getAccount() != null && findUser.getAccount().getIsAccountActive())
-      throw new AuthException(getExceptionMessage("account.already.activate"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("account.already.activate"), HttpStatus.BAD_REQUEST);
 
     String activateAccountToken = activateAccount.token();
 
     boolean isAccountActivable = accountService.isAccountActivatable(findUser, activateAccountToken);
 
     if(!isAccountActivable)
-      throw new AuthException(getExceptionMessage("account.activate.failure"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("account.activate.failure"), HttpStatus.BAD_REQUEST);
 
-    return ActivateAccountFactory.getActivateAccountDto(getApiMessage("account.activation.success"), ActivateAccountStatus.SUCCESS);
+    return ActivateAccountFactory.getActivateAccountDto(applicationMessageService.getMessage("account.activation.success"), ActivateAccountStatus.SUCCESS);
   }
 
   @Override
   @Transactional
   public MessageResponse logout(Long userId) {
     jwtService.deleteJwtByUserId(userId);
-    return new MessageResponse(getApiMessage("logout"));
+    return new MessageResponse(applicationMessageService.getMessage("logout"));
   }
 
   @Transactional
@@ -141,13 +139,13 @@ public class AuthServiceImpl extends MessageService implements AuthService {
     UserEntity user = userService.findUserByEmail(lostPasswordMailingDto.email());
 
     if(user == null) {
-      throw new AuthException(getExceptionMessage("send.reset.passord.error"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("send.reset.passord.error"), HttpStatus.BAD_REQUEST);
     }
 
     // Envoie le mail pour réinitialiser le mot de passe
     accountService.accountLostPasswordMailing(user);
 
-    return MessageResponseFactory.getMessageResponse(getApiMessage("mail.send"));
+    return MessageResponseFactory.getMessageResponse(applicationMessageService.getMessage("mail.send"));
   }
 
   @Transactional
@@ -156,18 +154,18 @@ public class AuthServiceImpl extends MessageService implements AuthService {
     UserEntity user = userService.findUserByEmail(changePasswordDto.email());
 
     if(user == null) {
-      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("change.password.error"), HttpStatus.BAD_REQUEST);
     }
     boolean isAccountPasswordEditable = accountService.isAccountPasswordEditable(user, changePasswordDto);
 
     if(!isAccountPasswordEditable) {
-      throw new AuthException(getExceptionMessage("change.password.error"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("change.password.error"), HttpStatus.BAD_REQUEST);
     }
 
     // Mise a jour de l'utilisateur
     userService.updateUser(user);
 
-    return ChangePasswordFactory.getChangePasswordResponse(getApiMessage("change.password.success"), true);
+    return ChangePasswordFactory.getChangePasswordResponse(applicationMessageService.getMessage("change.password.success"), true);
   }
 
 

@@ -4,11 +4,9 @@ import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.mapper.UserEntityMapper;
 import ctoutweb.lalamiam.model.UserLoginInformation;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
+import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.LoginService;
 import ctoutweb.lalamiam.service.MailService;
-import ctoutweb.lalamiam.service.impl.MessageService;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,26 +16,25 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Properties;
-
 @Component
-public class CustomAuthProvider extends MessageService implements AuthenticationProvider {
+public class CustomAuthProvider implements AuthenticationProvider {
   private final PasswordEncoder passwordEncoder;
   private final UserDetailsService userDetailsService;
   private final LoginService loginService;
+  private final ApplicationMessageService applicationMessageService;
   private final MailService mailService;
 
   public CustomAuthProvider(
           PasswordEncoder passwordEncoder,
           UserDetailsService userDetailsService,
           LoginService loginService,
-          @Qualifier("exceptionMessages") Properties messageExceptions,
-          @Qualifier("apiMessageSource") MessageSource messageSource,
+          ApplicationMessageService applicationMessageService,
           MailService mailService) {
-    super(messageSource, messageExceptions);
+
     this.passwordEncoder = passwordEncoder;
     this.userDetailsService = userDetailsService;
     this.loginService = loginService;
+    this.applicationMessageService = applicationMessageService;
     this.mailService = mailService;
   }
 
@@ -65,7 +62,7 @@ public class CustomAuthProvider extends MessageService implements Authentication
       boolean isLoginAuthorize = loginService.isLoginAuthorize(userLogin.getId());
 
       if(!isLoginAuthorize) {
-        throw new AuthException(getExceptionMessage("login.not.authorize"), HttpStatus.BAD_REQUEST);
+        throw new AuthException(applicationMessageService.getMessage("login.not.authorize"), HttpStatus.BAD_REQUEST);
       }
       // Vérification mot de passe
       isAuthenticationValid =this.passwordEncoder.matches(presentedPassword, user.getPassword());
@@ -84,7 +81,7 @@ public class CustomAuthProvider extends MessageService implements Authentication
 
     // Login erreur
     if(!isAuthenticationValid) {
-      throw new AuthException(getExceptionMessage("email.unvalid"), HttpStatus.BAD_REQUEST);
+      throw new AuthException(applicationMessageService.getMessage("email.unvalid"), HttpStatus.BAD_REQUEST);
     }
 
     return new UsernamePasswordAuthenticationToken(user, authentication.getCredentials().toString());

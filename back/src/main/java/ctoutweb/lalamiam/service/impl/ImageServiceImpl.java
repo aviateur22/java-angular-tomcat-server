@@ -2,9 +2,8 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.model.ImageType;
+import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.ImageService;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +12,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 
 @Service
-public class ImageServiceImpl extends MessageService implements ImageService {
-  protected ImageServiceImpl(
-          @Qualifier("apiMessageSource") MessageSource messageSource,
-          @Qualifier("exceptionMessages") Properties messageExceptions) {
-    super(messageSource, messageExceptions);
+public class ImageServiceImpl implements ImageService {
+  private final ApplicationMessageService applicationMessageService;
+  protected ImageServiceImpl(ApplicationMessageService applicationMessageService) {
+    this.applicationMessageService = applicationMessageService;
   }
 
   @Override
@@ -68,7 +65,7 @@ public class ImageServiceImpl extends MessageService implements ImageService {
       return imageBytes;
 
     } catch (IOException e) {
-      throw new AuthException(getExceptionMessage("captcha.image.error"), HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new AuthException(applicationMessageService.getMessage("captcha.image.error"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
   }

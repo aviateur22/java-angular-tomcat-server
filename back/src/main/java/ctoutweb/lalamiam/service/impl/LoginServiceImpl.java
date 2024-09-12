@@ -9,12 +9,11 @@ import ctoutweb.lalamiam.repository.UserLoginRepository;
 import ctoutweb.lalamiam.repository.entity.DelayLoginEntity;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.repository.entity.UserLoginEntity;
+import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.LoginService;
 import ctoutweb.lalamiam.service.MailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,27 +21,27 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static ctoutweb.lalamiam.constant.ApplicationConstant.*;
 import static ctoutweb.lalamiam.factory.UserLoginFactory.*;
 
 @Service
-public class LoginServiceImpl extends MessageService implements LoginService {
+public class LoginServiceImpl implements LoginService {
   private static final Logger LOGGER = LogManager.getLogger();
   private final DelayLoginRepository delayLoginRepository;
   private final UserLoginRepository userLoginRepository;
   private final MailService mailService;
+  private final ApplicationMessageService applicationMessageService;
   public LoginServiceImpl(
           DelayLoginRepository delayLoginRepository,
           UserLoginRepository userLoginRepository,
-          @Qualifier("exceptionMessages") Properties messageExceptions,
-          @Qualifier("apiMessageSource") MessageSource messageSource,
-          MailService mailService) {
-    super(messageSource, messageExceptions);
+          MailService mailService,
+          ApplicationMessageService applicationMessageService
+  ) {
     this.delayLoginRepository = delayLoginRepository;
     this.userLoginRepository = userLoginRepository;
     this.mailService = mailService;
+    this.applicationMessageService = applicationMessageService;
   }
 
   @Override
@@ -83,7 +82,7 @@ public class LoginServiceImpl extends MessageService implements LoginService {
               "Alerte tentative de connexion",
               user.getEmail(),
               templateHtml,
-              getExceptionMessage("mailing.error")
+              applicationMessageService.getMessage("mailing.error")
       );
     }
 
@@ -136,7 +135,7 @@ public class LoginServiceImpl extends MessageService implements LoginService {
 
     String loginAttemptMessage = loginAttemptErrorCount == 0 ?
             null :
-            getApiMessage("login.attempt.message");
+            applicationMessageService.getMessage("login.attempt.message");
 
     return loginAttemptMessage.replace("!%!number!%!", String.valueOf(loginAvailibility));
   }

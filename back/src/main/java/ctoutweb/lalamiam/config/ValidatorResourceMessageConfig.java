@@ -6,12 +6,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+/**
+ * Gestion des messages de @Javax.validation.constraint.message
+ * Cette classe permets de charger les messages de validation à partir d'un fichier properties.
+ *
+ * ex:
+ * @NotNull(message = "{email.missing}")
+ * @NotBlank(message = "{email.missing}")
+ * @Email(message = "{email.bad.format}")
+ * String email,
+ */
 @Configuration
-public class MessageResourceConfig {
-  @Bean(name = "apiMessageSource")
+public class ValidatorResourceMessageConfig {
+  @Bean
   public MessageSource messageSource() {
     DynamicMessageSource dynamicMessageSource = new DynamicMessageSource();
-    dynamicMessageSource.setBasename("classpath:message/loginMessage");
+    // Par default le fichier chargé est: loginMessage
+    dynamicMessageSource.setBasename("classpath:message/validatorErrorMessage");
     dynamicMessageSource.setDefaultEncoding("UTF-8");
     return dynamicMessageSource;
   }

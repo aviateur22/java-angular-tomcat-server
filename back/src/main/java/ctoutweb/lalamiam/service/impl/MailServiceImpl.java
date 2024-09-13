@@ -53,7 +53,7 @@ public class MailServiceImpl implements MailService {
           helper.setText(mailContent, true);
           helper.setTo(to);
           helper.setSubject(mailSubject);
-          helper.setFrom("admin@ctoutweb.fr");
+          helper.setFrom("MonApp");
           mailSender.send(message);
           LOGGER.info("Envoie email terminé");
         } catch (MessagingException exception) {

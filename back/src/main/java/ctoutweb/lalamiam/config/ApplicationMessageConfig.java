@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
 
+/**
+ * Permets de stocker les messages présent dans les fichiers properties.
+ */
 @Configuration
 public class ApplicationMessageConfig {
   private Properties emailParameterMessages = new Properties();

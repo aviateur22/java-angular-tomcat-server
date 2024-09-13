@@ -2,17 +2,12 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.dto.RegisterDto;
 import ctoutweb.lalamiam.model.HtmlTemplateType;
-import ctoutweb.lalamiam.model.ValidateLanguage;
 import ctoutweb.lalamiam.repository.UserRepository;
 import ctoutweb.lalamiam.repository.entity.AccountEntity;
 import ctoutweb.lalamiam.repository.entity.RoleUserEntity;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
-import ctoutweb.lalamiam.service.AccountService;
-import ctoutweb.lalamiam.service.MailService;
-import ctoutweb.lalamiam.service.RoleService;
-import ctoutweb.lalamiam.service.UserService;
+import ctoutweb.lalamiam.service.*;
 import ctoutweb.lalamiam.util.TextUtility;
-import org.apache.catalina.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -20,7 +15,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,10 +22,13 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static ctoutweb.lalamiam.util.TextUtility.replaceWordInText;
 
 @Service
 @PropertySource({"classpath:application.properties"})
@@ -43,6 +40,8 @@ public class UserServiceImpl implements UserService {
   private String frontPath;
   @Value("${front.account.activation.url}")
   private String activateAccounteFrontEndUrl;
+  @Value("${application.name}")
+  private String applicationName;
 
   private static final Logger LOGGER = LogManager.getLogger();
   private final MailService mailService;
@@ -50,6 +49,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final EntityManagerFactory entityManagerFactory;
   private final AccountService accountService;
+  private final ApplicationMessageService applicationMessageService;
   private final RoleService roleService;
   public UserServiceImpl(
           MailService mailService,
@@ -57,12 +57,15 @@ public class UserServiceImpl implements UserService {
           UserRepository userRepository,
           EntityManagerFactory entityManagerFactory,
           AccountService accountService,
-          RoleService roleService) {
+          ApplicationMessageService applicationMessageService,
+          RoleService roleService
+  ) {
     this.mailService = mailService;
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
     this.entityManagerFactory = entityManagerFactory;
     this.accountService = accountService;
+    this.applicationMessageService = applicationMessageService;
     this.roleService = roleService;
   }
   @Override
@@ -111,15 +114,10 @@ public class UserServiceImpl implements UserService {
     String activateAccountToken = TextUtility.generateText(80);
     String activateAccountTokenHash = this.passwordEncoder.encode(activateAccountToken);
 
-    Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
 
     // Generation frontEnd URL pour le lien d'activation
     String activateAccountLink = String.format(activateAccounteFrontEndUrl, domainFront, frontPath, registerDto.email(), activateAccountToken);
     LOGGER.debug("Lien du compte d'activtion : " + activateAccountLink);
-
-    listWordsToReplaceInHtmlTemplate.put("email", registerDto.email());
-    listWordsToReplaceInHtmlTemplate.put("link",activateAccountLink);
-
 
     String passwordHash = passwordEncoder.encode(registerDto.password());
     UserEntity registerUser = userRepository.save(new UserEntity(
@@ -138,9 +136,26 @@ public class UserServiceImpl implements UserService {
     LOGGER.debug("Enregistrement utilisateur: " + registerUser);
     LOGGER.debug("Compte utilisateur: " + createAccount);
 
+
+    // Mot a remplacer dans le template HTML
+    Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
+    listWordsToReplaceInHtmlTemplate.put("year", String.valueOf(LocalDateTime.now().getYear()));
+    listWordsToReplaceInHtmlTemplate.put("email", registerDto.email());
+    listWordsToReplaceInHtmlTemplate.put("link", activateAccountLink);
+    listWordsToReplaceInHtmlTemplate.put("appName", applicationName.toUpperCase());
+
     // Envoie d'un email
     String templateHtml = mailService.generateHtml(HtmlTemplateType.ACCOUNT_ACTIVATION, listWordsToReplaceInHtmlTemplate);
-    mailService.sendEmail("test", registerUser.getEmail(), templateHtml, "Exception");
+
+    // Sujet du mail
+    String emailSubject = applicationMessageService.getMessage("email.register.subject");
+    emailSubject =  replaceWordInText(emailSubject, "!%!applicationName!%!", applicationName);
+
+    mailService.sendEmail(
+            emailSubject,
+            registerUser.getEmail(),
+            templateHtml,
+            applicationMessageService.getMessage("mailing.error"));
     return registerUser;
   }
 

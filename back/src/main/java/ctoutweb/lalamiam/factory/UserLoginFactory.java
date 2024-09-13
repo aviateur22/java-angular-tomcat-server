@@ -1,6 +1,7 @@
 package ctoutweb.lalamiam.factory;
 
-import ctoutweb.lalamiam.model.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginStatus;
 import ctoutweb.lalamiam.repository.entity.DelayLoginEntity;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.repository.entity.UserLoginEntity;
@@ -21,5 +22,10 @@ public class UserLoginFactory {
     delayLogin.setUser(user);
     delayLogin.setDelayLoginUntil(loginDelayUntil);
     return delayLogin;
+  }
+
+  public static UserLoginStatus getUserLoginStatus(boolean isLoginAuthorize, LocalDateTime delayLoginUntil) {
+    return new UserLoginStatus(isLoginAuthorize, delayLoginUntil);
+
   }
 }

@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ctoutweb.lalamiam.util.TextUtility.*;
+
 @PropertySource("classpath:application.properties")
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -37,6 +39,8 @@ public class AccountServiceImpl implements AccountService {
   private String domainFront;
   @Value("${front.path}")
   private String frontPath;
+  @Value("${application.name}")
+  private String applicationName;
 
   public AccountServiceImpl(
           AccountRepository accountRepository,
@@ -79,9 +83,6 @@ public class AccountServiceImpl implements AccountService {
       throw new AuthException(applicationMessageService.getMessage("send.reset.passord.error"), HttpStatus.BAD_REQUEST);
     }
 
-    // Map des mot à remplacer dans le template HTML
-    Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
-
     // generation token URL
     String urlToken = TextUtility.generateText(80);
     String urlTokenHash = passwordEncoder.encode(urlToken);
@@ -99,13 +100,22 @@ public class AccountServiceImpl implements AccountService {
     String changePasswordAccountLink = String.format(changePasswordAccountFrontEndUrl, domainFront, frontPath, userData.getEmail(), urlToken);
     LOGGER.debug("Lien du compte d'activtion : " + changePasswordAccountLink);
 
+    // Map des mot à remplacer dans le template HTML
+    Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
+    listWordsToReplaceInHtmlTemplate.put("year", String.valueOf(LocalDateTime.now().getYear()));
     listWordsToReplaceInHtmlTemplate.put("email", userData.getEmail());
     listWordsToReplaceInHtmlTemplate.put("link",changePasswordAccountLink);
     listWordsToReplaceInHtmlTemplate.put("changePasswordToken", passwordChangeToken);
+    listWordsToReplaceInHtmlTemplate.put("appName", applicationName.toUpperCase());
 
     String templateHtml = mailService.generateHtml(HtmlTemplateType.CHANGE_PASSWORD, listWordsToReplaceInHtmlTemplate);
+
+    // Sujet du mail
+    String emailSubject = applicationMessageService.getMessage("email.reinitialize.password.subject");
+    emailSubject =  replaceWordInText(emailSubject, "!%!applicationName!%!", applicationName);
+
     mailService.sendEmail(
-            "Changement du mot de passe",
+            emailSubject,
             userData.getEmail(),
             templateHtml,
             applicationMessageService.getMessage("mailing.error")

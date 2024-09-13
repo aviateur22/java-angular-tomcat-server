@@ -2,11 +2,13 @@ package ctoutweb.lalamiam.security.authentication;
 
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.mapper.UserEntityMapper;
-import ctoutweb.lalamiam.model.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginStatus;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.LoginService;
 import ctoutweb.lalamiam.service.MailService;
+import ctoutweb.lalamiam.util.TextUtility;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +17,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+
+import static ctoutweb.lalamiam.util.DateUtility.*;
+
+
 
 @Component
 public class CustomAuthProvider implements AuthenticationProvider {
@@ -59,10 +67,18 @@ public class CustomAuthProvider implements AuthenticationProvider {
       UserPrincipal userLogin = (UserPrincipal) user;
 
       // Vérification si connxion au compte possible
-      boolean isLoginAuthorize = loginService.isLoginAuthorize(userLogin.getId());
+      UserLoginStatus userLoginStatus = loginService.isLoginAuthorize(userLogin.getId());
 
-      if(!isLoginAuthorize) {
-        throw new AuthException(applicationMessageService.getMessage("login.not.authorize"), HttpStatus.BAD_REQUEST);
+      if(!userLoginStatus.isLoginAuthorize()) {
+        // Heure de reprise
+        LocalDateTime recoveryLoginTime = userLoginStatus.recoveryLoginTime();
+
+        String errorMessage = TextUtility.replaceWordInText(
+                applicationMessageService.getMessage("login.not.authorize"),
+                "!%!recoveryLoginTime!%!",
+                toDateHour(recoveryLoginTime)
+        );
+        throw new AuthException(errorMessage, HttpStatus.BAD_REQUEST);
       }
       // Vérification mot de passe
       isAuthenticationValid =this.passwordEncoder.matches(presentedPassword, user.getPassword());

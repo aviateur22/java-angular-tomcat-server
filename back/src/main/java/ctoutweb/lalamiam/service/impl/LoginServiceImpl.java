@@ -3,7 +3,8 @@ package ctoutweb.lalamiam.service.impl;
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.factory.UserLoginFactory;
 import ctoutweb.lalamiam.model.HtmlTemplateType;
-import ctoutweb.lalamiam.model.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginStatus;
 import ctoutweb.lalamiam.repository.DelayLoginRepository;
 import ctoutweb.lalamiam.repository.UserLoginRepository;
 import ctoutweb.lalamiam.repository.entity.DelayLoginEntity;
@@ -14,6 +15,7 @@ import ctoutweb.lalamiam.service.LoginService;
 import ctoutweb.lalamiam.service.MailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ import java.util.Map;
 
 import static ctoutweb.lalamiam.constant.ApplicationConstant.*;
 import static ctoutweb.lalamiam.factory.UserLoginFactory.*;
+import static ctoutweb.lalamiam.util.TextUtility.replaceWordInText;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -32,6 +35,9 @@ public class LoginServiceImpl implements LoginService {
   private final UserLoginRepository userLoginRepository;
   private final MailService mailService;
   private final ApplicationMessageService applicationMessageService;
+  @Value("${application.name}")
+  private String applicationName;
+
   public LoginServiceImpl(
           DelayLoginRepository delayLoginRepository,
           UserLoginRepository userLoginRepository,
@@ -75,11 +81,18 @@ public class LoginServiceImpl implements LoginService {
       // Generation d'un email d'alerte
       Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
 
+      listWordsToReplaceInHtmlTemplate.put("year", String.valueOf(LocalDateTime.now().getYear()));
       listWordsToReplaceInHtmlTemplate.put("email", user.getEmail());
+      listWordsToReplaceInHtmlTemplate.put("email", user.getEmail());
+      listWordsToReplaceInHtmlTemplate.put("appName", applicationName.toUpperCase());
+
+      // Sujet du mail
+      String emailSubject = applicationMessageService.getMessage("email.login.account.failed.subject");
+      emailSubject =  replaceWordInText(emailSubject, "!%!applicationName!%!", applicationName);
 
       String templateHtml = mailService.generateHtml(HtmlTemplateType.LOGIN_CONNEXION_ALERT, listWordsToReplaceInHtmlTemplate);
       mailService.sendEmail(
-              "Alerte tentative de connexion",
+              emailSubject,
               user.getEmail(),
               templateHtml,
               applicationMessageService.getMessage("mailing.error")
@@ -103,25 +116,25 @@ public class LoginServiceImpl implements LoginService {
   }
 
   @Override
-  public boolean isLoginAuthorize(Long userId) throws AuthException {
+  public UserLoginStatus isLoginAuthorize(Long userId) throws AuthException {
     LocalDateTime checkLogintime = LocalDateTime.now();
 
     DelayLoginEntity findUserDelayLogin = delayLoginRepository.findFirstByUserId(userId).orElse(null);
 
     if(findUserDelayLogin == null) {
-      return true;
+      return getUserLoginStatus(true, null);
     }
 
-    LocalDateTime loginDelayUntil = findUserDelayLogin.getDelayLoginUntil();
+   LocalDateTime recoveryLoginTime = findUserDelayLogin.getDelayLoginUntil();
 
-    // Connexion bloquée
-    if(checkLogintime.isBefore(loginDelayUntil)) {
-      return false;
+    // La connexion est bloquée si checkLogintime < recoveryLoginTime
+    if(checkLogintime.isBefore(recoveryLoginTime)) {
+      return getUserLoginStatus(false, recoveryLoginTime);
     }
 
     // Suppression de l'heure de blocage
     delayLoginRepository.delete(findUserDelayLogin);
-    return true;
+    return getUserLoginStatus(true, null);
   }
 
   /**

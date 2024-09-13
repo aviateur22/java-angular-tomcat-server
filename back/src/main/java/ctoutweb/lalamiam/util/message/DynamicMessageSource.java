@@ -10,5 +10,6 @@ public class DynamicMessageSource extends ReloadableResourceBundleMessageSource 
   public void updateMessageSource(String messageSource) {
     clearCache();
     super.setBasename(messageSource);
+    super.setDefaultEncoding("UTF-8");
   }
 }

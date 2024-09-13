@@ -1,7 +1,8 @@
 package ctoutweb.lalamiam.service;
 
 import ctoutweb.lalamiam.exception.AuthException;
-import ctoutweb.lalamiam.model.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginInformation;
+import ctoutweb.lalamiam.model.login.UserLoginStatus;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 
 public interface LoginService {
@@ -25,7 +26,7 @@ public interface LoginService {
   /**
    * Vérification si une connexion peut avoir lieu
    * @param userId Long - Utilisateur voulant se connecter
-   * @return boolean
+   * @return UserLoginStatus
    */
-  public boolean isLoginAuthorize(Long userId) throws AuthException;
+  public UserLoginStatus isLoginAuthorize(Long userId) throws AuthException;
 }

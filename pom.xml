@@ -32,6 +32,7 @@
         <profile>
             <id>local</id>
             <properties>
+                <application.name>monApp</application.name>
                 <angular.configuration>development</angular.configuration>
                 <angular.base.href>/</angular.base.href>
                 <domain.front>http://localhost:8080</domain.front>
@@ -58,6 +59,7 @@
         <profile>
             <id>tomcat</id>
             <properties>
+                <application.name>monApp</application.name>
                 <angular.configuration>tomcat</angular.configuration>
                 <angular.base.href>/lalamiam-app/</angular.base.href>
                 <domain.front>http://localhost:8080</domain.front>
@@ -85,6 +87,7 @@
         <profile>
             <id>tomcat-root</id>
             <properties>
+                <application.name>monApp</application.name>
                 <angular.configuration>tomcat-root</angular.configuration>
                 <angular.base.href>/</angular.base.href>
                 <domain.front>http://localhost:8080</domain.front>
@@ -109,9 +112,10 @@
                 <mailer.smtp.auth>true</mailer.smtp.auth>
             </properties>
         </profile>
-        <profile    >
+        <profile>
             <id>heroku</id>
             <properties>
+                <application.name>monApp</application.name>
                 <angular.configuration>production</angular.configuration>
                 <angular.base.href>/</angular.base.href>
                 <domain.front>http://localhost:8080</domain.front>

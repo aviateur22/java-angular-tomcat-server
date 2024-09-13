@@ -133,6 +133,11 @@ public class ApplicationMessageServiceImpl implements ApplicationMessageService 
    * @return String
    */
   public String getFileResourceMessagePath(String resourceBaseName) {
+    /**
+     * L'accées au path d'un fichier de ressource doit commencer par claspath:
+     * ne doit pas contenir l'extension .properties
+     */
+
     final String BASE_FOLDER = "classpath:";
     final String stringToRemove = ".properties";
     return (BASE_FOLDER + resourceBaseName).replace(stringToRemove,"");

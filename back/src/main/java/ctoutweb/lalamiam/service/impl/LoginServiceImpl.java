@@ -3,7 +3,6 @@ package ctoutweb.lalamiam.service.impl;
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.factory.UserLoginFactory;
 import ctoutweb.lalamiam.model.HtmlTemplateType;
-import ctoutweb.lalamiam.model.login.UserLoginInformation;
 import ctoutweb.lalamiam.model.login.UserLoginStatus;
 import ctoutweb.lalamiam.repository.DelayLoginRepository;
 import ctoutweb.lalamiam.repository.UserLoginRepository;
@@ -51,68 +50,21 @@ public class LoginServiceImpl implements LoginService {
   }
 
   @Override
-  public UserLoginInformation updateUserLoginInformation(UserEntity user, boolean isAuthenticationValid) {
-   List<UserLoginEntity> getLastUserLoginList = userLoginRepository.findTop3ByUserOrderByLoginAtDesc(user);
+  public List<UserLoginEntity> updateUserLoginInformation(UserEntity user, boolean isAuthenticationValid) {
+    // Ajout des données de la connexion client
+    LocalDateTime loginTime = LocalDateTime.now();
+    userLoginRepository.save(UserLoginFactory.getUserLogin(isAuthenticationValid, user, loginTime));
+
+    // Récupération des 3 dernieres connexions
+    List<UserLoginEntity> getUserLastLoginList = userLoginRepository.findTop3ByUserOrderByLoginAtDesc(user);
 
    // Si authentification client valide
    if(isAuthenticationValid) {
-
      // Suppression de la prise en compte des dernière données de connexion
-     this.updateUserLoginstatus(getLastUserLoginList);
-
-     return UserLoginFactory.getUserLoginInformation(true, null);
+     this.updateConnexionStatus(getUserLastLoginList);
    }
 
-   // Récupérartion du nombre de connexion invalide
-    long loginAttemptErrorCount = getLastUserLoginList
-            .stream()
-            .filter(login-> !login.getIsLoginSuccess() && login.getHasToBeCheck())
-            .count();
-
-    boolean isLoginAuthorize = loginAttemptErrorCount < LOGIN_ERROR_ATTEMPT_AVAILABLE;
-
-    if(!isLoginAuthorize) {
-      // Ajout d'un delai de connexion pour les prochaines tentatives
-      addDelayOnLogin(user);
-
-      // Suppression de la prise en compte des dernière données de connexion
-      this.updateUserLoginstatus(getLastUserLoginList);
-
-      // Generation d'un email d'alerte
-      Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
-
-      listWordsToReplaceInHtmlTemplate.put("year", String.valueOf(LocalDateTime.now().getYear()));
-      listWordsToReplaceInHtmlTemplate.put("email", user.getEmail());
-      listWordsToReplaceInHtmlTemplate.put("email", user.getEmail());
-      listWordsToReplaceInHtmlTemplate.put("appName", applicationName.toUpperCase());
-
-      // Sujet du mail
-      String emailSubject = applicationMessageService.getMessage("email.login.account.failed.subject");
-      emailSubject =  replaceWordInText(emailSubject, "!%!applicationName!%!", applicationName);
-
-      String templateHtml = mailService.generateHtml(HtmlTemplateType.LOGIN_CONNEXION_ALERT, listWordsToReplaceInHtmlTemplate);
-      mailService.sendEmail(
-              emailSubject,
-              user.getEmail(),
-              templateHtml,
-              applicationMessageService.getMessage("mailing.error")
-      );
-    }
-
-    // Récupération d'un message sur le statut de connexion
-    String informationLoginMessage = getInformationLoginMessage(getLastUserLoginList, loginAttemptErrorCount);
-    return UserLoginFactory.getUserLoginInformation(isLoginAuthorize, informationLoginMessage);
-
-
-  }
-
-  @Override
-  public void addLoginInformation(boolean isLoginSuccess, UserEntity user) {
-
-    // Heure de connexion
-    LocalDateTime loginTime = LocalDateTime.now();
-
-    userLoginRepository.save(UserLoginFactory.getUserLogin(isLoginSuccess, user, loginTime));
+    return getUserLastLoginList;
   }
 
   @Override
@@ -137,39 +89,8 @@ public class LoginServiceImpl implements LoginService {
     return getUserLoginStatus(true, null);
   }
 
-  /**
-   * Message sur le nombre de connexion disponible
-   * @param lastUserLoginList List<UserLoginEntity> - Liste des 3 dernieres connexion utilisateurs
-   * @return String
-   */
-  public String getInformationLoginMessage(List<UserLoginEntity> lastUserLoginList, long loginAttemptErrorCount) {
-
-    int loginAvailibility = (int) (LOGIN_ERROR_ATTEMPT_AVAILABLE - loginAttemptErrorCount);
-
-    String loginAttemptMessage = loginAttemptErrorCount == 0 ?
-            null :
-            applicationMessageService.getMessage("login.attempt.message");
-
-    return loginAttemptMessage.replace("!%!number!%!", String.valueOf(loginAvailibility));
-  }
-
-  /**
-   * Mise a jour des données de connexion si
-   * @param lastUserLoginList List<UserLoginEntity> - Liste des 3 dernieres connexions
-   */
-  public void updateUserLoginstatus(List<UserLoginEntity> lastUserLoginList) {
-
-    lastUserLoginList.forEach(userLogin->{
-      userLogin.setHasToBeCheck(false);
-      userLoginRepository.save(userLogin);
-    });
-  }
-
-  /**
-   * Ajout d'un délai de blocage dans le connexion utilisateur
-   * @param user UserEntity - Personne souhaitant se connnecter
-   */
-  public void addDelayOnLogin(UserEntity user) {
+  @Override
+  public void addDelayOnLogin(UserEntity user, List<UserLoginEntity> lastUserLoginList) {
 
     // Calcul heure de déblocage de connexion
     LocalDateTime loginDelayUntil = LocalDateTime.now().plusMinutes(LOGIN_DELAY).truncatedTo(ChronoUnit.MINUTES);
@@ -185,5 +106,55 @@ public class LoginServiceImpl implements LoginService {
 
     DelayLoginEntity delayLogin = getDelayLogin(loginDelayUntil, user);
     delayLoginRepository.save(delayLogin);
+
+    // Suppression de la prise en compte des dernière données de connexion
+    this.updateConnexionStatus(lastUserLoginList);
+
+    // Generation d'un email d'alerte
+    Map<String, String> listWordsToReplaceInHtmlTemplate = new HashMap<>();
+
+    listWordsToReplaceInHtmlTemplate.put("year", String.valueOf(LocalDateTime.now().getYear()));
+    listWordsToReplaceInHtmlTemplate.put("email", user.getEmail());
+    listWordsToReplaceInHtmlTemplate.put("email", user.getEmail());
+    listWordsToReplaceInHtmlTemplate.put("appName", applicationName.toUpperCase());
+
+    // Sujet du mail
+    String emailSubject = applicationMessageService.getMessage("email.login.account.failed.subject");
+    emailSubject =  replaceWordInText(emailSubject, "!%!applicationName!%!", applicationName.toUpperCase());
+
+    String templateHtml = mailService.generateHtml(HtmlTemplateType.LOGIN_CONNEXION_ALERT, listWordsToReplaceInHtmlTemplate);
+    mailService.sendEmail(
+            emailSubject,
+            user.getEmail(),
+            templateHtml,
+            applicationMessageService.getMessage("mailing.error")
+    );
+
   }
+  @Override
+  public Integer getUserRemainingLogin(UserEntity user) {
+    List<UserLoginEntity> getLastUserLoginList = userLoginRepository.findTop3ByUserOrderByLoginAtDesc(user);
+
+    // Récupérartion du nombre de connexion invalide
+    long loginAttemptErrorCount = getLastUserLoginList
+            .stream()
+            .filter(login-> !login.getIsLoginSuccess() && login.getHasToBeCheck())
+            .count();
+
+    // Calcul du nombre de connexion restante en cas d'erreur
+    return (int) (LOGIN_ERROR_ATTEMPT_AVAILABLE - loginAttemptErrorCount);
+  }
+
+  /**
+   * Mise a jour des données de connexion si
+   * @param lastUserLoginList List<UserLoginEntity> - Liste des 3 dernieres connexions
+   */
+  public void updateConnexionStatus(List<UserLoginEntity> lastUserLoginList) {
+
+    lastUserLoginList.forEach(userLogin->{
+      userLogin.setHasToBeCheck(false);
+      userLoginRepository.save(userLogin);
+    });
+  }
+
 }

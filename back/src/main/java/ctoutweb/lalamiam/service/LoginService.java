@@ -4,6 +4,9 @@ import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.model.login.UserLoginInformation;
 import ctoutweb.lalamiam.model.login.UserLoginStatus;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
+import ctoutweb.lalamiam.repository.entity.UserLoginEntity;
+
+import java.util.List;
 
 public interface LoginService {
 
@@ -11,17 +14,17 @@ public interface LoginService {
    * Mise a jour des information de connexion d'un utilisateur
    * @param user - UserEntity - Utilisateur voulant se connecter
    * @param isAuthenticationValid boolean - Validité de l'authentication
-   * @return Booelan
+   * @return List<UserLoginEntity>
    */
-  public UserLoginInformation updateUserLoginInformation(UserEntity user, boolean isAuthenticationValid);
+  public List<UserLoginEntity> updateUserLoginInformation(UserEntity user, boolean isAuthenticationValid);
 
 
   /**
-   * Ajout du login utilisateur
-   * @param isLoginSuccess boolean - Login statut
-   * @param user Userentity - Utilisateur qui se connecte
+   * Ajout d'un délai de blocage de connexion dans le connexion utilisateur
+   * @param user UserEntity - Personne souhaitant se connnecter
+   * @param lastUserLoginList - List des dernieres connexion du client
    */
-  public void addLoginInformation(boolean isLoginSuccess, UserEntity user);
+  public void addDelayOnLogin(UserEntity user, List<UserLoginEntity> lastUserLoginList);
 
   /**
    * Vérification si une connexion peut avoir lieu
@@ -29,4 +32,11 @@ public interface LoginService {
    * @return UserLoginStatus
    */
   public UserLoginStatus isLoginAuthorize(Long userId) throws AuthException;
+
+  /**
+   * Récupération du nombre de connexion disponible
+   * @param user UserEntity
+   * @return Integer
+   */
+  public Integer getUserRemainingLogin(UserEntity user);
 }

@@ -2,9 +2,9 @@ package ctoutweb.lalamiam.security.authentication;
 
 import ctoutweb.lalamiam.exception.AuthException;
 import ctoutweb.lalamiam.mapper.UserEntityMapper;
-import ctoutweb.lalamiam.model.login.UserLoginInformation;
 import ctoutweb.lalamiam.model.login.UserLoginStatus;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
+import ctoutweb.lalamiam.repository.entity.UserLoginEntity;
 import ctoutweb.lalamiam.service.ApplicationMessageService;
 import ctoutweb.lalamiam.service.LoginService;
 import ctoutweb.lalamiam.service.MailService;
@@ -19,7 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import static ctoutweb.lalamiam.constant.ApplicationConstant.LOGIN_ERROR_ATTEMPT_AVAILABLE;
 import static ctoutweb.lalamiam.util.DateUtility.*;
 
 
@@ -51,8 +53,11 @@ public class CustomAuthProvider implements AuthenticationProvider {
     // Authentification utilisateur
     boolean isAuthenticationValid = authentication.getCredentials() != null;
 
-    // Possibilité connexion au compte client
-    boolean isLoginPossible = true;
+    // List des dernieres connexions du client
+    List<UserLoginEntity> lastUserLoginList = List.of();
+
+    // Client souhaitant se connecter
+    UserEntity loginUser = null;
 
     String presentedPassword = authentication.getCredentials().toString();
     UserDetails user = userDetailsService.loadUserByUsername(authentication.getName());
@@ -81,23 +86,31 @@ public class CustomAuthProvider implements AuthenticationProvider {
         throw new AuthException(errorMessage, HttpStatus.BAD_REQUEST);
       }
       // Vérification mot de passe
-      isAuthenticationValid =this.passwordEncoder.matches(presentedPassword, user.getPassword());
+      isAuthenticationValid = this.passwordEncoder.matches(presentedPassword, user.getPassword());
     }
 
-    // Ajout des information du login en base
+    // Ajout des informations du login en base
     if(user != null) {
-      UserEntity loginUser = UserEntityMapper.map((UserPrincipal) user);
+      loginUser = UserEntityMapper.map((UserPrincipal) user);
 
-      // Ajout du login en base
-      loginService.addLoginInformation(isAuthenticationValid, loginUser);
-
-      // Récuération des données de connexion client
-      UserLoginInformation userLoginInformation = loginService.updateUserLoginInformation(loginUser, isAuthenticationValid);
+      // Mise a jour des informations de connexion du client
+      lastUserLoginList = loginService.updateUserLoginInformation(loginUser, isAuthenticationValid);
     }
 
     // Login erreur
     if(!isAuthenticationValid) {
-      throw new AuthException(applicationMessageService.getMessage("email.unvalid"), HttpStatus.BAD_REQUEST);
+      long loginAttemptErrorCount = lastUserLoginList.stream()
+              .filter(login-> !login.getIsLoginSuccess() && login.getHasToBeCheck())
+              .count();
+
+      // Nombre de tentative de connexion disponible
+      int loginRemaining = loginService.getUserRemainingLogin(loginUser);
+
+      // Ajout d'un delai de connexion
+      if(loginAttemptErrorCount >= LOGIN_ERROR_ATTEMPT_AVAILABLE)
+        loginService.addDelayOnLogin(loginUser, lastUserLoginList);
+
+      throw new AuthException(getExceptionMessage(loginRemaining), HttpStatus.BAD_REQUEST);
     }
 
     return new UsernamePasswordAuthenticationToken(user, authentication.getCredentials().toString());
@@ -107,4 +120,22 @@ public class CustomAuthProvider implements AuthenticationProvider {
   public boolean supports(Class<?> authentication) {
     return authentication.equals(UsernamePasswordAuthenticationToken.class);
   }
+
+
+  /**
+   * Message sur le nombre de connexion disponible
+   * @param remainigLogin Integer - Nombre de conexion disponible en cas d'erreur
+   * @return String
+   */
+  public String getExceptionMessage(int remainigLogin) {
+
+    return switch (remainigLogin) {
+      case 4 -> applicationMessageService.getMessage("email.unvalid");
+      case 3,2 -> applicationMessageService.getMessage("email.unvalid.attempt.message").replace("!%!number!%!", String.valueOf(remainigLogin));
+      case 1 -> applicationMessageService.getMessage("email.unvalid.last.attempt.message");
+      case 0 -> applicationMessageService.getMessage("email.unvalid.login.delay");
+      default-> applicationMessageService.getMessage("email.unvalid");
+    };
+  }
+
 }

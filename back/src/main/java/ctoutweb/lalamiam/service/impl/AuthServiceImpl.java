@@ -2,9 +2,7 @@ package ctoutweb.lalamiam.service.impl;
 
 import ctoutweb.lalamiam.dto.*;
 import ctoutweb.lalamiam.exception.AuthException;
-import ctoutweb.lalamiam.factory.ActivateAccountFactory;
-import ctoutweb.lalamiam.factory.ChangePasswordFactory;
-import ctoutweb.lalamiam.factory.MessageResponseFactory;
+import ctoutweb.lalamiam.factory.*;
 import ctoutweb.lalamiam.model.*;
 import ctoutweb.lalamiam.repository.entity.UserEntity;
 import ctoutweb.lalamiam.security.authentication.UserPrincipal;
@@ -22,6 +20,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
+import static ctoutweb.lalamiam.constant.ApplicationConstant.LOGIN_ERROR_ATTEMPT_AVAILABLE;
+
 @Service
 public class AuthServiceImpl implements AuthService {
   private static final Logger LOGGER = LogManager.getLogger();
@@ -31,6 +31,8 @@ public class AuthServiceImpl implements AuthService {
   private final JwtIssuer jwtIssuer;
   private final CaptchaService captchaService;
   private final AccountService accountService;
+
+  private final LoginService loginService;
   private final ApplicationMessageService applicationMessageService;
   public AuthServiceImpl(
           AuthenticationManager authenticationManager,
@@ -39,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
           JwtIssuer jwtIssuer,
           CaptchaService captchaService,
           AccountService accountService,
+          LoginService loginService,
           ApplicationMessageService applicationMessageService
   ) {
     this.authenticationManager = authenticationManager;
@@ -47,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
     this.jwtIssuer = jwtIssuer;
     this.captchaService = captchaService;
     this.accountService = accountService;
+    this.loginService = loginService;
     this.applicationMessageService = applicationMessageService;
   }
 
@@ -62,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
     );
 
     SecurityContextHolder.getContext().setAuthentication(auth);
+
     UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
 
     JwtIssue jwtIssue = jwtIssuer.issue(userPrincipal);
@@ -70,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
 
     String responseMessage = applicationMessageService.getMessage("login.success").replace(
             "!%!nickname!%!", userPrincipal.getUsername());
+
     return new LoginResponseDto(
             jwtIssue.getJwtToken(),
             userPrincipal.getEmail(),
